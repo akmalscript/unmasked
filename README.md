@@ -1,17 +1,17 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+## Development Setup
 
-First, run the development server:
+> **Important:** This project strictly uses **npm**. Please use `npm` (avoid yarn/pnpm/bun) to keep `package-lock.json` consistent.
 
+### 1. Install Dependencies
+```bash
+npm install
+```
+
+### 2. Run Development Server
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
