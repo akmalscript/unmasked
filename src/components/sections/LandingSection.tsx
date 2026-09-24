@@ -27,7 +27,7 @@ export function LandingSection() {
             </Link>
             <Link
               className="font-mono-tag text-xs text-ink-charcoal/80 hover:text-burnt-orange transition-colors"
-              href="/checkin"
+              href="/onboarding"
             >
               Tentang Ruang
             </Link>

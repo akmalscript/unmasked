@@ -1,9 +1,9 @@
-import { OnboardingSection } from "@/components/sections/OnboardingSection";
+import { CheckinSection } from "@/components/sections/CheckinSection";
 
 export const metadata = {
-  title: "Sebelum Kita Mulai — UNMASKED",
+  title: "Siap untuk Mulai? — UNMASKED",
 };
 
-export default function OnboardingPage() {
-  return <OnboardingSection />;
+export default function CheckinPage() {
+  return <CheckinSection />;
 }
