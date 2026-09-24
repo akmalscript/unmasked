@@ -32,73 +32,60 @@ export function LandingSection() {
               Tentang Ruang
             </Link>
           </nav>
-          <Link
-            className="flex items-center gap-1.5 font-mono-tag text-xs md:text-sm font-semibold bg-paper-warm text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] rounded-full px-5 py-2 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#171717] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all"
-            href="/onboarding"
-          >
-            <span>Mulai Refleksi</span>
-            <span className="text-marker-orange font-bold text-base leading-none">→</span>
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border-[1.5px] border-ink-charcoal bg-surface text-ink-cocoa font-mono-tag text-xs shadow-[2px_2px_0px_#171717] hover:bg-paper-warm active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#171717] transition-all"
+              href="/summary"
+            >
+              <span className="material-symbols-outlined text-[16px]">menu_book</span>
+              <span>Arsip Jurnal</span>
+            </Link>
+          </div>
         </div>
       </header>
 
       <main className="relative z-10 flex-grow flex items-center w-full max-w-[1120px] mx-auto px-6 md:px-12 py-10 md:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center w-full">
           <div className="lg:col-span-6 flex flex-col justify-center relative">
-            <div className="inline-flex items-center gap-1.5 self-start px-3 py-1 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-md shadow-[2px_2px_0px_#171717] -rotate-2 mb-6">
+            <div className="inline-flex items-center gap-2 self-start px-3 py-1 rounded-full bg-marker-orange/15 border-[1.5px] border-ink-charcoal text-ink-cocoa mb-6 shadow-[2px_2px_0px_#171717] -rotate-1">
               <span className="w-2 h-2 rounded-full bg-marker-orange"></span>
-              <span className="font-mono-tag text-[10px] uppercase tracking-wider text-ink-charcoal">
-                Jurnal Reflektif Harian
-              </span>
+              <span className="font-mono-tag text-xs font-semibold tracking-wider uppercase">jurnal relfektif harian</span>
             </div>
 
             <h1 className="font-headline text-4xl sm:text-5xl lg:text-[54px] font-bold text-ink-charcoal tracking-tight leading-tight mb-5">
               Beyond{" "}
-              <span className="relative inline-block text-ink-charcoal underline decoration-marker-orange decoration-[4px] underline-offset-4">
+              <span className="relative inline-block text-burnt-orange italic">
                 “I&apos;m Fine.”
+                <svg className="absolute -bottom-1 left-0 w-full h-3 text-marker-orange/60" preserveAspectRatio="none" viewBox="0 0 100 12">
+                  <path d="M0,8 Q50,0 100,7" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="4"></path>
+                </svg>
               </span>
             </h1>
 
             <p className="text-lg text-ink-charcoal/80 max-w-lg mb-8 leading-relaxed">
-              Ruang aman untuk berhenti sejenak, mengurai isi pikiran, dan memahami apa yang sebenarnya
-              kamu butuhkan tanpa tuntutan untuk selalu baik-baik saja.
+              Ruang aman untuk berhenti sejenak, mengurai isi pikiran, dan memahami apa yang sebenarnya kamu butuhkan.
             </p>
 
-            <div className="relative flex flex-col items-start gap-4">
+            <div className="relative flex flex-col items-start gap-4 mt-4">
               <div className="relative inline-flex items-center">
                 <Link
                   className="inline-flex items-center gap-2 font-mono-tag text-sm bg-paper-warm text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[3px_3px_0px_#171717] rounded-full px-7 py-3.5 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_#171717] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all font-bold"
                   href="/onboarding"
                 >
                   <span>Mulai Refleksi</span>
-                  <span className="text-marker-orange font-bold text-lg leading-none">→</span>
+                  <span className="text-ink-charcoal font-bold text-lg leading-none">→</span>
                 </Link>
-
-                <div className="absolute left-full ml-4 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-1.5 pointer-events-none select-none -rotate-3">
-                  <svg
-                    className="w-8 h-8 text-marker-orange flex-shrink-0 -scale-y-100"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    viewBox="0 0 32 32"
-                  >
-                    <path d="M26 12 C 18 8, 12 18, 6 16"></path>
-                    <path d="M10 12 L 6 16 L 10 20"></path>
-                  </svg>
-                  <span className="font-script text-2xl font-bold text-marker-orange whitespace-nowrap pt-1">
-                    “just start.”
-                  </span>
-                </div>
               </div>
 
-              <div className="flex items-center gap-2 text-ink-charcoal/70">
-                <span className="material-symbols-outlined text-[16px] text-marker-orange">
+              <div className="flex items-center gap-2 text-ink-charcoal/70 mt-2">
+                <span
+                  className="material-symbols-outlined text-marker-orange"
+                  style={{ fontSize: '18px' }}
+                >
                   schedule
                 </span>
-                <span className="font-mono-tag text-xs">
-                  10–15 menit · tidak ada jawaban benar atau salah
+                <span className="font-mono-tag text-xs mt-[1px]">
+                  Selesai Dalam 10 Menit
                 </span>
               </div>
             </div>
@@ -118,43 +105,24 @@ export function LandingSection() {
                   />
                 </div>
 
-                <div className="absolute -top-4 -left-3 px-3 py-1.5 bg-sticker-pink border-[1.5px] border-ink-charcoal rounded-full shadow-[2px_2px_0px_#171717] -rotate-6 flex items-center gap-1.5 select-none pointer-events-none">
-                  <span
-                    className="material-symbols-outlined text-sm text-ink-charcoal"
-                    style={{ fontVariationSettings: "'FILL' 1" }}
-                  >
-                    favorite
-                  </span>
-                  <span className="font-mono-tag text-xs text-ink-charcoal font-bold tracking-tight">
-                    rasakan
-                  </span>
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-30 bg-sticker-pink/85 border border-ink-charcoal/20 px-6 py-1 rotate-[-1.5deg] border-x-2 border-dashed backdrop-blur-sm">
+                  <span className="font-mono-tag text-[10px] uppercase font-semibold text-ink-charcoal/80 tracking-widest">jurnal pribadi</span>
                 </div>
 
-                <div className="absolute -bottom-3 left-6 px-3.5 py-1 bg-sticker-sage border-[1.5px] border-ink-charcoal rounded-lg shadow-[3px_3px_0px_#171717] rotate-3 flex items-center gap-1.5 select-none pointer-events-none">
-                  <span
-                    className="material-symbols-outlined text-base text-ink-charcoal"
-                    style={{ fontVariationSettings: "'FILL' 1" }}
-                  >
-                    spa
-                  </span>
-                  <span className="font-mono-tag text-[11px] text-ink-charcoal uppercase font-bold tracking-wider">
-                    napas tenang
-                  </span>
-                </div>
+                <div className="absolute -top-2 -left-3 z-30 bg-sticker-blue/85 border border-ink-charcoal/15 w-14 h-4 rotate-[-35deg] border-x-2 border-dashed"></div>
 
-                <div className="absolute -top-3 -right-2 p-2 bg-secondary-fixed border-[1.5px] border-ink-charcoal rounded-full shadow-[2px_2px_0px_#171717] rotate-12 flex items-center justify-center select-none pointer-events-none">
-                  <span
-                    className="material-symbols-outlined text-lg text-ink-charcoal"
-                    style={{ fontVariationSettings: "'FILL' 1" }}
-                  >
-                    light_mode
-                  </span>
-                </div>
-
-                <div className="absolute -bottom-7 -right-3 md:-right-6 bg-paper-warm border-[1.5px] border-ink-charcoal px-4 py-2 rounded-xl shadow-[3px_3px_0px_#171717] rotate-3 select-none pointer-events-none max-w-[210px]">
-                  <p className="font-script text-xl text-burnt-orange font-bold leading-tight">
+                <div className="absolute -bottom-6 -left-4 sm:-left-8 z-30 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-lg p-3.5 max-w-[210px] shadow-[3px_3px_0px_#171717] rotate-[3deg]">
+                  <div className="absolute -top-2 left-6 bg-sticker-sage/85 border border-ink-charcoal/20 w-10 h-3 rotate-1 border-x-2 border-dashed"></div>
+                  <p className="font-script text-xl font-bold text-burnt-orange leading-snug">
                     “you don&apos;t have to carry it all.”
                   </p>
+                  <div className="mt-1 flex justify-end">
+                    <span className="text-[11px] font-mono-tag text-ink-cocoa/60">— catatan kecil</span>
+                  </div>
+                </div>
+
+                <div className="absolute -top-5 -right-3 z-30 bg-sticker-pink border-[1.5px] border-ink-charcoal rounded-full w-10 h-10 flex items-center justify-center shadow-[2px_2px_0px_#171717] rotate-12">
+                  <span className="material-symbols-outlined text-ink-charcoal text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                 </div>
               </div>
             </div>
