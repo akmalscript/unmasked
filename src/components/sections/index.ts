@@ -1,5 +1,4 @@
 export { LandingSection } from "./LandingSection";
-export { OnboardingSection } from "./OnboardingSection";
 export { CheckinSection } from "./CheckinSection";
 export { PublicSelfSection } from "./PublicSelfSection";
 export { ActualFeelingSection } from "./ActualFeelingSection";

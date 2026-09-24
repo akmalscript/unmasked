@@ -47,8 +47,8 @@ export function Header({
                     s === stepNumber
                       ? "text-marker-orange text-sm font-bold leading-none"
                       : s < stepNumber
-                      ? "text-ink-charcoal text-sm leading-none"
-                      : "text-ink-charcoal/40 text-sm leading-none"
+                        ? "text-ink-charcoal text-sm leading-none"
+                        : "text-ink-charcoal/40 text-sm leading-none"
                   }
                 >
                   {s <= stepNumber ? "●" : "○"}
@@ -63,9 +63,8 @@ export function Header({
           <button
             onClick={toggleBookmarked}
             aria-label="Simpan Bookmark"
-            className={`p-2 border-[1.5px] border-ink-charcoal rounded-full ${
-              bookmarked ? "bg-marker-orange text-white" : "bg-paper-warm text-ink-charcoal"
-            } shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center`}
+            className={`cursor-pointer p-2 border-[1.5px] border-ink-charcoal rounded-full ${bookmarked ? "bg-marker-orange text-white" : "bg-paper-warm text-ink-charcoal"
+              } shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center`}
             title={bookmarked ? "Tersimpan" : "Simpan Sesi"}
           >
             <span className="material-symbols-outlined text-[18px]">bookmark</span>
@@ -73,7 +72,7 @@ export function Header({
           <button
             onClick={() => setShowHelp(!showHelp)}
             aria-label="Bantuan"
-            className="p-2 border-[1.5px] border-ink-charcoal rounded-full bg-paper-warm shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center text-ink-charcoal"
+            className="cursor-pointer p-2 border-[1.5px] border-ink-charcoal rounded-full bg-paper-warm shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center text-ink-charcoal"
             title="Bantuan & Privasi"
           >
             <span className="material-symbols-outlined text-[18px]">help</span>
@@ -91,12 +90,11 @@ export function Header({
         <div className="bg-sticker-sage/20 border-b-[1.5px] border-ink-charcoal px-6 py-2.5 text-center text-xs text-ink-charcoal flex items-center justify-center gap-3">
           <span className="material-symbols-outlined text-sm text-burnt-orange">lock</span>
           <span>
-            Semua data di sesi ini bersifat privat, tersimpan lokal di browser kamu tanpa akun atau
-            analitik luar.
+            Semua data hanya tersimpan di perangkat ini. Tidak ada yang bisa mengaksesnya selain kamu.
           </span>
           <button
             onClick={() => setShowHelp(false)}
-            className="underline text-burnt-orange font-bold text-xs"
+            className="cursor-pointer underline text-burnt-orange font-bold text-xs hover:text-ink-charcoal transition-colors"
           >
             tutup
           </button>
