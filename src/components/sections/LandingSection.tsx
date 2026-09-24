@@ -130,13 +130,11 @@ export function LandingSection() {
         </div>
       </main>
 
-      <footer className="relative z-10 w-full bg-paper-base border-t-[1.5px] border-ink-charcoal py-4 px-6 md:px-12">
-        <div className="max-w-[1120px] mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 font-mono-tag text-xs text-ink-charcoal/60">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-marker-orange inline-block"></span>
-            <p>UNMASKED JOURNAL — RUANG SANTAI & REFLEKSI MANDIRI</p>
-          </div>
-          <p>Privasi Penuh · Tanpa Algoritma Menilai</p>
+      <footer className="relative z-10 w-full bg-paper-base border-t-[1.5px] border-ink-charcoal py-6 px-6 md:px-12 mt-auto">
+        <div className="w-full max-w-[1120px] mx-auto flex justify-start">
+          <p className="text-xs text-ink-charcoal/60 font-mono-tag">
+            &copy; {new Date().getFullYear()} Unmasked. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>
