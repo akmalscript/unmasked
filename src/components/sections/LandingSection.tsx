@@ -63,16 +63,16 @@ export function LandingSection() {
             </h1>
 
             <p className="text-lg text-ink-charcoal/80 max-w-lg mb-8 leading-relaxed">
-              Ruang aman untuk berhenti sejenak, mengurai isi pikiran, dan memahami apa yang sebenarnya kamu butuhkan.
+              Ruang untuk memahami apa yang sebenarnya kamu butuhkan.
             </p>
 
             <div className="relative flex flex-col items-start gap-4 mt-4">
               <div className="relative inline-flex items-center">
                 <Link
-                  className="inline-flex items-center gap-2 font-mono-tag text-sm bg-paper-warm text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[3px_3px_0px_#171717] rounded-full px-7 py-3.5 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_#171717] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all font-bold"
+                  className="inline-flex items-center justify-center gap-3 w-[180px] font-mono-tag text-sm bg-paper-warm text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[3px_3px_0px_#171717] rounded-full px-7 py-3.5 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_#171717] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all font-bold"
                   href="/onboarding"
                 >
-                  <span>Mulai Refleksi</span>
+                  <span>Mulai</span>
                   <span className="text-ink-charcoal font-bold text-lg leading-none">→</span>
                 </Link>
               </div>
@@ -80,11 +80,11 @@ export function LandingSection() {
               <div className="flex items-center gap-2 text-ink-charcoal/70 mt-2">
                 <span
                   className="material-symbols-outlined text-marker-orange"
-                  style={{ fontSize: '18px' }}
+                  style={{ fontSize: '19px' }}
                 >
                   schedule
                 </span>
-                <span className="font-mono-tag text-xs mt-[1px]">
+                <span className="font-mono-tag text-[13px] mt-[1px]">
                   Selesai Dalam 10 Menit
                 </span>
               </div>
@@ -106,7 +106,7 @@ export function LandingSection() {
                 </div>
 
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-30 bg-sticker-pink/85 border border-ink-charcoal/20 px-6 py-1 rotate-[-1.5deg] border-x-2 border-dashed backdrop-blur-sm">
-                  <span className="font-mono-tag text-[10px] uppercase font-semibold text-ink-charcoal/80 tracking-widest">jurnal pribadi</span>
+                  <span className="font-mono-tag text-[10px] uppercase font-semibold text-ink-charcoal/80 tracking-widest"></span>
                 </div>
 
                 <div className="absolute -top-2 -left-3 z-30 bg-sticker-blue/85 border border-ink-charcoal/15 w-14 h-4 rotate-[-35deg] border-x-2 border-dashed"></div>
@@ -117,7 +117,7 @@ export function LandingSection() {
                     “you don&apos;t have to carry it all.”
                   </p>
                   <div className="mt-1 flex justify-end">
-                    <span className="text-[11px] font-mono-tag text-ink-cocoa/60">— catatan kecil</span>
+                    <span className="text-[11px] font-mono-tag text-ink-cocoa/60"></span>
                   </div>
                 </div>
 
