@@ -49,7 +49,7 @@ export function PublicSelfSection() {
     setCustomInput("");
   };
 
-  const selected = publicTags || ["Produktif", "Kuat"];
+  const selected = publicTags;
 
   return (
     <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-28">

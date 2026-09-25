@@ -21,7 +21,7 @@ const FEELING_OPTIONS = [
 
 export function ActualFeelingSection() {
   const { actualFeelings, toggleActualFeeling, feelingNote, setFeelingNote } = useJournalStore();
-  const selected = actualFeelings || ["Lelah", "Kewalahan"];
+  const selected = actualFeelings;
 
   return (
     <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-28">

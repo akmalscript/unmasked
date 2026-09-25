@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
+import Link from "next/link";
 import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
@@ -29,8 +30,11 @@ export function ActionStepSection() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [agreed, setAgreed] = useState(false);
 
+  const hasNeedContext = Boolean(needInsight);
+
   const fetchActionRecommendations = async (force = false) => {
     if (actionRecommendations.length > 0 && !force) return;
+    if (!hasNeedContext) return;
     setLoading(true);
     setError(null);
 
@@ -41,8 +45,8 @@ export function ActionStepSection() {
         reason: needConfirmation?.correction || "Perlu merapikan ritme dan batasan tugas.",
       };
 
-      const themes = loadInsight?.themes?.map((t) => t.name) || ["Tekanan Tugas Kuliah"];
-      const summary = loadInsight?.summary || "Kewalahan dengan banyaknya hal yang harus diselesaikan.";
+      const themes = loadInsight?.themes?.map((t) => t.name) || ["Refleksi Diri"];
+      const summary = loadInsight?.summary || "Kondisi batin yang memerlukan perhatian.";
 
       const res = await fetch("/api/ai/action", {
         method: "POST",
@@ -82,12 +86,42 @@ export function ActionStepSection() {
   useEffect(() => {
     if (!isHydrated) return;
     if (actionRecommendations.length > 0) return;
+    if (!hasNeedContext) return;
     if (isFetchingRef.current) return;
     isFetchingRef.current = true;
 
     fetchActionRecommendations();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHydrated, actionRecommendations.length]);
+  }, [isHydrated, actionRecommendations.length, hasNeedContext]);
+
+  if (isHydrated && !hasNeedContext && actionRecommendations.length === 0) {
+    return (
+      <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-28">
+        <Header subtitle="ACTION 01/01" showSteps={true} stepNumber={4} totalSteps={4} />
+        <main className="flex-grow w-full max-w-[1120px] mx-auto px-6 md:px-12 py-12 flex flex-col items-center justify-center">
+          <div className="w-full max-w-md bg-paper-base border-[2px] border-ink-charcoal rounded-2xl p-6 sm:p-8 text-center shadow-[6px_6px_0px_#171717]">
+            <div className="w-14 h-14 rounded-full bg-paper-warm border-[1.5px] border-ink-charcoal flex items-center justify-center mx-auto mb-4">
+              <span className="material-symbols-outlined text-marker-orange text-3xl">route</span>
+            </div>
+            <h2 className="font-headline text-xl sm:text-2xl font-bold text-ink-charcoal mb-2">
+              Kebutuhan Belum Terpetakan
+            </h2>
+            <p className="font-sans text-xs sm:text-sm text-ink-charcoal/80 mb-6 leading-relaxed">
+              Kamu belum menyelesaikan pemetaan kebutuhan di tahap NEED. Mari petakan kebutuhanmu terlebih dahulu agar langkah aksi mikro relevan dan mudah kamu capai.
+            </p>
+            <Link
+              href="/need-result"
+              className="inline-flex items-center justify-center gap-2 bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[3px_3px_0px_#171717] rounded-full px-6 py-2.5 font-mono-tag text-xs font-bold uppercase hover:translate-x-[1px] hover:translate-y-[1px] transition-transform"
+            >
+              <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+              <span>Buka Pemetaan Kebutuhan</span>
+            </Link>
+          </div>
+        </main>
+        <BottomDock backTo="/need-result" centerLabel="Kebutuhan Belum Ada" />
+      </div>
+    );
+  }
 
   const handleSelectRecommendation = (idx: number) => {
     setSelectedIndex(idx);

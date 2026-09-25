@@ -3,8 +3,11 @@
 import React from "react";
 import Link from "next/link";
 import { Header } from "@/components/Header";
+import { useJournalStore } from "@/store/useJournalStore";
 
 export function LandingSection() {
+  const { resetSession } = useJournalStore();
+
   return (
     <div className="min-h-screen flex flex-col justify-between relative overflow-x-hidden bg-paper-base selection:bg-secondary-fixed">
       <div className="pointer-events-none absolute inset-0 tactile-dot-grid opacity-30"></div>
@@ -71,6 +74,7 @@ export function LandingSection() {
                 <Link
                   className="inline-flex items-center justify-center gap-3 w-[180px] font-mono-tag text-sm bg-paper-warm text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[3px_3px_0px_#171717] rounded-full px-7 py-3.5 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_#171717] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all font-bold"
                   href="/onboarding"
+                  onClick={() => resetSession()}
                 >
                   <span>Mulai</span>
                   <span className="text-ink-charcoal font-bold text-lg leading-none">→</span>

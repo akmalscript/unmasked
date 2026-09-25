@@ -3,14 +3,22 @@
 import React from "react";
 import Link from "next/link";
 import { Header } from "@/components/Header";
+import { useJournalStore, useStoreHydrated } from "@/store/useJournalStore";
 
 export function CheckinSection() {
+  const isHydrated = useStoreHydrated();
+  const { publicTags, actualFeelings, brainDump, resetSession } = useJournalStore();
+
+  const hasExistingDraft =
+    isHydrated &&
+    (publicTags.length > 0 || actualFeelings.length > 0 || brainDump.trim().length > 0);
+
   return (
     <div className="min-h-screen flex flex-col justify-between bg-paper-base tactile-dot-grid relative">
       <Header subtitle="ONBOARDING" showSteps={true} stepNumber={1} totalSteps={4} />
 
       <main className="flex-grow flex flex-col justify-center items-center px-6 md:px-12 py-10 max-w-[1120px] mx-auto w-full relative">
-        <div className="text-center max-w-2xl mx-auto mb-10 relative">
+        <div className="text-center max-w-2xl mx-auto mb-8 relative">
           <h1 className="font-headline text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-ink-charcoal mb-3">
             Sebelum Kita Mulai...
           </h1>
@@ -19,6 +27,39 @@ export function CheckinSection() {
             bukan layanan diagnosis atau pengganti tenaga profesional.
           </p>
         </div>
+
+        {hasExistingDraft && (
+          <div className="w-full max-w-2xl mx-auto mb-8 bg-paper-warm border-[1.5px] border-ink-charcoal p-4 sm:p-5 rounded-2xl shadow-[4px_4px_0px_#171717] flex flex-col sm:flex-row items-center justify-between gap-4 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-marker-orange/20 border border-ink-charcoal flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-burnt-orange text-xl">history_edu</span>
+              </div>
+              <div>
+                <h4 className="font-headline font-bold text-sm text-ink-charcoal">
+                  Ditemukan Draf Sesi Sebelumnya di Perangkat Ini
+                </h4>
+                <p className="font-sans text-xs text-ink-charcoal/70">
+                  Lanjutkan sesi sebelumnya atau hapus dan mulai dari awal?
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 justify-end">
+              <button
+                type="button"
+                onClick={() => resetSession()}
+                className="px-3.5 py-1.5 bg-paper-base hover:bg-sticker-pink/40 text-ink-charcoal font-mono-tag text-xs font-bold border border-ink-charcoal rounded-full shadow-[2px_2px_0px_#171717] transition-all"
+              >
+                Hapus & Mulai Baru
+              </button>
+              <Link
+                href="/public-self"
+                className="px-4 py-1.5 bg-marker-orange text-ink-charcoal font-mono-tag text-xs font-bold border border-ink-charcoal rounded-full shadow-[2px_2px_0px_#171717] transition-all"
+              >
+                Lanjutkan Draf
+              </Link>
+            </div>
+          </div>
+        )}
 
         {/* <div className="w-full max-w-md mb-10 relative flex items-center justify-center">
           <div className="absolute -inset-4 bg-tertiary-fixed/30 rounded-3xl blur-xl -z-10"></div>

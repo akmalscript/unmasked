@@ -18,7 +18,7 @@ export function Header({
   stepNumber = 1,
   totalSteps = 4,
 }: HeaderProps) {
-  const { bookmarked, toggleBookmarked } = useJournalStore();
+  const { bookmarked, toggleBookmarked, resetSession, clearAllData } = useJournalStore();
   const [showHelp, setShowHelp] = useState(false);
   const [showCrisis, setShowCrisis] = useState(false);
 
@@ -80,6 +80,23 @@ export function Header({
             <span className="material-symbols-outlined text-[18px]">bookmark</span>
           </button>
           <button
+            onClick={() => {
+              if (
+                window.confirm(
+                  "Hapus semua jejak dan mulai ulang sesi dari 0? Semua data refleksi di perangkat ini akan dibersihkan demi privasimu."
+                )
+              ) {
+                clearAllData();
+                window.location.href = "/onboarding";
+              }
+            }}
+            aria-label="Mulai Ulang Sesi & Hapus Jejak"
+            className="cursor-pointer p-2 border-[1.5px] border-ink-charcoal rounded-full bg-paper-warm shadow-[2px_2px_0px_#171717] hover:bg-sticker-pink transition-all flex items-center justify-center text-ink-charcoal"
+            title="Hapus Jejak & Mulai Ulang (Reset ke 0)"
+          >
+            <span className="material-symbols-outlined text-[18px]">restart_alt</span>
+          </button>
+          <button
             onClick={() => setShowHelp(!showHelp)}
             aria-label="Bantuan"
             className="cursor-pointer p-2 border-[1.5px] border-ink-charcoal rounded-full bg-paper-warm shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center text-ink-charcoal"
@@ -88,10 +105,10 @@ export function Header({
             <span className="material-symbols-outlined text-[18px]">help</span>
           </button>
           <Link
-            href="/selesai"
+            href="/summary"
             className="hidden lg:inline-flex items-center gap-1.5 font-mono-tag text-xs font-semibold px-3 py-1.5 rounded-full border-[1.5px] border-ink-charcoal bg-paper-warm text-ink-charcoal hover:bg-surface-variant transition-transform active:translate-x-[1px] active:translate-y-[1px]"
           >
-            <span>Riwayat Sesi</span>
+            <span>Rangkuman</span>
           </Link>
         </div>
       </div>

@@ -63,6 +63,9 @@ export interface JournalState {
   summaryData: SummaryStage | null;
   bookmarked: boolean;
 
+  // Session activity & shared device protection
+  lastActiveTimestamp: number;
+
   // Hydration status
   hasHydrated: boolean;
   setHasHydrated: (val: boolean) => void;
@@ -115,6 +118,7 @@ export interface JournalState {
   setLoading: (stage: keyof JournalState["loadingState"], isLoading: boolean) => void;
   setError: (stage: keyof JournalState["errorState"], error: string | null) => void;
   resetSession: () => void;
+  clearAllData: () => void;
 }
 
 const STICKY_COLORS: StickyColor[] = ["pink", "sage", "blue", "warm", "orange"];
@@ -137,14 +141,15 @@ function generateSessionId() {
 
 const initialValues = {
   hasHydrated: false,
+  lastActiveTimestamp: Date.now(),
   sessionId: generateSessionId(),
-  publicTags: ["Produktif", "Kuat"],
-  actualFeelings: ["Lelah", "Kewalahan"],
+  publicTags: [] as string[],
+  actualFeelings: [] as string[],
   feelingNote: "",
   maskInsight: null as MaskInsight | null,
   maskConfirmation: null as UserConfirmation | null,
 
-  brainDump: "Banyak tenggat waktu kuliah minggu ini, rasanya harus selalu kelihatan baik-baik saja di depan teman kelompok, padahal energi lagi tiris banget...",
+  brainDump: "",
   stickyNotes: [] as StickyNote[],
   loadItems: [] as LoadItem[],
   loadInsight: null as LoadInsight | null,
@@ -310,16 +315,43 @@ export const useJournalStore = create<JournalState>()(
         set({
           ...initialValues,
           sessionId: generateSessionId(),
+          lastActiveTimestamp: Date.now(),
+          hasHydrated: true,
         }),
+
+      clearAllData: () => {
+        try {
+          if (typeof window !== "undefined") {
+            localStorage.removeItem("unmasked-session-store");
+          }
+        } catch (e) {
+          console.warn("Failed to clear localStorage:", e);
+        }
+        set({
+          ...initialValues,
+          sessionId: generateSessionId(),
+          lastActiveTimestamp: Date.now(),
+          hasHydrated: true,
+        });
+      },
     }),
     {
       name: "unmasked-session-store",
       storage: createJSONStorage(() => localStorage),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
+        // Shared device protection: if the last activity was > 2 hours ago, auto-reset session
+        if (state && state.lastActiveTimestamp) {
+          const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
+          if (Date.now() - state.lastActiveTimestamp > TWO_HOURS_MS) {
+            console.info("Session expired due to inactivity (>2 hours). Resetting for privacy.");
+            state.resetSession();
+          }
+        }
       },
       partialize: (state) => ({
         sessionId: state.sessionId,
+        lastActiveTimestamp: state.lastActiveTimestamp,
         publicTags: state.publicTags,
         actualFeelings: state.actualFeelings,
         feelingNote: state.feelingNote,

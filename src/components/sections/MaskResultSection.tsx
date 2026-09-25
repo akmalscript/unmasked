@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
+import Link from "next/link";
 import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
@@ -25,8 +26,9 @@ export function MaskResultSection() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const currentPublicTags = publicTags.length ? publicTags : ["Produktif", "Kuat"];
-  const currentActualFeelings = actualFeelings.length ? actualFeelings : ["Lelah", "Kewalahan"];
+  const hasInputs = publicTags.length > 0 || actualFeelings.length > 0;
+  const currentPublicTags = publicTags.length ? publicTags : ["(Belum memilih)"];
+  const currentActualFeelings = actualFeelings.length ? actualFeelings : ["(Belum memilih)"];
 
   const fetchMaskAnalysis = async (force = false) => {
     if (maskInsight && !force) return;
@@ -62,12 +64,13 @@ export function MaskResultSection() {
   useEffect(() => {
     if (!isHydrated) return;
     if (maskInsight) return;
+    if (!hasInputs) return;
     if (isFetchingRef.current) return;
     isFetchingRef.current = true;
 
     fetchMaskAnalysis();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHydrated, maskInsight]);
+  }, [isHydrated, maskInsight, hasInputs]);
 
   return (
     <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-28">
@@ -89,6 +92,24 @@ export function MaskResultSection() {
               Memahami dua lapisan diri yang kamu bawa dalam interaksi sehari-hari.
             </p>
           </div>
+
+          {!hasInputs && !maskInsight && (
+            <div className="p-6 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl text-center space-y-3 mb-6 shadow-[3px_3px_0px_#171717]">
+              <p className="font-headline text-base font-bold text-ink-charcoal">
+                Kamu belum memilih tampilan luar atau perasaan batin.
+              </p>
+              <p className="text-xs text-ink-charcoal/70 max-w-md mx-auto">
+                Silakan mulai dari tahap awal agar AI dapat menelaah kontras persona dan perasaanmu dengan tepat.
+              </p>
+              <Link
+                href="/public-self"
+                className="inline-flex items-center gap-1.5 px-5 py-2 bg-marker-orange text-ink-charcoal font-mono-tag text-xs font-bold rounded-full border border-ink-charcoal shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] transition-all"
+              >
+                <span>Mulai Pilih Persona</span>
+                <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
+              </Link>
+            </div>
+          )}
 
           {/* Dual tags card view */}
           <div className="relative py-4 flex flex-col sm:flex-row items-stretch justify-center gap-6">

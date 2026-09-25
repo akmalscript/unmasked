@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
@@ -21,22 +22,26 @@ export function SummarySection() {
     selectedAction,
     summaryData,
     setSummaryData,
+    resetSession,
   } = useJournalStore();
 
   const [loading, setLoading] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
 
-  const currentPublicTags = publicTags.length ? publicTags : ["Produktif", "Kuat"];
-  const currentActualFeelings = actualFeelings.length ? actualFeelings : ["Lelah", "Kewalahan"];
-  const currentThemes = loadInsight?.themes?.map((t) => t.name) || ["Tuntutan Tugas & Waktu"];
+  const hasAnyData = publicTags.length > 0 || actualFeelings.length > 0 || Boolean(loadInsight) || Boolean(needInsight);
+
+  const currentPublicTags = publicTags.length ? publicTags : ["-"];
+  const currentActualFeelings = actualFeelings.length ? actualFeelings : ["-"];
+  const currentThemes = loadInsight?.themes?.map((t) => t.name) || ["Refleksi Diri"];
   const currentNeeds = needInsight?.primaryNeed
     ? [needInsight.primaryNeed.title, ...(needInsight.secondaryNeeds?.map((s) => s.title) || [])]
-    : ["Rasa Kendali", "Istirahat"];
+    : ["Kebutuhan Diri"];
   const currentAction =
-    selectedAction || "Pilih satu tugas utama untuk diselesaikan malam ini dan biarkan sisanya menunggu besok.";
+    selectedAction || "Berikan jeda dan waktu untuk diri sendiri malam ini.";
 
   const fetchSummary = async (force = false) => {
     if (summaryData && !force) return;
+    if (!hasAnyData) return;
     setLoading(true);
 
     try {
@@ -67,12 +72,42 @@ export function SummarySection() {
   useEffect(() => {
     if (!isHydrated) return;
     if (summaryData) return;
+    if (!hasAnyData) return;
     if (isFetchingRef.current) return;
     isFetchingRef.current = true;
 
     fetchSummary();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHydrated, summaryData]);
+  }, [isHydrated, summaryData, hasAnyData]);
+
+  if (isHydrated && !hasAnyData && !summaryData) {
+    return (
+      <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-28">
+        <Header subtitle="RANGKUMAN" showSteps={false} />
+        <main className="flex-grow w-full max-w-[1120px] mx-auto px-6 md:px-12 py-12 flex flex-col items-center justify-center">
+          <div className="w-full max-w-md bg-paper-base border-[2px] border-ink-charcoal rounded-2xl p-6 sm:p-8 text-center shadow-[6px_6px_0px_#171717]">
+            <div className="w-14 h-14 rounded-full bg-paper-warm border-[1.5px] border-ink-charcoal flex items-center justify-center mx-auto mb-4">
+              <span className="material-symbols-outlined text-marker-orange text-3xl">auto_stories</span>
+            </div>
+            <h2 className="font-headline text-xl sm:text-2xl font-bold text-ink-charcoal mb-2">
+              Belum Ada Rangkuman
+            </h2>
+            <p className="font-sans text-xs sm:text-sm text-ink-charcoal/80 mb-6 leading-relaxed">
+              Kamu belum memulai atau mengisi perjalanan refleksi. Mulai dari awal agar kamu mendapatkan telaah persona, beban pikiran, dan kebutuhan diri yang utuh.
+            </p>
+            <Link
+              href="/onboarding"
+              className="inline-flex items-center justify-center gap-2 bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[3px_3px_0px_#171717] rounded-full px-6 py-2.5 font-mono-tag text-xs font-bold uppercase hover:translate-x-[1px] hover:translate-y-[1px] transition-transform"
+            >
+              <span className="material-symbols-outlined text-[16px]">play_arrow</span>
+              <span>Mulai Perjalanan Refleksi</span>
+            </Link>
+          </div>
+        </main>
+        <BottomDock backTo="/" centerLabel="Belum Ada Rangkuman" />
+      </div>
+    );
+  }
 
   const handleDownload = () => {
     const content = `================================================
@@ -254,6 +289,17 @@ Privat di perangkatmu · Beyond "I'm Fine."
             >
               <span className="material-symbols-outlined text-[16px]">download</span>
               <span>{downloaded ? "✓ Tersimpan di Perangkat" : "Unduh File Rangkuman"}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                resetSession();
+                router.push("/onboarding");
+              }}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-paper-warm text-ink-charcoal border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold uppercase shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] transition-all"
+            >
+              <span className="material-symbols-outlined text-[16px]">refresh</span>
+              <span>Mulai Sesi Baru</span>
             </button>
             <button
               type="button"

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
+import Link from "next/link";
 import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
@@ -16,6 +17,7 @@ export function NeedResultSection() {
     publicTags,
     actualFeelings,
     maskConfirmation,
+    brainDump,
     loadInsight,
     loadConfirmation,
     needCandidates,
@@ -30,8 +32,11 @@ export function NeedResultSection() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const hasNeedInput = needCandidates.length > 0 || needAnswers.length > 0;
+
   const fetchNeedSynthesis = async (force = false) => {
     if (needInsight && !force) return;
+    if (!hasNeedInput) return;
     setLoading(true);
     setError(null);
 
@@ -47,16 +52,11 @@ export function NeedResultSection() {
           },
           loadContext: {
             themes: loadInsight?.themes?.map((t) => t.name) || [],
-            summary: loadInsight?.summary || "Beban akademik dan ekspektasi yang tinggi.",
+            summary: loadInsight?.summary || brainDump.trim() || "Kondisi batin yang memerlukan perhatian.",
             userCorrection: loadConfirmation?.correction,
           },
-          candidates: needCandidates.length > 0 ? needCandidates : [
-            { key: "control", title: "Rasa Kendali", reason: "Banyak tanggung jawab beriringan", relevance: "high" },
-            { key: "rest", title: "Istirahat", reason: "Energi terasa terkuras", relevance: "medium" }
-          ],
-          questions: needQuestions.length > 0 ? needQuestions : [
-            { id: "q1", question: "Apa yang paling membebani?", targetNeed: "control" }
-          ],
+          candidates: needCandidates,
+          questions: needQuestions,
           answers: needAnswers,
         }),
       });
@@ -79,12 +79,42 @@ export function NeedResultSection() {
   useEffect(() => {
     if (!isHydrated) return;
     if (needInsight) return;
+    if (!hasNeedInput) return;
     if (isFetchingRef.current) return;
     isFetchingRef.current = true;
 
     fetchNeedSynthesis();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHydrated, needInsight]);
+  }, [isHydrated, needInsight, hasNeedInput]);
+
+  if (isHydrated && !hasNeedInput && !needInsight) {
+    return (
+      <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-28">
+        <Header subtitle="NEED 02/02" showSteps={true} stepNumber={3} totalSteps={4} />
+        <main className="flex-grow w-full max-w-[1120px] mx-auto px-6 md:px-12 py-12 flex flex-col items-center justify-center">
+          <div className="w-full max-w-md bg-paper-base border-[2px] border-ink-charcoal rounded-2xl p-6 sm:p-8 text-center shadow-[6px_6px_0px_#171717]">
+            <div className="w-14 h-14 rounded-full bg-paper-warm border-[1.5px] border-ink-charcoal flex items-center justify-center mx-auto mb-4">
+              <span className="material-symbols-outlined text-marker-orange text-3xl">help_center</span>
+            </div>
+            <h2 className="font-headline text-xl sm:text-2xl font-bold text-ink-charcoal mb-2">
+              Pertanyaan Belum Terjawab
+            </h2>
+            <p className="font-sans text-xs sm:text-sm text-ink-charcoal/80 mb-6 leading-relaxed">
+              Kamu belum menjawab pertanyaan refleksi di tahap NEED. Jawab pertanyaan terlebih dahulu agar kebutuhan intimu dapat dipetakan secara akurat.
+            </p>
+            <Link
+              href="/need-sheet"
+              className="inline-flex items-center justify-center gap-2 bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[3px_3px_0px_#171717] rounded-full px-6 py-2.5 font-mono-tag text-xs font-bold uppercase hover:translate-x-[1px] hover:translate-y-[1px] transition-transform"
+            >
+              <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+              <span>Jawab Pertanyaan Refleksi</span>
+            </Link>
+          </div>
+        </main>
+        <BottomDock backTo="/need-sheet" centerLabel="Jawaban Masih Kosong" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-28">
