@@ -46,6 +46,7 @@ export function CheckinSection() {
           </div> */}
         {/*</div> */}
 
+
         <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5 mb-10 max-w-4xl">
           <div className="bg-paper-base border-[1.5px] border-ink-charcoal p-5 rounded-xl shadow-[4px_4px_0px_#171717] md:-rotate-1">
             <div className="flex items-center justify-between mb-3">
