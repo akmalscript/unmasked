@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useRef, useEffect } from "react";
 import { Header } from "@/components/Header";
@@ -173,7 +173,7 @@ export function BrainDumpSection() {
             <div className="flex items-center justify-between pt-3 border-t-[1.5px] border-ink-charcoal/15 mt-2 font-mono-tag text-xs text-ink-charcoal/70">
               <button
                 type="button"
-                onClick={addStickyNote}
+                onClick={() => addStickyNote("act")}
                 className="flex items-center gap-1 text-ink-charcoal hover:text-burnt-orange underline decoration-marker-orange transition-colors"
               >
                 <span className="material-symbols-outlined text-[15px]">add_circle</span>

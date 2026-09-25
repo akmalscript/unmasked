@@ -1,0 +1,1531 @@
+# UNMASKED — General Product & System Specification
+
+> **UNMASKED: Beyond “I'm Fine.”**
+> A guided mental well-being reflection platform for students.
+
+---
+
+## 1. Overview
+
+UNMASKED adalah aplikasi web berbasis guided reflection yang membantu mahasiswa memahami kondisi dirinya secara lebih jujur dan terstruktur.
+
+Aplikasi ini berangkat dari kondisi ketika seseorang terlihat baik-baik saja di hadapan orang lain, tetapi sebenarnya sedang mengalami tekanan, kelelahan, kebingungan, atau kebutuhan tertentu yang belum tersadari.
+
+UNMASKED tidak bertujuan untuk mendiagnosis kondisi mental pengguna atau menggantikan psikolog maupun tenaga profesional. Sistem berfungsi sebagai ruang refleksi terstruktur yang membantu pengguna:
+
+* mengidentifikasi perbedaan antara apa yang mereka tunjukkan dan apa yang sebenarnya mereka rasakan;
+* mengeluarkan dan mengorganisasi beban yang sedang dipikirkan;
+* memahami pola atau kebutuhan yang mungkin berkaitan dengan masalah tersebut;
+* menentukan satu langkah kecil yang realistis;
+* mendapatkan rangkuman refleksi yang dapat digunakan untuk memahami diri sendiri.
+
+Konsep utama UNMASKED adalah:
+
+> **MASK → LOAD → NEED → ACTION → SUMMARY**
+
+Setiap tahap menggunakan informasi dari tahap sebelumnya sehingga pengalaman pengguna tidak terasa seperti kumpulan pertanyaan yang terpisah, tetapi sebagai satu perjalanan refleksi yang berkesinambungan.
+
+---
+
+# 2. Product Goals
+
+Tujuan utama UNMASKED adalah membantu pengguna bergerak dari kondisi:
+
+> “Aku baik-baik saja.”
+
+menuju pemahaman yang lebih konkret mengenai:
+
+> “Apa yang sebenarnya sedang aku rasakan, apa yang sedang membebaniku, apa yang mungkin aku butuhkan, dan apa satu hal kecil yang bisa aku lakukan sekarang?”
+
+Produk memiliki beberapa tujuan utama:
+
+1. Membantu pengguna melakukan self-reflection secara terstruktur.
+2. Membantu pengguna mengidentifikasi perbedaan antara external self dan internal self.
+3. Membantu pengguna mengurai beban atau masalah yang sedang mereka hadapi.
+4. Membantu menghubungkan masalah dengan kemungkinan kebutuhan pengguna.
+5. Membantu menghasilkan tindakan kecil yang realistis dan relevan.
+6. Memberikan rangkuman refleksi yang personal berdasarkan perjalanan pengguna.
+7. Menggunakan AI sebagai reflection assistant, bukan sebagai authority atau diagnostician.
+8. Menjaga kontrol pengguna terhadap interpretasi AI.
+9. Menyediakan mekanisme safety ketika input pengguna menunjukkan potensi kondisi berisiko.
+
+---
+
+# 3. Core Principle
+
+## 3.1 Reflection, Not Diagnosis
+
+UNMASKED bukan aplikasi diagnosis kesehatan mental.
+
+AI tidak boleh memberikan diagnosis, label klinis, atau kesimpulan medis kepada pengguna.
+
+AI hanya boleh membantu:
+
+* merangkum;
+* menemukan pola dari informasi yang diberikan pengguna;
+* mengajukan pertanyaan reflektif;
+* mengusulkan kemungkinan kebutuhan;
+* memberikan alternatif tindakan sederhana;
+* membantu pengguna memahami hubungan antarjawaban.
+
+Semua interpretasi AI harus dianggap sebagai:
+
+> **kemungkinan interpretasi, bukan kebenaran mengenai pengguna.**
+
+---
+
+## 3.2 User Confirmation
+
+Salah satu prinsip utama UNMASKED adalah:
+
+> **AI can suggest, but the user decides.**
+
+Ketika AI menghasilkan interpretasi mengenai kondisi pengguna, pengguna harus memiliki kesempatan untuk:
+
+* menerima;
+* mengoreksi;
+* menolak;
+* atau memberikan konteks tambahan.
+
+Jika interpretasi AI berbeda dengan pemahaman pengguna, maka pemahaman pengguna menjadi sumber kebenaran utama untuk tahap berikutnya.
+
+---
+
+## 3.3 Cross-Stage Context
+
+Setiap tahap tidak berdiri sendiri.
+
+Informasi yang diberikan pengguna pada tahap sebelumnya digunakan untuk membangun konteks tahap berikutnya.
+
+Contohnya:
+
+```text
+MASK
+  ↓
+Perbedaan antara bagaimana pengguna terlihat
+dan bagaimana pengguna sebenarnya merasa
+  ↓
+LOAD
+  ↓
+Masalah atau beban yang sedang dialami
+  ↓
+NEED
+  ↓
+Kemungkinan kebutuhan yang berkaitan
+dengan masalah tersebut
+  ↓
+ACTION
+  ↓
+Langkah kecil yang relevan dengan kebutuhan
+  ↓
+SUMMARY
+  ↓
+Gambaran keseluruhan perjalanan refleksi
+```
+
+Dengan demikian, nilai utama UNMASKED bukan hanya pada masing-masing halaman, tetapi pada hubungan antar-stage.
+
+---
+
+# 4. Core User Journey
+
+Alur utama aplikasi:
+
+```text
+Landing
+   ↓
+Onboarding
+   ↓
+MASK
+   ├── Public Self
+   ├── Actual Feeling
+   └── Mask Result
+   ↓
+LOAD
+   ├── Brain Dump
+   └── Story Reflection
+   ↓
+NEED
+   ├── Need Assessment
+   └── Need Result
+   ↓
+ACTION
+   ↓
+SUMMARY
+   ↓
+SELESAI
+```
+
+Setiap tahap memiliki tujuan yang berbeda.
+
+---
+
+# 5. Landing & Onboarding
+
+## Purpose
+
+Memberikan konteks kepada pengguna sebelum memulai refleksi.
+
+Pengguna harus memahami:
+
+* tujuan UNMASKED;
+* bahwa aplikasi merupakan ruang refleksi;
+* bahwa AI bukan tenaga profesional;
+* bahwa data pengguna perlu diperlakukan secara privat;
+* bagaimana proses refleksi akan berlangsung.
+
+Onboarding juga dapat digunakan untuk membuat atau menginisialisasi sebuah reflection session.
+
+---
+
+# 6. MASK
+
+## Purpose
+
+MASK digunakan untuk mengeksplorasi perbedaan antara:
+
+> **What others see**
+
+dan
+
+> **What I actually feel**
+
+Tahap ini merupakan titik awal perjalanan refleksi.
+
+---
+
+## 6.1 Public Self
+
+Pengguna menjelaskan bagaimana mereka biasanya terlihat oleh orang lain.
+
+Contoh:
+
+* produktif;
+* ceria;
+* kuat;
+* sibuk;
+* tenang;
+* bertanggung jawab;
+* selalu membantu orang lain.
+
+Data dapat direpresentasikan sebagai tags atau pilihan yang dapat dipilih pengguna.
+
+---
+
+## 6.2 Actual Feeling
+
+Pengguna kemudian menjelaskan bagaimana kondisi mereka sebenarnya.
+
+Contoh:
+
+* lelah;
+* overwhelmed;
+* cemas;
+* bingung;
+* kesepian;
+* kehilangan motivasi;
+* tertekan.
+
+Pengguna juga dapat memberikan catatan tambahan untuk memberikan konteks.
+
+---
+
+## 6.3 Mask Result
+
+AI membandingkan informasi Public Self dan Actual Feeling.
+
+Tujuan AI bukan hanya mengulang jawaban pengguna, tetapi membantu pengguna melihat kemungkinan pola atau contrast.
+
+Contoh output secara konseptual:
+
+```text
+What You Show:
+"Tenang dan tetap produktif."
+
+What You May Be Carrying:
+"Kelelahan dan tekanan yang tidak terlalu terlihat
+oleh orang lain."
+
+Reflection:
+"Ada kemungkinan bahwa kamu sedang berusaha
+mempertahankan kesan bahwa semuanya tetap berjalan,
+meskipun di dalamnya kamu merasa cukup kewalahan."
+
+Exploratory Question:
+"Bagian mana dari semua ini yang paling sulit
+untuk kamu tunjukkan kepada orang lain?"
+```
+
+Output harus bersifat tentatif dan tidak mengklaim mengetahui kondisi pengguna secara pasti.
+
+---
+
+# 7. LOAD
+
+## Purpose
+
+LOAD digunakan untuk membantu pengguna mengeluarkan berbagai hal yang sedang memenuhi pikiran mereka.
+
+Tahap ini berfokus pada:
+
+> **What am I carrying?**
+
+Pengguna dapat menuliskan masalah, pikiran, tugas, tekanan, konflik, kekhawatiran, atau hal lain yang sedang mereka bawa.
+
+---
+
+# 8. Brain Dump
+
+Brain Dump merupakan ruang bebas bagi pengguna untuk menuliskan apa pun yang sedang mereka pikirkan.
+
+Input dapat berupa:
+
+* satu kalimat;
+* beberapa kalimat;
+* daftar masalah;
+* cerita panjang;
+* potongan pikiran;
+* atau beberapa topik sekaligus.
+
+Sistem tidak seharusnya memaksa pengguna menggunakan struktur tertentu pada tahap awal.
+
+Tujuannya adalah menurunkan barrier untuk mulai bercerita.
+
+---
+
+# 9. LOAD Categorization
+
+Beban yang ditulis pengguna dapat dibantu untuk dikelompokkan menjadi tiga pendekatan:
+
+### ACT
+
+Hal yang mungkin dapat dilakukan atau dikendalikan pengguna.
+
+### SHARE
+
+Hal yang mungkin lebih baik dibicarakan atau dibagikan kepada orang lain.
+
+### LET GO
+
+Hal yang mungkin berada di luar kontrol pengguna atau tidak perlu terus dibawa.
+
+Kategori tersebut bukan diagnosis atau instruksi mutlak.
+
+AI hanya membantu memberikan perspektif dan pengguna tetap menentukan apakah kategorisasi tersebut sesuai.
+
+---
+
+# 10. Story Reflection
+
+Setelah Brain Dump, AI membantu pengguna melihat pola dari cerita mereka.
+
+AI dapat mengidentifikasi:
+
+* tema;
+* masalah yang sering muncul;
+* hubungan antar masalah;
+* tekanan yang terlihat dari cerita;
+* kemungkinan emotional context;
+* hal yang tampaknya paling berat.
+
+Contoh tema:
+
+```text
+Academic Pressure
+Expectation
+Fear of Failure
+Relationship Conflict
+Financial Pressure
+Overthinking
+Exhaustion
+```
+
+AI tidak boleh mengarang fakta yang tidak diberikan pengguna.
+
+---
+
+# 11. LOAD Confirmation
+
+Interpretasi AI harus dapat dikonfirmasi oleh pengguna.
+
+Contoh:
+
+```text
+"From what you wrote, it seems that academic pressure
+and expectations may be taking a lot of your energy."
+
+[That feels right]
+
+[Not quite]
+
+[Add context]
+```
+
+Jika pengguna memilih “Not quite”, sistem harus memberi ruang untuk memperbaiki interpretasi.
+
+Informasi koreksi tersebut kemudian digunakan sebagai konteks untuk tahap berikutnya.
+
+---
+
+# 12. NEED
+
+## Purpose
+
+NEED menjawab pertanyaan:
+
+> **What might I actually need right now?**
+
+Tahap ini tidak hanya memberikan daftar kebutuhan generik.
+
+Need assessment harus mempertimbangkan konteks dari:
+
+* MASK;
+* LOAD;
+* hasil interpretasi AI;
+* koreksi pengguna.
+
+---
+
+# 13. Need Dimensions
+
+UNMASKED menggunakan beberapa dimensi kebutuhan sebagai kerangka refleksi.
+
+Dimensi utama:
+
+### REST
+
+Kebutuhan untuk berhenti sejenak, memulihkan energi, atau mengurangi beban.
+
+### CONNECTION
+
+Kebutuhan untuk terhubung dengan orang lain atau merasa tidak sendirian.
+
+### CONTROL
+
+Kebutuhan untuk mendapatkan kembali rasa kendali terhadap situasi.
+
+### EXPRESSION
+
+Kebutuhan untuk mengeluarkan pikiran atau emosi yang selama ini dipendam.
+
+### SUPPORT
+
+Kebutuhan untuk mendapatkan bantuan atau dukungan.
+
+### SAFETY
+
+Kebutuhan untuk merasa aman secara fisik maupun emosional.
+
+Dimensi tersebut merupakan kerangka refleksi, bukan kategori klinis.
+
+---
+
+# 14. Dynamic Need Assessment
+
+Pertanyaan NEED sebaiknya tidak selalu sama untuk setiap pengguna.
+
+Pertanyaan harus dapat dipengaruhi oleh konteks sebelumnya.
+
+Contoh:
+
+Jika LOAD menunjukkan:
+
+> "Aku punya banyak tugas dan semuanya terasa harus selesai sekarang."
+
+maka sistem dapat mengeksplorasi kebutuhan seperti:
+
+* REST;
+* CONTROL;
+* SUPPORT.
+
+Sedangkan jika LOAD menunjukkan:
+
+> "Aku sebenarnya ingin cerita ke seseorang tapi takut merepotkan."
+
+maka sistem dapat lebih mengeksplorasi:
+
+* CONNECTION;
+* EXPRESSION;
+* SUPPORT.
+
+Tujuannya adalah membuat tahap NEED terasa relevan terhadap masalah nyata pengguna.
+
+---
+
+# 15. Need Result
+
+Setelah assessment, sistem dapat menghasilkan beberapa kemungkinan kebutuhan yang paling relevan berdasarkan informasi pengguna.
+
+Output dapat berupa:
+
+```text
+You May Need
+
+1. REST
+You may need some space to recover from
+the amount of pressure you're carrying.
+
+2. CONTROL
+Part of the pressure may come from feeling
+that everything needs to be handled at once.
+
+3. SUPPORT
+You may not have to handle all of this alone.
+```
+
+Pengguna kemudian dapat mengonfirmasi atau mengoreksi hasil tersebut.
+
+---
+
+# 16. ACTION
+
+## Purpose
+
+ACTION mengubah hasil refleksi menjadi satu langkah kecil yang realistis.
+
+Prinsip utama:
+
+> **Small enough to actually do.**
+
+Action tidak boleh menjadi daftar produktivitas panjang.
+
+Sistem sebaiknya menghasilkan satu primary action yang paling relevan dengan kondisi dan kebutuhan pengguna.
+
+---
+
+# 17. Personalized Action
+
+Action harus mempertimbangkan:
+
+```text
+MASK
++
+LOAD
++
+Confirmed Reflection
++
+NEED
+=
+ACTION
+```
+
+Contoh:
+
+Jika pengguna:
+
+* menunjukkan dirinya selalu terlihat produktif;
+* merasa overwhelmed;
+* memiliki banyak tugas;
+* mengidentifikasi kebutuhan CONTROL;
+
+maka action dapat berupa:
+
+> "Spend 10 minutes writing down every task currently
+> occupying your mind, then choose only one task to work on today."
+
+Bukan:
+
+> "Create a complete productivity system."
+
+Action harus realistis dan memiliki scope kecil.
+
+---
+
+# 18. Action Alternatives
+
+Jika action utama tidak cocok, sistem dapat menyediakan beberapa alternatif.
+
+Contoh:
+
+```text
+Primary Action
+10-minute task reset
+
+Alternative
+Send one message asking someone for help.
+
+Alternative
+Take 20 minutes away from your current workload.
+```
+
+Pengguna dapat memilih action yang paling sesuai.
+
+---
+
+# 19. Action Completion
+
+Action harus memiliki status yang jelas.
+
+Contoh:
+
+```text
+Not Started
+     ↓
+Selected
+     ↓
+Completed
+```
+
+Sistem dapat meminta pengguna melakukan refleksi singkat setelah action:
+
+> "Did this help?"
+
+Namun fitur ini dapat ditunda jika berada di luar scope MVP.
+
+---
+
+# 20. SUMMARY
+
+SUMMARY merupakan hasil akhir perjalanan refleksi.
+
+Struktur utama:
+
+```text
+WHAT YOU SHOW
+     ↓
+WHAT YOU CARRY
+     ↓
+WHAT YOU MAY NEED
+     ↓
+YOUR NEXT STEP
+```
+
+---
+
+## 20.1 What You Show
+
+Ringkasan mengenai bagaimana pengguna terlihat dari perspektif external self.
+
+---
+
+## 20.2 What You Carry
+
+Ringkasan mengenai beban atau masalah yang ditemukan pada LOAD.
+
+---
+
+## 20.3 What You May Need
+
+Ringkasan kebutuhan yang dipilih atau dikonfirmasi pengguna.
+
+---
+
+## 20.4 Your Next Step
+
+Action yang dipilih pengguna.
+
+Summary harus mencerminkan perjalanan pengguna, bukan sekadar menggabungkan semua output AI.
+
+---
+
+# 21. AI Architecture
+
+AI digunakan sebagai bagian dari reflection engine.
+
+Secara konseptual:
+
+```text
+User Input
+    ↓
+Application Context
+    ↓
+Safety Check
+    ↓
+AI Reflection
+    ↓
+Structured Output
+    ↓
+User Confirmation
+    ↓
+Updated Context
+    ↓
+Next Stage
+```
+
+AI sebaiknya menghasilkan structured output sehingga aplikasi tidak bergantung pada parsing free-form text.
+
+Contoh konseptual:
+
+```json
+{
+  "themes": [],
+  "reflection": "",
+  "question": "",
+  "confidence": "tentative",
+  "requires_confirmation": true
+}
+```
+
+Struktur aktual dapat berkembang sesuai implementasi.
+
+---
+
+# 22. AI Responsibilities
+
+AI bertanggung jawab untuk membantu:
+
+* reflection;
+* summarization;
+* theme extraction;
+* contextual questioning;
+* need suggestion;
+* action generation;
+* final synthesis.
+
+AI tidak bertanggung jawab untuk:
+
+* diagnosis;
+* menentukan kondisi mental pengguna;
+* menentukan kebenaran pengalaman pengguna;
+* menggantikan profesional;
+* memberikan keputusan medis;
+* memaksa pengguna menerima interpretasi tertentu.
+
+---
+
+# 23. AI Context Priority
+
+Dalam menentukan hasil, konteks harus diprioritaskan secara umum sebagai berikut:
+
+```text
+User's explicit input
+        ↓
+User's correction / confirmation
+        ↓
+Previous confirmed reflection
+        ↓
+Previous stage data
+        ↓
+AI inference
+```
+
+AI inference memiliki prioritas paling rendah dibanding informasi eksplisit dan koreksi pengguna.
+
+---
+
+# 24. Anti-Hallucination Principle
+
+AI hanya boleh membuat interpretasi berdasarkan informasi yang tersedia.
+
+AI tidak boleh:
+
+* menciptakan kejadian;
+* mengasumsikan hubungan;
+* mengklaim mengetahui kondisi pengguna;
+* memberikan fakta pribadi yang tidak diberikan;
+* menggunakan diagnosis psikologis tanpa dasar;
+* membuat certainty dari informasi yang ambigu.
+
+Bahasa AI sebaiknya menggunakan bentuk seperti:
+
+* "It sounds like..."
+* "You may be experiencing..."
+* "One possible pattern is..."
+* "From what you shared..."
+* "It might be worth exploring..."
+
+bukan:
+
+* "You are..."
+* "You have..."
+* "Your condition is..."
+* "This means you are..."
+
+---
+
+# 25. Safety
+
+Karena UNMASKED berkaitan dengan well-being dan emotional reflection, safety merupakan bagian penting dari sistem.
+
+Sistem perlu dapat mendeteksi indikasi risiko dari input pengguna.
+
+Safety layer dapat menggunakan kombinasi:
+
+```text
+Rule-based detection
++
+AI-assisted detection
++
+Application-level safety rules
+```
+
+Safety detection tidak digunakan untuk diagnosis.
+
+Tujuannya adalah menentukan apakah percakapan perlu mendapatkan respons safety-oriented.
+
+---
+
+# 26. Safety Response
+
+Jika sistem menemukan indikasi risiko tinggi, pengalaman pengguna dapat dialihkan dari reflection biasa menuju safety response.
+
+Respons harus:
+
+* tidak menghakimi;
+* tidak memperdebatkan kondisi pengguna;
+* tidak memberikan diagnosis;
+* mendorong pengguna mencari bantuan manusia/profesional yang sesuai;
+* memberikan arahan darurat ketika diperlukan;
+* tidak membuat AI menjadi satu-satunya sumber pertolongan.
+
+Safety flow harus dipisahkan dari normal reflection flow.
+
+---
+
+# 27. Privacy
+
+UNMASKED menangani informasi yang dapat bersifat sangat personal.
+
+Karena itu prinsip privacy harus diterapkan sejak awal.
+
+Sistem harus:
+
+* meminimalkan data yang disimpan;
+* tidak menyimpan data yang tidak diperlukan;
+* menjelaskan kepada pengguna bagaimana data digunakan;
+* memberikan kontrol terhadap data;
+* menyediakan mekanisme penghapusan ketika persistence diterapkan.
+
+Untuk MVP, penyimpanan dapat dibuat sesederhana mungkin selama tidak mengorbankan kebutuhan utama aplikasi.
+
+---
+
+# 28. Reflection Session
+
+Seluruh perjalanan pengguna direpresentasikan sebagai sebuah session.
+
+Secara konseptual:
+
+```text
+ReflectionSession
+│
+├── MASK
+│   ├── Public Self
+│   ├── Actual Feeling
+│   └── AI Reflection
+│
+├── LOAD
+│   ├── Brain Dump
+│   ├── Categories
+│   └── AI Reflection
+│
+├── NEED
+│   ├── Assessment
+│   ├── Suggested Needs
+│   └── Confirmed Needs
+│
+├── ACTION
+│   ├── Suggestions
+│   └── Selected Action
+│
+└── SUMMARY
+```
+
+Session memungkinkan sistem mempertahankan konteks antar-stage.
+
+---
+
+# 29. Data Ownership
+
+Data yang berasal langsung dari pengguna harus dibedakan dari hasil AI.
+
+Contoh:
+
+```text
+User Data
+- publicTags
+- actualFeelings
+- feelingNote
+- brainDump
+- selectedNeeds
+- selectedAction
+
+AI Data
+- themes
+- reflections
+- suggestedNeeds
+- suggestedActions
+- generatedSummary
+```
+
+AI-generated data tidak boleh dianggap setara dengan fakta yang diberikan pengguna.
+
+---
+
+# 30. User Correction
+
+Jika pengguna mengoreksi hasil AI:
+
+```text
+AI Interpretation
+      ↓
+User Correction
+      ↓
+Confirmed User Context
+```
+
+maka koreksi pengguna harus menjadi sumber konteks berikutnya.
+
+Contoh:
+
+AI:
+
+> "It seems like academic pressure is the main source of your stress."
+
+User:
+
+> "Not really. The bigger problem is pressure from my family."
+
+Sistem harus menggunakan:
+
+> Family pressure
+
+sebagai konteks yang lebih penting pada tahap berikutnya.
+
+---
+
+# 31. Frontend
+
+Frontend bertanggung jawab terhadap:
+
+* user interface;
+* navigation;
+* form/input;
+* session state;
+* loading state;
+* error state;
+* user confirmation;
+* visual feedback;
+* progress;
+* rendering AI results.
+
+Frontend tidak seharusnya menjadi tempat utama untuk business logic AI.
+
+---
+
+# 32. Backend
+
+Backend bertanggung jawab terhadap:
+
+* session management;
+* validation;
+* AI orchestration;
+* safety checks;
+* persistence;
+* API endpoints;
+* authentication jika diperlukan;
+* communication dengan AI provider.
+
+Backend menjadi penghubung antara frontend, data, AI, dan safety layer.
+
+---
+
+# 33. AI Layer
+
+AI layer bertanggung jawab terhadap:
+
+```text
+MASK Reflection
+LOAD Reflection
+NEED Suggestion
+NEED Synthesis
+ACTION Generation
+SUMMARY Generation
+```
+
+Setiap AI module sebaiknya memiliki:
+
+* input schema;
+* output schema;
+* system instruction;
+* context requirements;
+* validation;
+* fallback behavior.
+
+---
+
+# 34. Suggested Technology Stack
+
+Stack yang direncanakan:
+
+### Frontend
+
+* Next.js
+* React
+* TypeScript / JavaScript sesuai implementasi proyek
+* Tailwind CSS
+* Zustand jika diperlukan untuk client-side session state
+
+### Backend
+
+* Next.js server-side functionality / API routes
+* Zod untuk validation
+
+### Database
+
+* PostgreSQL
+
+Database dapat ditunda atau dibuat minimal pada tahap awal MVP apabila persistence belum menjadi prioritas.
+
+### AI
+
+LLM API dengan structured output.
+
+Provider dapat ditentukan sesuai kebutuhan proyek.
+
+---
+
+# 35. Existing Prototype
+
+UNMASKED telah memiliki frontend prototype dengan flow:
+
+```text
+Landing
+→ Onboarding
+→ Public Self
+→ Actual Feeling
+→ Mask Result
+→ Brain Dump
+→ Story Reflection
+→ Need Sheet
+→ Need Result
+→ Action Step
+→ Summary
+→ Selesai
+```
+
+Prototype tersebut berfungsi sebagai visual dan interaction foundation.
+
+Namun prototype awal masih memiliki beberapa bagian hardcoded.
+
+Implementasi MVP harus mengubah bagian tersebut menjadi dynamic flow.
+
+---
+
+# 36. Prototype-to-MVP Transition
+
+Perubahan utama dari prototype menuju MVP:
+
+### MASK
+
+Prototype:
+
+```text
+Hardcoded reflection
+```
+
+MVP:
+
+```text
+User input
+→ AI analysis
+→ Structured reflection
+→ User confirmation
+```
+
+### LOAD
+
+Prototype:
+
+```text
+Brain dump + static reflection
+```
+
+MVP:
+
+```text
+Brain dump
+→ Theme extraction
+→ Act / Share / Let Go
+→ User confirmation
+```
+
+### NEED
+
+Prototype:
+
+```text
+Mostly static need representation
+```
+
+MVP:
+
+```text
+Previous context
+→ Dynamic questions
+→ Need suggestions
+→ User confirmation
+```
+
+### ACTION
+
+Prototype:
+
+```text
+Static action list
+```
+
+MVP:
+
+```text
+MASK + LOAD + NEED
+→ Personalized action
+→ User selection
+```
+
+### SUMMARY
+
+Prototype:
+
+```text
+Partially hardcoded summary
+```
+
+MVP:
+
+```text
+Complete session context
+→ Dynamic final summary
+```
+
+---
+
+# 37. MVP Scope
+
+MVP harus fokus pada core value, bukan kelengkapan platform.
+
+Prioritas MVP:
+
+1. Complete reflection flow.
+2. Dynamic user input.
+3. Real session state.
+4. AI integration.
+5. User confirmation/correction.
+6. Dynamic NEED assessment.
+7. Personalized ACTION.
+8. Dynamic SUMMARY.
+9. Basic safety handling.
+10. Basic error/loading states.
+
+Fitur yang dapat ditunda:
+
+* complex authentication;
+* social features;
+* advanced dashboard;
+* analytics;
+* gamification;
+* extensive history;
+* notification system;
+* advanced personalization;
+* complex admin panel.
+
+---
+
+# 38. MVP Definition of Done
+
+MVP dianggap berhasil apabila pengguna dapat:
+
+```text
+Start Session
+    ↓
+Describe Public Self
+    ↓
+Describe Actual Feeling
+    ↓
+Receive AI Reflection
+    ↓
+Confirm / Correct Reflection
+    ↓
+Write Brain Dump
+    ↓
+Receive LOAD Interpretation
+    ↓
+Confirm / Correct Interpretation
+    ↓
+Complete Contextual NEED Assessment
+    ↓
+Confirm Relevant Needs
+    ↓
+Receive Personalized Action
+    ↓
+Select Action
+    ↓
+View Personalized Summary
+    ↓
+Finish Session
+```
+
+Semua informasi penting harus berasal dari session pengguna, bukan hardcoded data.
+
+---
+
+# 39. Important UX Principles
+
+UNMASKED harus terasa seperti guided reflection, bukan form survey biasa.
+
+Karakter pengalaman:
+
+* calm;
+* personal;
+* reflective;
+* non-judgmental;
+* progressive;
+* simple;
+* focused.
+
+Pengguna sebaiknya tidak dibanjiri dengan banyak pertanyaan sekaligus.
+
+Informasi sebaiknya diberikan secara bertahap berdasarkan konteks.
+
+---
+
+# 40. Current Visual Direction
+
+Prototype menggunakan pendekatan visual journal/tactile.
+
+Karakter visual meliputi:
+
+* paper-like background;
+* sticky notes;
+* handwritten/script typography;
+* borders;
+* journal-like components;
+* progress indicator;
+* personal notes aesthetic.
+
+Visual direction dapat dipertahankan selama tidak mengganggu readability dan accessibility.
+
+---
+
+# 41. Error Handling
+
+Setiap stage harus memiliki minimal:
+
+```text
+Loading
+Error
+Retry
+Empty State
+Success
+```
+
+Jika AI gagal:
+
+```text
+AI unavailable
+     ↓
+User can retry
+     ↓
+Session data remains intact
+```
+
+AI failure tidak boleh menyebabkan seluruh session hilang.
+
+---
+
+# 42. Persistence
+
+Session dapat menggunakan persistence sesuai kebutuhan MVP.
+
+Pilihan awal:
+
+```text
+Client-side session
+```
+
+atau:
+
+```text
+PostgreSQL
+```
+
+Jika menggunakan database, session harus memiliki identifier yang jelas dan data harus dapat diambil kembali.
+
+Persistence tidak boleh mengubah prinsip utama bahwa pengguna memiliki kontrol terhadap data refleksinya.
+
+---
+
+# 43. Documentation Structure
+
+Dokumentasi UNMASKED dibagi berdasarkan tanggung jawab.
+
+### `UNMASKED_PROJECT_GUIDE.md`
+
+Menjelaskan:
+
+* product vision;
+* goals;
+* user journey;
+* architecture;
+* MVP;
+* general implementation direction.
+
+### `UNMASKED_DATA_CONTRACT.md`
+
+Menjelaskan:
+
+* session;
+* data structure;
+* ownership;
+* frontend/backend contract;
+* AI data contract;
+* validation;
+* confirmation.
+
+### `UNMASKED_AI_SPEC.md`
+
+Menjelaskan:
+
+* AI role;
+* AI behavior;
+* prompt principles;
+* AI modules;
+* context priority;
+* hallucination prevention;
+* AI evaluation.
+
+### `UNMASKED_API_SPEC.md`
+
+Menjelaskan:
+
+* API endpoints;
+* request;
+* response;
+* validation;
+* error handling;
+* session interaction;
+* AI interaction.
+
+### `UNMASKED_SAFETY.md`
+
+Menjelaskan:
+
+* safety detection;
+* risk levels;
+* safety response;
+* escalation;
+* limitations.
+
+### `UNMASKED_USER_FLOW.md`
+
+Menjelaskan behavior setiap halaman:
+
+* navigation;
+* back;
+* refresh;
+* loading;
+* errors;
+* confirmation;
+* rejection;
+* completion.
+
+### `UNMASKED_UI_MAP.md`
+
+Memetakan:
+
+```text
+Existing Prototype Page
+        ↓
+Required Data
+        ↓
+API
+        ↓
+State
+        ↓
+AI
+```
+
+---
+
+# 44. Development Philosophy
+
+Pengembangan UNMASKED sebaiknya mengikuti prinsip:
+
+> **Build the core reflection loop first.**
+
+Jangan memulai dari:
+
+* authentication yang kompleks;
+* dashboard;
+* database architecture yang terlalu besar;
+* admin panel;
+* design system yang berlebihan;
+* AI prompt yang sangat kompleks;
+* fitur tambahan yang belum membuktikan core value.
+
+Prioritas utama adalah memastikan:
+
+```text
+User Input
+→ Meaningful Reflection
+→ User Confirmation
+→ Contextual Need
+→ Small Action
+→ Meaningful Summary
+```
+
+berjalan dengan baik.
+
+---
+
+# 45. Core Differentiator
+
+Nilai utama UNMASKED bukan sekadar:
+
+> "AI membaca curhatan pengguna."
+
+Melainkan:
+
+> **UNMASKED membangun perjalanan refleksi yang berkesinambungan dari apa yang pengguna tunjukkan, apa yang pengguna bawa, apa yang mungkin mereka butuhkan, hingga satu langkah kecil yang dapat mereka lakukan.**
+
+Secara konseptual:
+
+```text
+          MASK
+            │
+            ▼
+    "What do I show?"
+            │
+            ▼
+          LOAD
+            │
+            ▼
+   "What am I carrying?"
+            │
+            ▼
+          NEED
+            │
+            ▼
+    "What might I need?"
+            │
+            ▼
+         ACTION
+            │
+            ▼
+    "What can I do now?"
+            │
+            ▼
+         SUMMARY
+            │
+            ▼
+ "What did I learn about myself?"
+```
+
+AI berada di sepanjang perjalanan tersebut sebagai reflection assistant.
+
+Namun keputusan akhir mengenai makna pengalaman tetap berada pada pengguna.
+
+---
+
+# 46. Final Product Principle
+
+UNMASKED harus selalu mempertahankan tiga prinsip utama:
+
+### 1. User First
+
+Pengguna adalah sumber utama mengenai pengalaman dirinya sendiri.
+
+### 2. AI as a Mirror, Not an Authority
+
+AI membantu pengguna melihat kemungkinan pola, tetapi tidak menentukan siapa pengguna atau apa yang "sebenarnya" terjadi pada mereka.
+
+### 3. Reflection Should Lead Somewhere
+
+Refleksi tidak berhenti pada insight.
+
+Perjalanan harus bergerak dari:
+
+```text
+Awareness
+    ↓
+Understanding
+    ↓
+Need
+    ↓
+Action
+```
+
+Sehingga tujuan akhir UNMASKED bukan sekadar membuat pengguna memahami dirinya, tetapi membantu mereka menemukan satu langkah kecil yang terasa masuk akal untuk dilakukan.
+
+---
+
+# 47. Overall System Summary
+
+Secara keseluruhan, UNMASKED dapat dirangkum sebagai:
+
+```text
+┌─────────────────────────────────────┐
+│              UNMASKED               │
+│       Beyond "I'm Fine."            │
+└─────────────────────────────────────┘
+                  │
+                  ▼
+            Start Session
+                  │
+                  ▼
+              ┌───────┐
+              │ MASK  │
+              └───────┘
+                  │
+       What I show vs feel
+                  │
+                  ▼
+              ┌───────┐
+              │ LOAD  │
+              └───────┘
+                  │
+        What I am carrying
+                  │
+                  ▼
+              ┌───────┐
+              │ NEED  │
+              └───────┘
+                  │
+         What I might need
+                  │
+                  ▼
+             ┌────────┐
+             │ ACTION │
+             └────────┘
+                  │
+        What I can do now
+                  │
+                  ▼
+             ┌─────────┐
+             │ SUMMARY │
+             └─────────┘
+                  │
+                  ▼
+          Reflection Complete
+```
+
+AI berada sebagai supporting layer:
+
+```text
+             ┌───────────────┐
+             │      AI       │
+             │ Reflection    │
+             │   Assistant   │
+             └───────────────┘
+                    │
+       ┌────────────┼────────────┐
+       ▼            ▼            ▼
+      MASK         LOAD         NEED
+       │            │            │
+       └────────────┼────────────┘
+                    ▼
+                  ACTION
+                    │
+                    ▼
+                 SUMMARY
+```
+
+AI membantu menganalisis dan menghasilkan kemungkinan insight, tetapi setiap insight penting harus tetap berada dalam kontrol pengguna.
+
+Dengan demikian, UNMASKED bukan sekadar journal app, chatbot, mood tracker, atau AI mental-health assistant.
+
+UNMASKED adalah **guided reflection system** yang menghubungkan:
+
+> **Self-perception → Emotional load → Personal needs → Small action → Reflection summary**
+
+dalam satu pengalaman yang terstruktur, personal, dan user-controlled.

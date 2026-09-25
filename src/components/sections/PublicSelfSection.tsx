@@ -196,7 +196,7 @@ export function PublicSelfSection() {
         </div>
       </main>
 
-      <BottomDock backTo="/checkin" nextTo="/actual-feeling" centerLabel="MASK: Persona Publik" />
+      <BottomDock backTo="/onboarding" nextTo="/actual-feeling" centerLabel="MASK: Persona Publik" />
 
       {/* Custom Tag Modal */}
       {showModal && (
