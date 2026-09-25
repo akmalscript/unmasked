@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import {
@@ -61,6 +62,10 @@ export interface JournalState {
   // Stage 5: SUMMARY
   summaryData: SummaryStage | null;
   bookmarked: boolean;
+
+  // Hydration status
+  hasHydrated: boolean;
+  setHasHydrated: (val: boolean) => void;
 
   // Loading & Error States
   loadingState: {
@@ -131,6 +136,7 @@ function generateSessionId() {
 }
 
 const initialValues = {
+  hasHydrated: false,
   sessionId: generateSessionId(),
   publicTags: ["Produktif", "Kuat"],
   actualFeelings: ["Lelah", "Kewalahan"],
@@ -151,8 +157,8 @@ const initialValues = {
   needConfirmation: null as UserConfirmation | null,
 
   actionRecommendations: [] as ActionRecommendation[],
-  selectedAction: "Pilih satu tugas yang harus diselesaikan malam ini dan izinkan dirimu untuk melanjutkannya besok tanpa rasa bersalah.",
-  selectedActionId: "action-primary",
+  selectedAction: "",
+  selectedActionId: "",
   actionCompleted: false,
 
   summaryData: null as SummaryStage | null,
@@ -179,6 +185,8 @@ export const useJournalStore = create<JournalState>()(
   persist(
     (set) => ({
       ...initialValues,
+
+      setHasHydrated: (val) => set({ hasHydrated: val }),
 
       togglePublicTag: (tag) =>
         set((state) => ({
@@ -307,6 +315,9 @@ export const useJournalStore = create<JournalState>()(
     {
       name: "unmasked-session-store",
       storage: createJSONStorage(() => localStorage),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
       partialize: (state) => ({
         sessionId: state.sessionId,
         publicTags: state.publicTags,
@@ -333,3 +344,29 @@ export const useJournalStore = create<JournalState>()(
     }
   )
 );
+
+/**
+ * Custom hook to safely determine whether the persistent Zustand store
+ * has completed rehydration from localStorage.
+ * This prevents firing duplicate AI fetches on mount before saved data is restored.
+ */
+export function useStoreHydrated(): boolean {
+  const [hydrated, setHydrated] = useState(false);
+  const storeHydrated = useJournalStore((state) => state.hasHydrated);
+
+  useEffect(() => {
+    if (storeHydrated || useJournalStore.persist.hasHydrated()) {
+      setHydrated(true);
+      return;
+    }
+    const unsub = useJournalStore.persist.onFinishHydration(() => {
+      setHydrated(true);
+    });
+    return () => {
+      unsub();
+    };
+  }, [storeHydrated]);
+
+  return hydrated;
+}
+

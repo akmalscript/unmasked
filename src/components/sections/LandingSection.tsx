@@ -55,7 +55,7 @@ export function LandingSection() {
             <h1 className="font-headline text-4xl sm:text-5xl lg:text-[54px] font-bold text-ink-charcoal tracking-tight leading-tight mb-5">
               Beyond{" "}
               <span className="relative inline-block text-burnt-orange italic">
-                “I&apos;m Fine.”
+                {"“I'm Fine.”"}
                 <svg className="absolute -bottom-1 left-0 w-full h-3 text-marker-orange/60" preserveAspectRatio="none" viewBox="0 0 100 12">
                   <path d="M0,8 Q50,0 100,7" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="4"></path>
                 </svg>
@@ -114,7 +114,7 @@ export function LandingSection() {
                 <div className="absolute -bottom-6 -left-4 sm:-left-8 z-30 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-lg p-3.5 max-w-[210px] shadow-[3px_3px_0px_#171717] rotate-[3deg]">
                   <div className="absolute -top-2 left-6 bg-sticker-sage/85 border border-ink-charcoal/20 w-10 h-3 rotate-1 border-x-2 border-dashed"></div>
                   <p className="font-script text-xl font-bold text-burnt-orange leading-snug">
-                    “you don&apos;t have to carry it all.”
+                    {"“you don't have to carry it all.”"}
                   </p>
                   <div className="mt-1 flex justify-end">
                     <span className="text-[11px] font-mono-tag text-ink-cocoa/60"></span>

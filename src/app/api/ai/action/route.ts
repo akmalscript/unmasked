@@ -6,7 +6,7 @@ import { ActionOutputSchema } from "@/schemas/reflection";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { primaryNeed, loadSummary, loadThemes } = body;
+    const { primaryNeed, loadSummary, loadThemes, maskContext, needCorrection } = body;
 
     if (!primaryNeed) {
       return NextResponse.json(
@@ -16,9 +16,11 @@ export async function POST(req: Request) {
     }
 
     const prompt = buildActionPrompt({
+      maskContext,
       primaryNeed,
       loadSummary: loadSummary || "Kewalahan dengan beberapa tuntutan.",
       loadThemes: loadThemes || ["Tekanan tugas"],
+      needCorrection,
     });
 
     const { data } = await generateStructuredAI(

@@ -1,16 +1,19 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
 import { UserConfirmationCard } from "@/components/UserConfirmationCard";
-import { useJournalStore } from "@/store/useJournalStore";
+import { useJournalStore, useStoreHydrated } from "@/store/useJournalStore";
 import { LoadInsight } from "@/types/session";
 
 export function StoryReflectionSection() {
   const router = useRouter();
+  const isHydrated = useStoreHydrated();
+  const isFetchingRef = useRef(false);
+
   const {
     brainDump,
     stickyNotes,
@@ -67,15 +70,19 @@ export function StoryReflectionSection() {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan saat menelaah beban.");
     } finally {
       setLoading(false);
+      isFetchingRef.current = false;
     }
   };
 
   useEffect(() => {
-    if (!loadInsight) {
-      fetchLoadAnalysis();
-    }
+    if (!isHydrated) return;
+    if (loadInsight) return;
+    if (isFetchingRef.current) return;
+    isFetchingRef.current = true;
+
+    fetchLoadAnalysis();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isHydrated, loadInsight]);
 
   return (
     <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-28">

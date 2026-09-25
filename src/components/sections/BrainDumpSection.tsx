@@ -26,10 +26,12 @@ function StickyNoteCard({
   note,
   onRemove,
   onTextChange,
+  onCategoryChange,
 }: {
   note: StickyNote;
   onRemove: (id: string) => void;
   onTextChange: (id: string, text: string) => void;
+  onCategoryChange?: (id: string, category: "act" | "share" | "let_go") => void;
 }) {
   const { bg, text } = COLOR_MAP[note.color];
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -62,9 +64,51 @@ function StickyNoteCard({
         value={note.text}
         onChange={(e) => onTextChange(note.id, e.target.value)}
         placeholder="tulis beban..."
-        rows={3}
+        rows={2}
         className={`w-full resize-none bg-transparent border-0 p-0 font-script text-base ${text} placeholder:text-ink-charcoal/40 focus:outline-none leading-snug`}
       />
+
+      {/* Interactive Category Selector (Act / Share / Let Go) */}
+      {onCategoryChange && (
+        <div className="flex items-center justify-between gap-1 mt-1.5 pt-1.5 border-t border-ink-charcoal/20">
+          <button
+            type="button"
+            onClick={() => onCategoryChange(note.id, "act")}
+            className={`text-[9px] font-mono-tag px-1.5 py-0.5 rounded border transition-colors ${
+              note.category === "act" || !note.category
+                ? "bg-ink-charcoal text-paper-base border-ink-charcoal font-bold"
+                : "bg-paper-base/60 text-ink-charcoal/70 border-ink-charcoal/30 hover:bg-paper-base"
+            }`}
+            title="Bisa Diubah / Aksi"
+          >
+            Aksi
+          </button>
+          <button
+            type="button"
+            onClick={() => onCategoryChange(note.id, "share")}
+            className={`text-[9px] font-mono-tag px-1.5 py-0.5 rounded border transition-colors ${
+              note.category === "share"
+                ? "bg-ink-charcoal text-paper-base border-ink-charcoal font-bold"
+                : "bg-paper-base/60 text-ink-charcoal/70 border-ink-charcoal/30 hover:bg-paper-base"
+            }`}
+            title="Bisa Dibagi / Butuh Teman"
+          >
+            Bagi
+          </button>
+          <button
+            type="button"
+            onClick={() => onCategoryChange(note.id, "let_go")}
+            className={`text-[9px] font-mono-tag px-1.5 py-0.5 rounded border transition-colors ${
+              note.category === "let_go"
+                ? "bg-ink-charcoal text-paper-base border-ink-charcoal font-bold"
+                : "bg-paper-base/60 text-ink-charcoal/70 border-ink-charcoal/30 hover:bg-paper-base"
+            }`}
+            title="Di Luar Kendali / Ikhlaskan"
+          >
+            Lepas
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -77,6 +121,7 @@ export function BrainDumpSection() {
     stickyNotes,
     addStickyNote,
     removeStickyNote,
+    updateStickyCategory,
   } = useJournalStore();
 
   const handleStickyText = (id: string, val: string) => {
@@ -139,6 +184,7 @@ export function BrainDumpSection() {
                 note={note}
                 onRemove={removeStickyNote}
                 onTextChange={handleStickyText}
+                onCategoryChange={updateStickyCategory}
               />
             ))}
           </div>
@@ -191,6 +237,7 @@ export function BrainDumpSection() {
                 note={note}
                 onRemove={removeStickyNote}
                 onTextChange={handleStickyText}
+                onCategoryChange={updateStickyCategory}
               />
             ))}
           </div>
@@ -205,6 +252,7 @@ export function BrainDumpSection() {
                 note={note}
                 onRemove={removeStickyNote}
                 onTextChange={handleStickyText}
+                onCategoryChange={updateStickyCategory}
               />
             ))}
           </div>

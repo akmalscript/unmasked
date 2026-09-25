@@ -1,15 +1,18 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
-import { useJournalStore } from "@/store/useJournalStore";
+import { useJournalStore, useStoreHydrated } from "@/store/useJournalStore";
 import { SummaryStage } from "@/types/session";
 
 export function SummarySection() {
   const router = useRouter();
+  const isHydrated = useStoreHydrated();
+  const isFetchingRef = useRef(false);
+
   const {
     publicTags,
     actualFeelings,
@@ -32,8 +35,8 @@ export function SummarySection() {
   const currentAction =
     selectedAction || "Pilih satu tugas utama untuk diselesaikan malam ini dan biarkan sisanya menunggu besok.";
 
-  const fetchSummary = async () => {
-    if (summaryData) return;
+  const fetchSummary = async (force = false) => {
+    if (summaryData && !force) return;
     setLoading(true);
 
     try {
@@ -57,13 +60,19 @@ export function SummarySection() {
       console.error("Failed to generate summary:", err);
     } finally {
       setLoading(false);
+      isFetchingRef.current = false;
     }
   };
 
   useEffect(() => {
+    if (!isHydrated) return;
+    if (summaryData) return;
+    if (isFetchingRef.current) return;
+    isFetchingRef.current = true;
+
     fetchSummary();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isHydrated, summaryData]);
 
   const handleDownload = () => {
     const content = `================================================

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useJournalStore } from "@/store/useJournalStore";
+import { CrisisModal } from "@/components/CrisisModal";
 
 interface HeaderProps {
   subtitle?: string;
@@ -19,6 +20,7 @@ export function Header({
 }: HeaderProps) {
   const { bookmarked, toggleBookmarked } = useJournalStore();
   const [showHelp, setShowHelp] = useState(false);
+  const [showCrisis, setShowCrisis] = useState(false);
 
   return (
     <header className="relative z-40 w-full bg-paper-base  border-b-[1.5px] border-ink-charcoal dark:border-outline shadow-[0px_2px_0px_#171717] dark:shadow-none sticky top-0">
@@ -61,6 +63,14 @@ export function Header({
 
         <div className="flex items-center gap-2.5">
           <button
+            onClick={() => setShowCrisis(true)}
+            aria-label="Bantuan Krisis"
+            className="cursor-pointer p-2 border-[1.5px] border-ink-charcoal rounded-full bg-sticker-pink/50 text-ink-charcoal shadow-[2px_2px_0px_#171717] hover:bg-sticker-pink transition-all flex items-center justify-center"
+            title="Layanan Dukungan & Bantuan Krisis"
+          >
+            <span className="material-symbols-outlined text-[18px] text-burnt-orange">support_agent</span>
+          </button>
+          <button
             onClick={toggleBookmarked}
             aria-label="Simpan Bookmark"
             className={`cursor-pointer p-2 border-[1.5px] border-ink-charcoal rounded-full ${bookmarked ? "bg-marker-orange text-white" : "bg-paper-warm text-ink-charcoal"
@@ -100,6 +110,8 @@ export function Header({
           </button>
         </div>
       )}
+
+      <CrisisModal isOpen={showCrisis} onClose={() => setShowCrisis(false)} />
     </header>
   );
 }

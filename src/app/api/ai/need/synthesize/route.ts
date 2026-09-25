@@ -6,7 +6,7 @@ import { NeedInsightSchema } from "@/schemas/reflection";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { candidates, questions, answers, loadSummary } = body;
+    const { maskContext, loadContext, candidates, questions, answers, loadSummary } = body;
 
     if (!candidates || !questions || !answers) {
       return NextResponse.json(
@@ -15,11 +15,17 @@ export async function POST(req: Request) {
       );
     }
 
+    const resolvedLoadContext = loadContext || {
+      themes: [],
+      summary: loadSummary || "",
+    };
+
     const prompt = buildNeedSynthesizePrompt({
+      maskContext,
+      loadContext: resolvedLoadContext,
       candidates,
       questions,
       answers,
-      loadSummary: loadSummary || "",
     });
 
     const { data, modelUsed } = await generateStructuredAI(
@@ -34,7 +40,7 @@ export async function POST(req: Request) {
         ...data,
         meta: {
           model: modelUsed,
-          promptVersion: "need-synthesis-v1",
+          promptVersion: "need-synthesis-v2",
           generatedAt: new Date().toISOString(),
         },
       },

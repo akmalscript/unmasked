@@ -49,7 +49,7 @@ export function ActualFeelingSection() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             <div className="lg:col-span-8">
               <div className="flex items-center gap-2 mb-3 text-marker-orange font-script text-xl font-bold select-none">
-                <span>“what&apos;s underneath?”</span>
+                <span>{"“what's underneath?”"}</span>
                 <span className="material-symbols-outlined text-lg">draw</span>
               </div>
 
@@ -115,8 +115,8 @@ export function ActualFeelingSection() {
                   <span className="font-mono-tag text-[10px] uppercase font-bold bg-paper-base px-2 py-0.5 border border-ink-charcoal rounded mt-2">
                     Ruang Otentik
                   </span>
-                  <p className="text-xs text-ink-cocoa mt-2 italic font-script text-base">
-                    &quot;Di balik kata &apos;baik-baik saja&apos;, ada jiwa yang hanya butuh diakui lelahnya.&quot;
+                  <p className="text-xs text-ink-cocoa mt-2 italic font-script text-base" suppressHydrationWarning>
+                    {`"Di balik kata 'baik-baik saja', ada jiwa yang hanya butuh diakui lelahnya."`}
                   </p>
                 </div>
               </div>
