@@ -1,8 +1,16 @@
 import { GoogleGenAI } from "@google/genai";
 import { z } from "zod";
 
-const API_KEY = process.env.GEMINI_API_KEY || "AQ.Ab8RN6K-1vHvcoNUA29VDbsIUZOPvOW6b1OZjVmJKDKe-SqN8Q";
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+const API_KEY = process.env.GEMINI_API_KEY || "";
+
+function getGenAIClient(): GoogleGenAI {
+  if (!API_KEY) {
+    throw new Error(
+      "GEMINI_API_KEY belum dikonfigurasi di file .env.local. Silakan salin .env.example menjadi .env.local dan masukkan API Key Anda."
+    );
+  }
+  return new GoogleGenAI({ apiKey: API_KEY });
+}
 
 const CANDIDATE_MODELS = [
   "gemini-3.1-flash-lite",
@@ -16,6 +24,7 @@ export async function generateStructuredAI<T>(
   schema: z.ZodSchema<T>,
   systemInstruction?: string
 ): Promise<{ data: T; modelUsed: string }> {
+  const ai = getGenAIClient();
   let lastError: unknown = null;
 
   for (const model of CANDIDATE_MODELS) {
