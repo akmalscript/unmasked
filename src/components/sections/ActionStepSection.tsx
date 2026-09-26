@@ -135,18 +135,18 @@ export function ActionStepSection() {
   const currentRec = actionRecommendations[selectedIndex] || null;
 
   return (
-    <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-28">
+    <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-36 sm:pb-28">
       <Header subtitle="ACTION" showSteps={true} stepNumber={4} totalSteps={4} />
 
-      <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 md:px-12 py-8 md:py-12">
+      <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 md:px-12 py-6 md:py-12">
         <div className="mb-3">
           <div className="bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal px-3.5 py-1 rounded-full font-mono-tag text-xs font-bold tracking-wider shadow-[2px_2px_0px_#171717] -rotate-1">
             STAGE: ACTION (Satu Langkah Mikro)
           </div>
         </div>
 
-        <div className="max-w-[700px] text-center mb-8">
-          <h1 className="font-headline text-3xl sm:text-4xl md:text-5xl font-bold text-ink-charcoal tracking-tight lowercase">
+        <div className="max-w-[700px] text-center mb-6 sm:mb-8">
+          <h1 className="font-headline text-2xl sm:text-4xl md:text-5xl font-bold text-ink-charcoal tracking-tight lowercase">
             “satu langkah kecil untukmu.”
           </h1>
           <p className="mt-2 text-sm sm:text-base text-ink-charcoal/80">
@@ -173,14 +173,14 @@ export function ActionStepSection() {
 
         {!loading && actionRecommendations.length > 0 && currentRec && (
           <div className="relative w-full max-w-[640px] mb-8">
-            <div className="absolute -top-6 -right-2 md:-right-6 z-20 -rotate-3 select-none pointer-events-none">
+            <div className="hidden sm:block absolute -top-6 -right-2 md:-right-6 z-20 -rotate-3 select-none pointer-events-none">
               <div className="font-script text-marker-orange text-2xl md:text-3xl font-bold">
                 “small is enough.”
               </div>
             </div>
 
             {/* Type selector tabs */}
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex flex-wrap items-center gap-2 mb-3">
               {actionRecommendations.map((rec, idx) => {
                 const label =
                   rec.type === "primary"

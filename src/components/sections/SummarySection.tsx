@@ -152,23 +152,23 @@ Privat di perangkatmu · Beyond "I'm Fine."
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-paper-warm tactile-dot-grid pb-28">
+    <div className="min-h-screen flex flex-col bg-paper-warm tactile-dot-grid pb-40 sm:pb-32">
       <Header subtitle="RANGKUMAN" showSteps={true} stepNumber={4} totalSteps={4} />
 
-      <main className="flex-1 w-full max-w-[1120px] mx-auto px-4 md:px-12 py-8 md:py-12">
-        <div className="relative bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl md:rounded-2xl p-6 sm:p-10 md:p-12 shadow-[5px_5px_0px_#171717]">
-          <div className="max-w-2xl mx-auto text-center mb-10">
+      <main className="flex-1 w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 py-6 md:py-12">
+        <div className="relative bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl md:rounded-2xl p-5 sm:p-10 md:p-12 shadow-[5px_5px_0px_#171717]">
+          <div className="max-w-2xl mx-auto text-center mb-8 sm:mb-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-full mb-3 font-mono-tag text-xs font-bold">
               <span className="w-2 h-2 rounded-full bg-marker-orange animate-pulse"></span>
               <span>Perjalanan Refleksi Utuh</span>
             </div>
-            <h1 className="font-headline text-3xl sm:text-4xl md:text-5xl font-bold text-ink-charcoal tracking-tight lowercase">
+            <h1 className="font-headline text-2xl sm:text-4xl md:text-5xl font-bold text-ink-charcoal tracking-tight lowercase">
               “rangkuman perjalananmu.”
             </h1>
             <p className="text-sm sm:text-base text-ink-charcoal/80 mt-2">
               Inilah peta kejujuran batin yang berhasil kamu urai hari ini.
             </p>
-            <p className="font-script text-2xl text-marker-orange font-bold mt-2">
+            <p className="font-script text-xl sm:text-2xl text-marker-orange font-bold mt-2">
               “look how much you unpacked.”
             </p>
           </div>
@@ -182,11 +182,11 @@ Privat di perangkatmu · Beyond "I'm Fine."
           {/* Timeline Steps */}
           <div className="relative max-w-xl mx-auto space-y-6">
             {/* 1. MASK */}
-            <div className="flex items-start gap-4">
-              <div className="shrink-0 w-10 h-10 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] flex items-center justify-center font-mono-tag font-bold">
+            <div className="flex items-start gap-3 sm:gap-4">
+              <div className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] flex items-center justify-center font-mono-tag text-xs sm:text-sm font-bold">
                 01
               </div>
-              <div className="flex-1 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-4 shadow-[2px_2px_0px_#171717]">
+              <div className="flex-1 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-3.5 sm:p-4 shadow-[2px_2px_0px_#171717]">
                 <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-2 mb-2 font-mono-tag text-xs font-bold uppercase">
                   <span>Step 1: MASK (Topeng vs Rasa)</span>
                   <span className="material-symbols-outlined text-[16px]">theater_comedy</span>
@@ -203,11 +203,11 @@ Privat di perangkatmu · Beyond "I'm Fine."
             </div>
 
             {/* 2. LOAD */}
-            <div className="flex items-start gap-4">
-              <div className="shrink-0 w-10 h-10 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] flex items-center justify-center font-mono-tag font-bold">
+            <div className="flex items-start gap-3 sm:gap-4">
+              <div className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] flex items-center justify-center font-mono-tag text-xs sm:text-sm font-bold">
                 02
               </div>
-              <div className="flex-1 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-4 shadow-[2px_2px_0px_#171717]">
+              <div className="flex-1 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-3.5 sm:p-4 shadow-[2px_2px_0px_#171717]">
                 <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-2 mb-2 font-mono-tag text-xs font-bold uppercase">
                   <span>Step 2: LOAD (Beban yang Diurai)</span>
                   <span className="material-symbols-outlined text-[16px]">weight</span>
@@ -227,11 +227,11 @@ Privat di perangkatmu · Beyond "I'm Fine."
             </div>
 
             {/* 3. NEED */}
-            <div className="flex items-start gap-4">
-              <div className="shrink-0 w-10 h-10 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] flex items-center justify-center font-mono-tag font-bold">
+            <div className="flex items-start gap-3 sm:gap-4">
+              <div className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] flex items-center justify-center font-mono-tag text-xs sm:text-sm font-bold">
                 03
               </div>
-              <div className="flex-1 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-4 shadow-[2px_2px_0px_#171717]">
+              <div className="flex-1 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-3.5 sm:p-4 shadow-[2px_2px_0px_#171717]">
                 <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-2 mb-2 font-mono-tag text-xs font-bold uppercase">
                   <span>Step 3: NEED (Kebutuhan Personal)</span>
                   <span className="material-symbols-outlined text-[16px]">favorite</span>
@@ -250,11 +250,11 @@ Privat di perangkatmu · Beyond "I'm Fine."
             </div>
 
             {/* 4. ACTION */}
-            <div className="flex items-start gap-4">
-              <div className="shrink-0 w-10 h-10 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] flex items-center justify-center font-mono-tag font-bold">
+            <div className="flex items-start gap-3 sm:gap-4">
+              <div className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] flex items-center justify-center font-mono-tag text-xs sm:text-sm font-bold">
                 04
               </div>
-              <div className="flex-1 bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl p-4 shadow-[3px_3px_0px_#171717]">
+              <div className="flex-1 bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl p-3.5 sm:p-4 shadow-[3px_3px_0px_#171717]">
                 <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-2 mb-2 font-mono-tag text-xs font-bold uppercase">
                   <span>Step 4: ACTION (Langkah Pilihanmu)</span>
                   <span className="material-symbols-outlined text-marker-orange text-[16px]">
@@ -270,7 +270,7 @@ Privat di perangkatmu · Beyond "I'm Fine."
 
           {/* Reflection synthesis note */}
           {summaryData?.reflection && (
-            <div className="max-w-xl mx-auto mt-8 p-4 bg-[#FFF8F2] border-[1.5px] border-ink-charcoal rounded-xl text-center shadow-[2px_2px_0px_#171717]">
+            <div className="max-w-xl mx-auto mt-6 sm:mt-8 p-4 bg-[#FFF8F2] border-[1.5px] border-ink-charcoal rounded-xl text-center shadow-[2px_2px_0px_#171717]">
               <span className="font-mono-tag text-[10px] text-burnt-orange font-bold uppercase block mb-1">
                 Catatan Penutup untuk Hatimu:
               </span>
@@ -281,11 +281,11 @@ Privat di perangkatmu · Beyond "I'm Fine."
           )}
 
           {/* Bottom Actions */}
-          <div className="mt-10 pt-6 border-t-[1.5px] border-ink-charcoal/20 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="mt-8 pt-6 border-t-[1.5px] border-ink-charcoal/20 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
             <button
               type="button"
               onClick={handleDownload}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-paper-base text-ink-charcoal border-[1.5px] border-ink-charcoal font-mono-tag text-xs uppercase shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] transition-all font-bold"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 sm:py-3 rounded-full bg-paper-base text-ink-charcoal border-[1.5px] border-ink-charcoal font-mono-tag text-xs uppercase shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] transition-all font-bold"
             >
               <span className="material-symbols-outlined text-[16px]">download</span>
               <span>{downloaded ? "✓ Tersimpan di Perangkat" : "Unduh File Rangkuman"}</span>
@@ -296,7 +296,7 @@ Privat di perangkatmu · Beyond "I'm Fine."
                 resetSession();
                 router.push("/onboarding");
               }}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-paper-warm text-ink-charcoal border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold uppercase shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] transition-all"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 sm:py-3 rounded-full bg-paper-warm text-ink-charcoal border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold uppercase shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] transition-all"
             >
               <span className="material-symbols-outlined text-[16px]">refresh</span>
               <span>Mulai Sesi Baru</span>
@@ -304,7 +304,7 @@ Privat di perangkatmu · Beyond "I'm Fine."
             <button
               type="button"
               onClick={() => router.push("/selesai")}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold uppercase shadow-[3px_3px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] transition-all"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-2.5 sm:py-3 rounded-full bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold uppercase shadow-[3px_3px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] transition-all"
             >
               <span>Selesai Sesi</span>
               <span className="material-symbols-outlined text-[16px]">arrow_forward</span>

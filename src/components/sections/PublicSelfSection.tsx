@@ -55,9 +55,9 @@ export function PublicSelfSection() {
     <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-28">
       <Header subtitle="MASK 01/04" showSteps={true} stepNumber={1} totalSteps={4} />
 
-      <main className="flex-grow w-full max-w-[1120px] mx-auto px-6 md:px-12 pt-8 md:pt-12">
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-6 md:mb-8">
-          <div className="flex items-center gap-3">
+      <main className="flex-grow w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 pt-6 md:pt-12">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-5 md:mb-8">
+          <div className="flex items-center gap-2 sm:gap-3">
             <div className="bg-marker-orange text-ink-charcoal font-mono-tag text-xs font-bold px-3 py-1 rounded-full border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] flex items-center gap-1.5 uppercase">
               <span className="w-2 h-2 rounded-full bg-paper-base border border-ink-charcoal"></span>
               MASK
@@ -68,8 +68,9 @@ export function PublicSelfSection() {
           </div>
         </div>
 
-        <div className="relative bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl shadow-[4px_4px_0px_#171717] p-6 sm:p-10 md:p-12 mb-10">
-          <aside className="absolute -top-6 -right-3 md:-top-8 md:right-8 z-10 rotate-6 hover:rotate-2 transition-transform duration-300">
+        <div className="relative bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl shadow-[4px_4px_0px_#171717] p-5 sm:p-8 md:p-12 mb-10">
+          {/* Desktop Sticker Badge */}
+          <aside className="hidden md:flex absolute -top-8 right-8 z-10 rotate-6 hover:rotate-2 transition-transform duration-300">
             <div className="bg-sticker-blue border-[1.5px] border-ink-charcoal rounded-xl p-3 md:p-4 shadow-[3px_3px_0px_#171717] flex flex-col items-center max-w-[130px]">
               <div className="w-12 h-12 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal flex items-center justify-center mb-1 shadow-[1px_1px_0px_#171717]">
                 <span className="material-symbols-outlined text-2xl text-ink-charcoal">
@@ -83,7 +84,17 @@ export function PublicSelfSection() {
             </div>
           </aside>
 
-          <div className="max-w-[700px] mb-8">
+          {/* Mobile Badge - Clean inline position so it never overlaps the title */}
+          <div className="md:hidden flex items-center gap-2 mb-3 bg-sticker-blue/30 border border-ink-charcoal px-3 py-1 rounded-lg w-fit shadow-[1px_1px_0px_#171717]">
+            <span className="material-symbols-outlined text-[16px] text-ink-charcoal">
+              theater_comedy
+            </span>
+            <span className="font-mono-tag text-[10px] font-bold text-ink-charcoal uppercase tracking-wider">
+              PUBLIC SELF · LAPISAN PERTAMA
+            </span>
+          </div>
+
+          <div className="max-w-[700px] mb-6 sm:mb-8">
             <h1 className="font-headline text-2xl sm:text-3xl md:text-4xl text-ink-charcoal lowercase tracking-tight leading-snug mb-2">
               “bagaimana kamu terlihat di mata orang lain?”
             </h1>

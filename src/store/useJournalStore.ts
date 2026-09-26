@@ -1,6 +1,4 @@
-"use client";
-
-import { useState, useEffect } from "react";
+import { useSyncExternalStore } from "react";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import {
@@ -383,22 +381,15 @@ export const useJournalStore = create<JournalState>()(
  * This prevents firing duplicate AI fetches on mount before saved data is restored.
  */
 export function useStoreHydrated(): boolean {
-  const [hydrated, setHydrated] = useState(false);
-  const storeHydrated = useJournalStore((state) => state.hasHydrated);
-
-  useEffect(() => {
-    if (storeHydrated || useJournalStore.persist.hasHydrated()) {
-      setHydrated(true);
-      return;
-    }
-    const unsub = useJournalStore.persist.onFinishHydration(() => {
-      setHydrated(true);
-    });
-    return () => {
-      unsub();
-    };
-  }, [storeHydrated]);
-
-  return hydrated;
+  return useSyncExternalStore(
+    (callback) => {
+      if (useJournalStore.persist.hasHydrated()) {
+        return () => {};
+      }
+      return useJournalStore.persist.onFinishHydration(callback);
+    },
+    () => useJournalStore.persist.hasHydrated(),
+    () => false
+  );
 }
 

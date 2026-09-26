@@ -117,16 +117,16 @@ export function NeedResultSection() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-28">
+    <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-36 sm:pb-28">
       <Header subtitle="NEED 02/02" showSteps={true} stepNumber={3} totalSteps={4} />
 
-      <main className="flex-grow w-full max-w-[1120px] mx-auto px-6 md:px-12 py-8 md:py-12">
+      <main className="flex-grow w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 py-6 md:py-12">
         {/* Header - Revised per Section 26 */}
-        <div className="max-w-3xl mb-8">
+        <div className="max-w-3xl mb-6 sm:mb-8">
           <p className="font-mono-tag text-xs font-bold text-burnt-orange uppercase tracking-wider mb-1">
             YANG MUNGKIN KAMU BUTUHKAN
           </p>
-          <h1 className="font-headline text-3xl sm:text-4xl md:text-5xl font-bold text-ink-charcoal tracking-tight lowercase">
+          <h1 className="font-headline text-2xl sm:text-4xl md:text-5xl font-bold text-ink-charcoal tracking-tight lowercase">
             “hal yang mungkin paling kamu butuhkan sekarang”
           </h1>
           <p className="text-sm md:text-base text-ink-charcoal/80 mt-2">
@@ -200,13 +200,13 @@ export function NeedResultSection() {
                     {needInsight.secondaryNeeds.map((sec, i) => (
                       <div
                         key={i}
-                        className="p-3 bg-paper-warm/80 rounded-lg border border-ink-charcoal flex items-center justify-between font-mono-tag text-xs"
+                        className="p-3 bg-paper-warm/80 rounded-lg border border-ink-charcoal flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 font-mono-tag text-xs"
                       >
                         <span className="font-bold flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-sticker-blue"></span>
-                          {sec.title}
+                          <span className="w-1.5 h-1.5 rounded-full bg-sticker-blue shrink-0"></span>
+                          <span>{sec.title}</span>
                         </span>
-                        <span className="text-[11px] text-ink-charcoal/70">
+                        <span className="text-[11px] text-ink-charcoal/70 sm:text-right">
                           {sec.reason}
                         </span>
                       </div>

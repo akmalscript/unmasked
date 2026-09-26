@@ -125,20 +125,20 @@ export function NeedSheetSection() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-28">
+    <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-36 sm:pb-28">
       <Header subtitle="NEED 01/02" showSteps={true} stepNumber={3} totalSteps={4} />
 
-      <main className="flex-grow w-full max-w-[1120px] mx-auto px-6 md:px-12 pt-8 pb-12 flex flex-col items-center">
+      <main className="flex-grow w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 pt-6 pb-12 flex flex-col items-center">
         <div className="w-full max-w-2xl flex items-center justify-between mb-4">
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] font-mono-tag text-xs uppercase font-bold">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] font-mono-tag text-xs uppercase font-bold">
             Tahap: NEED
           </span>
           <span className="font-mono-tag text-xs text-ink-charcoal/70">Langkah 1 dari 2</span>
         </div>
 
         {/* Heading Section - Revised per Section 10 & 11 */}
-        <section className="w-full max-w-2xl text-center mb-8">
-          <h1 className="font-headline text-3xl sm:text-4xl md:text-5xl font-bold text-ink-charcoal tracking-tight lowercase mb-2">
+        <section className="w-full max-w-2xl text-center mb-6 sm:mb-8">
+          <h1 className="font-headline text-2xl sm:text-4xl md:text-5xl font-bold text-ink-charcoal tracking-tight lowercase mb-2">
             “apa yang paling kamu butuhkan sekarang?”
           </h1>
           <p className="text-sm md:text-base text-ink-charcoal/80 max-w-lg mx-auto">
@@ -147,9 +147,9 @@ export function NeedSheetSection() {
         </section>
 
         {/* Main Card */}
-        <section className="w-full max-w-2xl bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl shadow-[5px_5px_0px_#171717] p-6 sm:p-9 relative mb-8">
+        <section className="w-full max-w-2xl bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl shadow-[5px_5px_0px_#171717] p-5 sm:p-9 relative mb-8">
           {/* Tape Label - Revised per Section 12 */}
-          <div className="absolute -top-3.5 left-8 px-4 py-1 bg-sticker-pink border-[1.5px] border-ink-charcoal rounded-sm font-mono-tag text-xs text-ink-charcoal -rotate-2 shadow-[2px_2px_0px_#171717] pointer-events-none font-semibold">
+          <div className="absolute -top-3.5 left-4 sm:left-8 px-3 sm:px-4 py-1 bg-sticker-pink border-[1.5px] border-ink-charcoal rounded-sm font-mono-tag text-[10px] sm:text-xs text-ink-charcoal -rotate-2 shadow-[2px_2px_0px_#171717] pointer-events-none font-semibold">
             mencari tahu yang paling kamu butuhkan
           </div>
 

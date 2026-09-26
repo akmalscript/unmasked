@@ -12,8 +12,8 @@ export function CrisisModal({ isOpen, onClose }: CrisisModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink-charcoal/60 backdrop-blur-xs">
-      <div className="bg-paper-base border-[2px] border-ink-charcoal rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-[6px_6px_0px_#171717] animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-ink-charcoal/60 backdrop-blur-xs">
+      <div className="bg-paper-base border-[2px] border-ink-charcoal rounded-2xl p-4 sm:p-8 max-w-lg w-full max-h-[88vh] overflow-y-auto shadow-[6px_6px_0px_#171717] animate-in fade-in zoom-in-95 duration-200">
         <div className="flex items-center justify-between pb-3 mb-4 border-b border-ink-charcoal/20">
           <div className="flex items-center gap-2 text-marker-orange font-bold font-mono-tag text-xs uppercase tracking-wider">
             <span className="material-symbols-outlined text-[20px]">health_and_safety</span>

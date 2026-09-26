@@ -134,7 +134,7 @@ export function BrainDumpSection() {
   const rightNotes = stickyNotes.filter((n) => n.side === "right");
 
   return (
-    <div className="min-h-screen flex flex-col bg-paper-warm tactile-dot-grid pb-28">
+    <div className="min-h-screen flex flex-col bg-paper-warm tactile-dot-grid pb-36 sm:pb-28">
       <Header subtitle="LOAD 01/02" showSteps={true} stepNumber={2} totalSteps={4} />
 
       <main className="w-full max-w-[1120px] mx-auto px-4 md:px-12 pt-8 md:pt-12 flex-grow">
@@ -210,22 +210,29 @@ export function BrainDumpSection() {
 
             <textarea
               className="w-full resize-none border-0 p-2 text-ink-charcoal text-base focus:ring-0 focus:outline-none placeholder:text-ink-charcoal/40 bg-transparent"
-              rows={8}
+              rows={6}
               placeholder="apa yang sedang memenuhi pikiranmu?"
               value={brainDump}
               onChange={(e) => setBrainDump(e.target.value)}
             />
 
-            <div className="flex items-center justify-between pt-3 border-t-[1.5px] border-ink-charcoal/15 mt-2 font-mono-tag text-xs text-ink-charcoal/70">
+            <div className="flex items-center justify-between gap-2 pt-2.5 sm:pt-3 border-t-[1.5px] border-ink-charcoal/15 mt-2 font-mono-tag text-[11px] sm:text-xs text-ink-charcoal/70">
               <button
                 type="button"
                 onClick={() => addStickyNote("act")}
-                className="flex items-center gap-1 text-ink-charcoal hover:text-burnt-orange underline decoration-marker-orange transition-colors"
+                className="flex items-center gap-1 text-ink-charcoal hover:text-burnt-orange underline decoration-marker-orange transition-colors shrink-0 font-medium"
               >
                 <span className="material-symbols-outlined text-[15px]">add_circle</span>
-                <span>+ Tambah poin beban</span>
+                <span className="hidden sm:inline">+ Tambah poin beban</span>
+                <span className="sm:hidden">+ Poin beban</span>
               </button>
-              <span>{(brainDump || "").length} / 2000 kata</span>
+              <div className="flex items-center gap-1 shrink-0 text-right">
+                <span>
+                  {brainDump.trim() ? brainDump.trim().split(/\s+/).filter(Boolean).length : 0} kata
+                </span>
+                <span className="text-ink-charcoal/40">·</span>
+                <span>{(brainDump || "").length}/2000</span>
+              </div>
             </div>
           </div>
 

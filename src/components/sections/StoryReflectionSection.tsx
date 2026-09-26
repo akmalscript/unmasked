@@ -118,10 +118,10 @@ export function StoryReflectionSection() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-28">
+    <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-36 sm:pb-28">
       <Header subtitle="LOAD 02/02" showSteps={true} stepNumber={2} totalSteps={4} />
 
-      <main className="flex-grow w-full max-w-[1120px] mx-auto px-6 md:px-12 py-8 md:py-12 flex flex-col items-center">
+      <main className="flex-grow w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 py-6 md:py-12 flex flex-col items-center">
         <div className="w-full max-w-[780px] text-center mb-6">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-paper-warm border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] mb-3">
             <span className="w-2 h-2 rounded-full bg-marker-orange animate-pulse"></span>
@@ -262,17 +262,17 @@ export function StoryReflectionSection() {
               </>
             )}
 
-            <div className="flex items-center justify-between pt-2 border-t border-ink-charcoal/15">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-3 border-t border-ink-charcoal/15">
               <button
                 type="button"
                 onClick={() => router.push("/brain-dump")}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border-[1.5px] border-ink-charcoal bg-paper-base text-ink-charcoal font-mono-tag text-xs font-semibold hover:bg-paper-warm transition-colors"
+                className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-full border-[1.5px] border-ink-charcoal bg-paper-base text-ink-charcoal font-mono-tag text-xs font-semibold hover:bg-paper-warm transition-colors"
               >
                 <span className="material-symbols-outlined text-[15px]">edit</span>
                 <span>Edit Tulisan Brain Dump</span>
               </button>
 
-              <div className="flex items-center gap-1.5 pr-2">
+              <div className="flex items-center justify-center sm:justify-end gap-1.5 pr-2">
                 <span className="material-symbols-outlined text-marker-orange text-[18px]">
                   stylus_note
                 </span>

@@ -73,11 +73,11 @@ export function MaskResultSection() {
   }, [isHydrated, maskInsight, hasInputs]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-28">
+    <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-36 sm:pb-28">
       <Header subtitle="MASK 03/04" showSteps={true} stepNumber={1} totalSteps={4} />
 
-      <main className="flex-1 w-full max-w-[1120px] mx-auto px-6 md:px-12 py-8 md:py-12 flex flex-col items-center">
-        <div className="w-full max-w-3xl bg-paper-base border-[1.5px] border-ink-charcoal rounded-2xl shadow-[6px_6px_0px_#171717] p-6 sm:p-10 relative">
+      <main className="flex-1 w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 py-6 md:py-12 flex flex-col items-center">
+        <div className="w-full max-w-3xl bg-paper-base border-[1.5px] border-ink-charcoal rounded-2xl shadow-[6px_6px_0px_#171717] p-5 sm:p-10 relative">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-36 h-7 bg-marker-orange text-ink-charcoal border-[1.2px] border-ink-charcoal rotate-[-1deg] shadow-[1px_1px_0px_#171717] flex items-center justify-center z-20">
             <span className="text-[10px] font-mono-tag uppercase tracking-widest font-bold">
               HASIL TELAAH MASK

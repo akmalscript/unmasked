@@ -107,18 +107,18 @@ export function UserConfirmationCard({
           <label className="font-mono-tag text-xs text-ink-charcoal/80 block">
             Apa yang lebih menggambarkan situasimu sebenarnya? (Koreksimu akan menjadi acuan AI pada tahap berikutnya)
           </label>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <input
               type="text"
               value={correction}
               onChange={(e) => setCorrection(e.target.value)}
-              placeholder="mis. Saya lebih terbebani oleh ekspektasi keluarga dibanding tugas kuliah..."
+              placeholder="mis. Saya lebih terbebani oleh ekspektasi keluarga..."
               className="flex-1 bg-paper-base border-[1.5px] border-ink-charcoal rounded-lg px-3 py-2 text-xs sm:text-sm font-mono-tag text-ink-charcoal focus:outline-none focus:ring-1 focus:ring-marker-orange shadow-[1px_1px_0px_#171717]"
             />
             <button
               type="button"
               onClick={handleSaveCorrection}
-              className="px-4 py-2 bg-marker-orange border-[1.5px] border-ink-charcoal rounded-lg font-mono-tag text-xs font-bold shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] transition-all"
+              className="w-full sm:w-auto px-4 py-2 bg-marker-orange border-[1.5px] border-ink-charcoal rounded-lg font-mono-tag text-xs font-bold shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] transition-all"
             >
               Simpan Koreksi
             </button>

@@ -2,18 +2,20 @@
 
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useJournalStore } from "@/store/useJournalStore";
 
 export function SelesaiSection() {
+  const router = useRouter();
   const { resetSession, clearAllData } = useJournalStore();
 
   return (
     <div className="min-h-screen flex flex-col justify-between bg-paper-base tactile-dot-grid relative selection:bg-marker-orange">
       <header className="relative z-20 w-full bg-paper-base border-b-[1.5px] border-ink-charcoal shadow-[0px_2px_0px_#171717] sticky top-0">
-        <div className="flex justify-between items-center w-full px-6 md:px-12 max-w-[1120px] mx-auto py-3.5">
+        <div className="flex justify-between items-center w-full px-4 sm:px-6 md:px-12 max-w-[1120px] mx-auto py-2.5 sm:py-3.5">
           <Link
             href="/"
-            className="font-headline text-lg font-bold tracking-tight text-ink-charcoal uppercase flex items-center gap-2 hover:text-burnt-orange transition-colors"
+            className="font-headline text-lg sm:text-xl font-bold tracking-tight text-ink-charcoal uppercase flex items-center gap-2 hover:text-burnt-orange transition-colors"
           >
             <span className="w-3.5 h-3.5 bg-marker-orange border-[1.5px] border-ink-charcoal rotate-45 inline-block shadow-[1px_1px_0px_#171717]"></span>
             UNMASKED
@@ -27,7 +29,7 @@ export function SelesaiSection() {
         </div>
       </header>
 
-      <main className="w-full max-w-[1120px] mx-auto px-6 md:px-12 py-8 flex-1 flex items-center">
+      <main className="w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 py-6 sm:py-8 flex-1 flex items-center">
         <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <div className="lg:col-span-6 relative flex justify-center">
             <div className="relative bg-paper-base border-[1.5px] border-ink-charcoal rounded-2xl p-3 shadow-[5px_5px_0px_#171717] w-full max-w-[480px]">
@@ -130,7 +132,7 @@ export function SelesaiSection() {
                     )
                   ) {
                     clearAllData();
-                    window.location.href = "/";
+                    router.push("/");
                   }
                 }}
                 className="inline-flex items-center justify-center gap-2 bg-paper-warm hover:bg-sticker-pink/40 text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] rounded-full px-4 py-2.5 font-mono-tag text-xs font-semibold transition-all"
