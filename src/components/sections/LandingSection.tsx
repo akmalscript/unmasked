@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useJournalStore } from "@/store/useJournalStore";
 
 export function LandingSection() {
@@ -14,11 +15,18 @@ export function LandingSection() {
       <header className="relative z-20 w-full bg-paper-base border-b-[1.5px] border-ink-charcoal shadow-[0px_2px_0px_#171717] sticky top-0">
         <div className="flex justify-between items-center w-full px-4 sm:px-6 md:px-12 max-w-[1120px] mx-auto py-2.5 sm:py-3.5">
           <Link
-            className="font-headline text-lg sm:text-xl font-bold tracking-tight text-ink-charcoal uppercase hover:text-burnt-orange transition-colors flex items-center gap-2"
+            className="flex items-center shrink-0 hover:opacity-85 transition-opacity"
             href="/"
+            aria-label="UNMASKED - Beranda"
           >
-            <span className="w-3.5 h-3.5 bg-marker-orange border-[1.5px] border-ink-charcoal rotate-45 inline-block shadow-[1px_1px_0px_#171717]"></span>
-            UNMASKED
+            <Image
+              src="/images/unmaskedlogo.png"
+              alt="UNMASKED"
+              width={140}
+              height={34}
+              className="h-7 sm:h-8 w-auto object-contain"
+              priority
+            />
           </Link>
           <nav className="hidden md:flex items-center gap-8">
             <Link
