@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { generateStructuredAI } from "@/lib/ai/client";
+import { generateStructuredAI, parseAIError } from "@/lib/ai/client";
 import { buildNeedPreparePrompt, SYSTEM_GUIDELINES } from "@/lib/ai/prompts";
 import { NeedPrepareOutputSchema } from "@/schemas/reflection";
 
@@ -47,9 +47,14 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error("Error in /api/ai/need/prepare:", error);
+    const parsed = parseAIError(error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Internal Server Error" },
-      { status: 500 }
+      {
+        success: false,
+        error: parsed.userFriendlyMessage,
+        technicalError: parsed.rawError,
+      },
+      { status: parsed.statusCode }
     );
   }
 }

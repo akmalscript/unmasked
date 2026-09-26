@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
+import { AIErrorCard } from "@/components/AIErrorCard";
 import { useJournalStore, useStoreHydrated } from "@/store/useJournalStore";
 import { CandidateNeed, NeedQuestion } from "@/types/session";
 
@@ -29,6 +30,7 @@ export function NeedSheetSection() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [technicalError, setTechnicalError] = useState<string | null>(null);
 
   const hasLoadContext = Boolean(loadInsight || brainDump.trim() || publicTags.length > 0);
 
@@ -37,6 +39,7 @@ export function NeedSheetSection() {
     if (!hasLoadContext) return;
     setLoading(true);
     setError(null);
+    setTechnicalError(null);
 
     try {
       const themes = loadInsight?.themes?.map((t) => t.name) || ["Refleksi Diri"];
@@ -62,6 +65,7 @@ export function NeedSheetSection() {
 
       const json = await res.json();
       if (!res.ok || !json.success) {
+        setTechnicalError(json.technicalError || null);
         throw new Error(json.error || "Gagal menyiapkan pertanyaan.");
       }
 
@@ -159,18 +163,15 @@ export function NeedSheetSection() {
           )}
 
           {error && (
-            <div className="p-4 bg-sticker-pink/30 border-[1.5px] border-ink-charcoal rounded-xl text-center space-y-2">
-              <p className="text-sm font-headline text-ink-charcoal font-bold">
-                Gagal memuat pertanyaan: {error}
-              </p>
-              <button
-                type="button"
-                onClick={() => fetchNeedQuestions(true)}
-                className="px-4 py-1.5 bg-marker-orange text-ink-charcoal font-mono-tag text-xs font-bold rounded-full border border-ink-charcoal shadow-[2px_2px_0px_#171717]"
-              >
-                Coba Muat Ulang
-              </button>
-            </div>
+            <AIErrorCard
+              title="Koneksi Penyiapan Pertanyaan Terkendala"
+              message={error}
+              technicalError={technicalError}
+              onRetry={() => fetchNeedQuestions(true)}
+              isRetrying={loading}
+              continueUrl="/need-result"
+              continueLabel="Tetap Lanjut ke Hasil Kebutuhan"
+            />
           )}
 
           {!loading && needQuestions.length > 0 && (

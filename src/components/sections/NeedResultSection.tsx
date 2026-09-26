@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
+import { AIErrorCard } from "@/components/AIErrorCard";
 import { UserConfirmationCard } from "@/components/UserConfirmationCard";
 import { useJournalStore, useStoreHydrated } from "@/store/useJournalStore";
 import { NeedInsight } from "@/types/session";
@@ -31,6 +32,7 @@ export function NeedResultSection() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [technicalError, setTechnicalError] = useState<string | null>(null);
 
   const hasNeedInput = needCandidates.length > 0 || needAnswers.length > 0;
 
@@ -39,6 +41,7 @@ export function NeedResultSection() {
     if (!hasNeedInput) return;
     setLoading(true);
     setError(null);
+    setTechnicalError(null);
 
     try {
       const res = await fetch("/api/ai/need/synthesize", {
@@ -63,6 +66,7 @@ export function NeedResultSection() {
 
       const json = await res.json();
       if (!res.ok || !json.success) {
+        setTechnicalError(json.technicalError || null);
         throw new Error(json.error || "Gagal menyintesis kebutuhan.");
       }
 
@@ -137,17 +141,16 @@ export function NeedResultSection() {
         {loading && <MindfulLoading message="Sedang menyelaraskan hasil refleksi dari ceritamu..." />}
 
         {error && (
-          <div className="p-5 bg-sticker-pink/30 border-[1.5px] border-ink-charcoal rounded-xl text-center space-y-2 mb-8">
-            <p className="text-sm font-headline text-ink-charcoal font-bold">
-              Gagal memuat hasil: {error}
-            </p>
-            <button
-              type="button"
-              onClick={() => fetchNeedSynthesis(true)}
-              className="px-4 py-1.5 bg-marker-orange text-ink-charcoal font-mono-tag text-xs font-bold rounded-full border border-ink-charcoal shadow-[2px_2px_0px_#171717]"
-            >
-              Coba Lagi
-            </button>
+          <div className="w-full max-w-2xl mb-8">
+            <AIErrorCard
+              title="Koneksi Sintesis Kebutuhan Terkendala"
+              message={error}
+              technicalError={technicalError}
+              onRetry={() => fetchNeedSynthesis(true)}
+              isRetrying={loading}
+              continueUrl="/action-step"
+              continueLabel="Tetap Lanjut ke ACTION (Langkah Aksi)"
+            />
           </div>
         )}
 

@@ -218,7 +218,7 @@ export const useJournalStore = create<JournalState>()(
       setMaskInsight: (insight) => set({ maskInsight: insight }),
       setMaskConfirmation: (conf) => set({ maskConfirmation: conf }),
 
-      setBrainDump: (text) => set({ brainDump: text }),
+      setBrainDump: (text) => set({ brainDump: text.slice(0, 2000) }),
 
       addBrainDumpTopic: (topic) =>
         set((state) => {

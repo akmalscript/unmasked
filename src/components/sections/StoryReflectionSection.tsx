@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
+import { AIErrorCard } from "@/components/AIErrorCard";
 import { UserConfirmationCard } from "@/components/UserConfirmationCard";
 import { useJournalStore, useStoreHydrated } from "@/store/useJournalStore";
 import { LoadInsight } from "@/types/session";
@@ -30,6 +31,7 @@ export function StoryReflectionSection() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [technicalError, setTechnicalError] = useState<string | null>(null);
 
   const hasBrainDump = brainDump.trim().length > 0 || stickyNotes.length > 0;
   const currentBrainDump =
@@ -41,6 +43,7 @@ export function StoryReflectionSection() {
     if (!hasBrainDump) return;
     setLoading(true);
     setError(null);
+    setTechnicalError(null);
 
     try {
       const res = await fetch("/api/ai/load", {
@@ -64,6 +67,7 @@ export function StoryReflectionSection() {
 
       const json = await res.json();
       if (!res.ok || !json.success) {
+        setTechnicalError(json.technicalError || null);
         throw new Error(json.error || "Gagal menganalisis curahan pikiran.");
       }
 
@@ -152,18 +156,15 @@ export function StoryReflectionSection() {
             {loading && <MindfulLoading message="Sedang mengurai benang kusut curahan pikiranmu..." />}
 
             {error && (
-              <div className="p-4 bg-sticker-pink/30 border-[1.5px] border-ink-charcoal rounded-xl text-center space-y-2">
-                <p className="text-sm font-headline text-ink-charcoal font-bold">
-                  Gagal memuat telaah AI: {error}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => fetchLoadAnalysis(true)}
-                  className="px-4 py-1.5 bg-marker-orange text-ink-charcoal font-mono-tag text-xs font-bold rounded-full border border-ink-charcoal shadow-[2px_2px_0px_#171717]"
-                >
-                  Coba Analisis Ulang
-                </button>
-              </div>
+              <AIErrorCard
+                title="Koneksi Telaah Beban Terkendala"
+                message={error}
+                technicalError={technicalError}
+                onRetry={() => fetchLoadAnalysis(true)}
+                isRetrying={loading}
+                continueUrl="/need-sheet"
+                continueLabel="Tetap Lanjut ke NEED (Pemetaan Kebutuhan)"
+              />
             )}
 
             {!loading && loadInsight && (

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { generateStructuredAI } from "@/lib/ai/client";
+import { generateStructuredAI, parseAIError } from "@/lib/ai/client";
 import { buildActionPrompt, SYSTEM_GUIDELINES } from "@/lib/ai/prompts";
 import { ActionOutputSchema } from "@/schemas/reflection";
 
@@ -35,9 +35,14 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error("Error in /api/ai/action:", error);
+    const parsed = parseAIError(error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Internal Server Error" },
-      { status: 500 }
+      {
+        success: false,
+        error: parsed.userFriendlyMessage,
+        technicalError: parsed.rawError,
+      },
+      { status: parsed.statusCode }
     );
   }
 }

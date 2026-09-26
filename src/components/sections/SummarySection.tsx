@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
+import { AIErrorCard } from "@/components/AIErrorCard";
 import { useJournalStore, useStoreHydrated } from "@/store/useJournalStore";
 import { SummaryStage } from "@/types/session";
 
@@ -27,6 +28,8 @@ export function SummarySection() {
 
   const [loading, setLoading] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [technicalError, setTechnicalError] = useState<string | null>(null);
 
   const hasAnyData = publicTags.length > 0 || actualFeelings.length > 0 || Boolean(loadInsight) || Boolean(needInsight);
 
@@ -43,6 +46,8 @@ export function SummarySection() {
     if (summaryData && !force) return;
     if (!hasAnyData) return;
     setLoading(true);
+    setError(null);
+    setTechnicalError(null);
 
     try {
       const res = await fetch("/api/ai/summary", {
@@ -60,9 +65,13 @@ export function SummarySection() {
       const json = await res.json();
       if (res.ok && json.success) {
         setSummaryData(json.data as SummaryStage);
+      } else {
+        setTechnicalError(json.technicalError || null);
+        setError(json.error || "Gagal menyusun refleksi penutup.");
       }
     } catch (err) {
       console.error("Failed to generate summary:", err);
+      setError(err instanceof Error ? err.message : "Terjadi kesalahan koneksi.");
     } finally {
       setLoading(false);
       isFetchingRef.current = false;
@@ -267,6 +276,28 @@ Privat di perangkatmu · Beyond "I'm Fine."
               </div>
             </div>
           </div>
+
+          {/* AI Loading state */}
+          {loading && (
+            <div className="max-w-xl mx-auto mt-6">
+              <MindfulLoading message="Menyatukan rangkuman refleksi perjalananmu..." />
+            </div>
+          )}
+
+          {/* AI Error state */}
+          {error && !summaryData && (
+            <div className="max-w-xl mx-auto mt-6">
+              <AIErrorCard
+                title="Refleksi Penutup Belum Terhubung"
+                message={error}
+                technicalError={technicalError}
+                onRetry={() => fetchSummary(true)}
+                isRetrying={loading}
+                continueUrl="/selesai"
+                continueLabel="Tetap Selesaikan Perjalanan"
+              />
+            </div>
+          )}
 
           {/* Reflection synthesis note */}
           {summaryData?.reflection && (

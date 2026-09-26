@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
+import { AIErrorCard } from "@/components/AIErrorCard";
 import { UserConfirmationCard } from "@/components/UserConfirmationCard";
 import { useJournalStore, useStoreHydrated } from "@/store/useJournalStore";
 import { MaskInsight } from "@/types/session";
@@ -25,6 +26,7 @@ export function MaskResultSection() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [technicalError, setTechnicalError] = useState<string | null>(null);
 
   const hasInputs = publicTags.length > 0 || actualFeelings.length > 0;
   const currentPublicTags = publicTags.length ? publicTags : ["(Belum memilih)"];
@@ -34,6 +36,7 @@ export function MaskResultSection() {
     if (maskInsight && !force) return;
     setLoading(true);
     setError(null);
+    setTechnicalError(null);
 
     try {
       const res = await fetch("/api/ai/mask", {
@@ -48,6 +51,7 @@ export function MaskResultSection() {
 
       const json = await res.json();
       if (!res.ok || !json.success) {
+        setTechnicalError(json.technicalError || null);
         throw new Error(json.error || "Gagal menganalisis MASK");
       }
 
@@ -171,18 +175,15 @@ export function MaskResultSection() {
             {loading && <MindfulLoading message="Sedang menelaah kontras topeng dirimu..." />}
 
             {error && (
-              <div className="p-4 bg-sticker-pink/30 border-[1.5px] border-ink-charcoal rounded-xl text-center space-y-2">
-                <p className="text-sm font-headline text-ink-charcoal font-bold">
-                  Belum berhasil menghubungkan telaah AI: {error}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => fetchMaskAnalysis(true)}
-                  className="px-4 py-1.5 bg-marker-orange text-ink-charcoal font-mono-tag text-xs font-bold rounded-full border border-ink-charcoal shadow-[2px_2px_0px_#171717]"
-                >
-                  Coba Analisis Ulang
-                </button>
-              </div>
+              <AIErrorCard
+                title="Koneksi Telaah Persona Terkendala"
+                message={error}
+                technicalError={technicalError}
+                onRetry={() => fetchMaskAnalysis(true)}
+                isRetrying={loading}
+                continueUrl="/brain-dump"
+                continueLabel="Tetap Lanjut ke LOAD (Curahan Pikiran)"
+              />
             )}
 
             {!loading && maskInsight && (

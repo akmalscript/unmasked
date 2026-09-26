@@ -211,12 +211,20 @@ export function BrainDumpSection() {
             <textarea
               className="w-full resize-none border-0 p-2 text-ink-charcoal text-base focus:ring-0 focus:outline-none placeholder:text-ink-charcoal/40 bg-transparent"
               rows={8}
+              maxLength={2000}
               placeholder="apa yang sedang memenuhi pikiranmu?"
               value={brainDump}
-              onChange={(e) => setBrainDump(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val.length <= 2000) {
+                  setBrainDump(val);
+                } else {
+                  setBrainDump(val.slice(0, 2000));
+                }
+              }}
             />
 
-            <div className="flex items-center justify-between pt-3 border-t-[1.5px] border-ink-charcoal/15 mt-2 font-mono-tag text-xs text-ink-charcoal/70">
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t-[1.5px] border-ink-charcoal/15 mt-2 font-mono-tag text-xs text-ink-charcoal/70">
               <button
                 type="button"
                 onClick={() => addStickyNote("act")}
@@ -225,7 +233,24 @@ export function BrainDumpSection() {
                 <span className="material-symbols-outlined text-[15px]">add_circle</span>
                 <span>+ Tambah poin beban</span>
               </button>
-              <span>{(brainDump || "").length} / 2000 kata</span>
+              <div className="flex items-center gap-2">
+                {(brainDump || "").length >= 2000 && (
+                  <span className="text-[10px] text-burnt-orange font-bold uppercase tracking-wider animate-pulse">
+                    Maksimal 2000 karakter
+                  </span>
+                )}
+                <span
+                  className={
+                    (brainDump || "").length >= 2000
+                      ? "text-burnt-orange font-bold"
+                      : (brainDump || "").length >= 1800
+                      ? "text-amber-800 font-bold"
+                      : "text-ink-charcoal/70"
+                  }
+                >
+                  {(brainDump || "").length} / 2000 karakter
+                </span>
+              </div>
             </div>
           </div>
 

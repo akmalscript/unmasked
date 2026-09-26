@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
+import { AIErrorCard } from "@/components/AIErrorCard";
 import { useJournalStore, useStoreHydrated } from "@/store/useJournalStore";
 import { ActionRecommendation } from "@/types/session";
 
@@ -27,6 +28,7 @@ export function ActionStepSection() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [technicalError, setTechnicalError] = useState<string | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [agreed, setAgreed] = useState(false);
 
@@ -37,6 +39,7 @@ export function ActionStepSection() {
     if (!hasNeedContext) return;
     setLoading(true);
     setError(null);
+    setTechnicalError(null);
 
     try {
       const primaryNeed = needInsight?.primaryNeed || {
@@ -66,6 +69,7 @@ export function ActionStepSection() {
 
       const json = await res.json();
       if (!res.ok || !json.success) {
+        setTechnicalError(json.technicalError || null);
         throw new Error(json.error || "Gagal menyusun langkah aksi.");
       }
 
@@ -157,17 +161,16 @@ export function ActionStepSection() {
         {loading && <MindfulLoading message="Menyusun langkah kecil yang realistis untukmu..." />}
 
         {error && (
-          <div className="p-5 bg-sticker-pink/30 border-[1.5px] border-ink-charcoal rounded-xl text-center space-y-2 mb-8 max-w-md">
-            <p className="text-sm font-headline text-ink-charcoal font-bold">
-              Gagal memuat rekomendasi: {error}
-            </p>
-            <button
-              type="button"
-              onClick={() => fetchActionRecommendations(true)}
-              className="px-4 py-1.5 bg-marker-orange text-ink-charcoal font-mono-tag text-xs font-bold rounded-full border border-ink-charcoal shadow-[2px_2px_0px_#171717]"
-            >
-              Coba Susun Ulang
-            </button>
+          <div className="w-full max-w-xl mb-8">
+            <AIErrorCard
+              title="Koneksi Rekomendasi Aksi Terkendala"
+              message={error}
+              technicalError={technicalError}
+              onRetry={() => fetchActionRecommendations(true)}
+              isRetrying={loading}
+              continueUrl="/summary"
+              continueLabel="Tetap Lanjut ke Halaman Rangkuman"
+            />
           </div>
         )}
 

@@ -96,8 +96,9 @@ export function ActualFeelingSection() {
                   id="inner-note"
                   placeholder="Jika ada kata lain yang ingin kamu luapkan sekarang..."
                   rows={2}
+                  maxLength={500}
                   value={feelingNote || ""}
-                  onChange={(e) => setFeelingNote(e.target.value)}
+                  onChange={(e) => setFeelingNote(e.target.value.slice(0, 500))}
                 ></textarea>
               </div>
             </div>
