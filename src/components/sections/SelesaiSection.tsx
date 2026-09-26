@@ -1,16 +1,73 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useJournalStore } from "@/store/useJournalStore";
+import { useJournalStore, useStoreHydrated } from "@/store/useJournalStore";
+import confetti from "canvas-confetti";
+import { ConfirmModal } from "@/components/ConfirmModal";
 
 export function SelesaiSection() {
   const router = useRouter();
-  const { resetSession, clearAllData } = useJournalStore();
+  const { resetSession, clearAllData, sessionId, actualFeelings, loadInsight } = useJournalStore();
+  const isHydrated = useStoreHydrated();
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  // Kalkulasi statistik dinamis
+  const sessionStartTime = parseInt(sessionId.split("-")[1] || "0");
+  const minutesSpent = isHydrated && sessionStartTime > 0
+    ? Math.max(1, Math.round((Date.now() - sessionStartTime) / 60000))
+    : 1;
+  const mainFocus = loadInsight?.themes?.[0]?.name || actualFeelings?.[0] || "Refleksi Diri";
+
+  useEffect(() => {
+    const colors = ["#F4B393", "#9B8E7B", "#F6D9D5", "#171717"]; // theme colors
+    
+    // Tembakan dari sisi kiri
+    confetti({
+      particleCount: 80,
+      angle: 60,
+      spread: 70,
+      origin: { x: 0, y: 0.6 },
+      colors: colors
+    });
+
+    // Tembakan dari sisi kanan
+    confetti({
+      particleCount: 80,
+      angle: 120,
+      spread: 70,
+      origin: { x: 1, y: 0.6 },
+      colors: colors
+    });
+  }, []);
+
+  const handlePageClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    // Hindari trigger jika yang diklik adalah tombol/link
+    if (target.closest('button') || target.closest('a')) return;
+
+    const x = e.clientX / window.innerWidth;
+    const y = e.clientY / window.innerHeight;
+
+    confetti({
+      particleCount: 15,
+      spread: 50,
+      origin: { x, y },
+      colors: ["#F4B393", "#9B8E7B", "#F6D9D5", "#171717"],
+      startVelocity: 15,
+      ticks: 50,
+      gravity: 0.9,
+      scalar: 0.8,
+      zIndex: 40
+    });
+  };
 
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-paper-base tactile-dot-grid relative selection:bg-marker-orange">
+    <div 
+      className="min-h-screen flex flex-col justify-between bg-paper-base tactile-dot-grid relative selection:bg-marker-orange"
+      onClick={handlePageClick}
+    >
       <header className="relative z-20 w-full bg-paper-base border-b-[1.5px] border-ink-charcoal shadow-[0px_2px_0px_#171717] sticky top-0">
         <div className="flex justify-between items-center w-full px-4 sm:px-6 md:px-12 max-w-[1120px] mx-auto py-2.5 sm:py-3.5">
           <Link
@@ -46,7 +103,7 @@ export function SelesaiSection() {
                   <span className="material-symbols-outlined text-[14px]">auto_stories</span>
                   Buku Refleksi Harian
                 </span>
-                <span>Sesi #04 Selesai</span>
+                <span>Sesi Selesai</span>
               </div>
 
               <div className="absolute -top-3 -left-3 bg-sticker-sage text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] px-3 py-1 rounded-full flex items-center gap-1 -rotate-3">
@@ -84,24 +141,18 @@ export function SelesaiSection() {
             </div>
 
             <div className="grid grid-cols-3 gap-3 max-w-md pt-2">
-              <div className="bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-3 shadow-[2px_2px_0px_#171717]">
+              <div className="col-span-1 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-3 shadow-[2px_2px_0px_#171717]">
                 <span className="block font-mono-tag text-[10px] text-ink-charcoal/70 uppercase">
                   Waktu
                 </span>
-                <span className="font-headline text-lg font-bold text-ink-charcoal">12 Menit</span>
+                <span className="font-headline text-base sm:text-lg font-bold text-ink-charcoal">{minutesSpent} Menit</span>
               </div>
-              <div className="bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-3 shadow-[2px_2px_0px_#171717]">
+              <div className="col-span-2 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-3 shadow-[2px_2px_0px_#171717]">
                 <span className="block font-mono-tag text-[10px] text-ink-charcoal/70 uppercase">
                   Fokus
                 </span>
-                <span className="font-headline text-lg font-bold text-ink-charcoal">Lega</span>
-              </div>
-              <div className="bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-3 shadow-[2px_2px_0px_#171717]">
-                <span className="block font-mono-tag text-[10px] text-ink-charcoal/70 uppercase">
-                  Rangkaian
-                </span>
-                <span className="font-headline text-lg font-bold text-marker-orange">
-                  Hari ke-4
+                <span className="font-headline text-base sm:text-lg font-bold text-ink-charcoal truncate block" title={mainFocus}>
+                  {mainFocus}
                 </span>
               </div>
             </div>
@@ -118,24 +169,15 @@ export function SelesaiSection() {
               <Link
                 href="/"
                 onClick={() => resetSession()}
-                className="inline-flex items-center justify-center gap-2 bg-paper-base text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] rounded-full px-5 py-2.5 font-mono-tag text-xs font-semibold hover:bg-paper-warm transition-colors"
+                className="inline-flex items-center justify-center gap-2 bg-paper-base text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] rounded-full px-5 py-2.5 font-mono-tag text-xs font-semibold hover:bg-paper-warm hover:translate-x-[1px] hover:translate-y-[1px] transition-all"
               >
                 <span className="material-symbols-outlined text-[16px]">home</span>
                 <span>Kembali ke Beranda</span>
               </Link>
               <button
                 type="button"
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      "Hapus semua data refleksi dan jejak di perangkat ini? Ini sangat disarankan jika kamu menggunakan perangkat umum/bersama."
-                    )
-                  ) {
-                    clearAllData();
-                    router.push("/");
-                  }
-                }}
-                className="inline-flex items-center justify-center gap-2 bg-paper-warm hover:bg-sticker-pink/40 text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] rounded-full px-4 py-2.5 font-mono-tag text-xs font-semibold transition-all"
+                onClick={() => setShowConfirm(true)}
+                className="inline-flex items-center justify-center gap-2 bg-paper-base hover:bg-sticker-pink text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] rounded-full px-4 py-2.5 font-mono-tag text-xs font-semibold hover:translate-x-[1px] hover:translate-y-[1px] transition-all"
                 title="Hapus penyimpanan lokal perangkat untuk privasi"
               >
                 <span className="material-symbols-outlined text-[15px]">delete_sweep</span>
@@ -155,6 +197,18 @@ export function SelesaiSection() {
           <span>Tarik napas dalam, hembuskan perlahan.</span>
         </div>
       </footer>
+
+      <ConfirmModal
+        isOpen={showConfirm}
+        onClose={() => setShowConfirm(false)}
+        onConfirm={() => {
+          clearAllData();
+          router.push("/");
+        }}
+        title="Hapus Jejak Perangkat?"
+        description="Ini akan menghapus semua data refleksi dan jejak di perangkat ini. Sangat disarankan jika kamu menggunakan perangkat umum/bersama."
+        confirmText="Ya, Hapus"
+      />
     </div>
   );
 }

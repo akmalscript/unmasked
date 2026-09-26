@@ -118,46 +118,48 @@ export function SummarySection() {
     );
   }
 
-  const handleDownload = () => {
-    const content = `================================================
-UNMASKED — Rangkuman Refleksi Perjalanan
-Tanggal: ${new Date().toLocaleDateString("id-ID")}
-================================================
+  const handleDownload = async () => {
+    const element = document.getElementById("receipt-export-content");
+    if (!element) return;
 
-1. TAMPILAN LUAR (WHAT YOU SHOW):
-${currentPublicTags.join(", ")}
+    try {
+      const { toPng } = await import("html-to-image");
+      const { jsPDF } = await import("jspdf");
 
-2. RUANG BATIN (WHAT YOU FEEL):
-${currentActualFeelings.join(", ")}
+      // Next.js dev server mengintersep console.error dan membuat layar merah.
+      // html-to-image secara internal memunculkan console.error saat mencoba membaca 
+      // stylesheet dari Google Fonts (CORS). Kita matikan sementara console.error untuk itu.
+      const originalError = console.error;
+      console.error = (...args) => {
+        if (args.join(" ").includes("cssRules")) return;
+        originalError(...args);
+      };
 
-3. BEBAN YANG SEDANG DIPIKUL (WHAT YOU CARRY):
-- ${currentThemes.join("\n- ")}
-Catatan: ${loadInsight?.summary || "-"}
+      const imgData = await toPng(element, {
+        pixelRatio: 3,
+        backgroundColor: "#FFF8F2",
+      });
 
-4. KEBUTUHAN DIRIMU (WHAT YOU MAY NEED):
-- ${currentNeeds.join("\n- ")}
-Penjelasan: ${needInsight?.explanation || "-"}
+      console.error = originalError;
 
-5. SATU LANGKAH KECILMU (YOUR NEXT STEP):
-${currentAction}
+      const rect = element.getBoundingClientRect();
+      const pdfWidth = 80; // Lebar standar struk (mm)
+      const pdfHeight = (rect.height * pdfWidth) / rect.width;
 
-6. PESAN PENUTUP:
-"${summaryData?.reflection || "Satu langkah kecil tetaplah sebuah langkah. Terima kasih sudah meluangkan waktu untuk mendengarkan dirimu hari ini."}"
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: [pdfWidth, pdfHeight],
+      });
 
-================================================
-Privat di perangkatmu · Beyond "I'm Fine."
-`;
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`Unmasked_Refleksi_${new Date().toISOString().slice(0, 10)}.pdf`);
 
-    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `Unmasked_Refleksi_${new Date().toISOString().slice(0, 10)}.txt`;
-    link.click();
-    URL.revokeObjectURL(url);
-
-    setDownloaded(true);
-    setTimeout(() => setDownloaded(false), 2500);
+      setDownloaded(true);
+      setTimeout(() => setDownloaded(false), 2500);
+    } catch (err) {
+      console.error("Failed to generate PDF:", err);
+    }
   };
 
   return (
@@ -182,167 +184,221 @@ Privat di perangkatmu · Beyond "I'm Fine."
             </p>
           </div>
 
-          {loading && (
-            <div className="max-w-xl mx-auto mb-8">
+          {loading ? (
+            <div className="max-w-xl mx-auto py-12">
               <MindfulLoading message="Menyatukan seluruh kepingan refleksimu..." />
             </div>
-          )}
-
-          {/* Timeline Steps */}
-          <div className="relative max-w-xl mx-auto space-y-6">
-            {/* 1. MASK */}
-            <div className="flex items-start gap-3 sm:gap-4">
-              <div className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] flex items-center justify-center font-mono-tag text-xs sm:text-sm font-bold">
-                01
-              </div>
-              <div className="flex-1 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-3.5 sm:p-4 shadow-[2px_2px_0px_#171717]">
-                <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-2 mb-2 font-mono-tag text-xs font-bold uppercase">
-                  <span>Step 1: MASK (Topeng vs Rasa)</span>
-                  <span className="material-symbols-outlined text-[16px]">theater_comedy</span>
-                </div>
-                <div className="text-xs space-y-1">
-                  <div>
-                    Tampilan luar: <strong>{currentPublicTags.join(" · ")}</strong>
+          ) : (
+            <div className="animate-in fade-in duration-500 w-full">
+              {/* Timeline Steps */}
+              <div className="relative max-w-xl mx-auto space-y-6">
+                {/* 1. MASK */}
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] flex items-center justify-center font-mono-tag text-xs sm:text-sm font-bold">
+                    01
                   </div>
-                  <div className="text-burnt-orange font-semibold">
-                    Ruang batin: <strong>{currentActualFeelings.join(" · ")}</strong>
+                  <div className="flex-1 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-3.5 sm:p-4 shadow-[2px_2px_0px_#171717]">
+                    <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-2 mb-2 font-mono-tag text-xs font-bold uppercase">
+                      <span>Step 1: MASK (Topeng vs Rasa)</span>
+                      <span className="material-symbols-outlined text-[16px]">theater_comedy</span>
+                    </div>
+                    <div className="text-xs space-y-1">
+                      <div>
+                        Tampilan luar: <strong>{currentPublicTags.join(" · ")}</strong>
+                      </div>
+                      <div className="text-burnt-orange font-semibold">
+                        Ruang batin: <strong>{currentActualFeelings.join(" · ")}</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. LOAD */}
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] flex items-center justify-center font-mono-tag text-xs sm:text-sm font-bold">
+                    02
+                  </div>
+                  <div className="flex-1 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-3.5 sm:p-4 shadow-[2px_2px_0px_#171717]">
+                    <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-2 mb-2 font-mono-tag text-xs font-bold uppercase">
+                      <span>Step 2: LOAD (Beban yang Diurai)</span>
+                      <span className="material-symbols-outlined text-[16px]">weight</span>
+                    </div>
+                    <p className="text-xs text-ink-charcoal/80 mb-2">Tema utama yang sedang dipikul:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {currentThemes.map((theme, i) => (
+                        <span
+                          key={i}
+                          className="px-2.5 py-1 rounded-full bg-sticker-blue/40 border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold"
+                        >
+                          {theme}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. NEED */}
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] flex items-center justify-center font-mono-tag text-xs sm:text-sm font-bold">
+                    03
+                  </div>
+                  <div className="flex-1 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-3.5 sm:p-4 shadow-[2px_2px_0px_#171717]">
+                    <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-2 mb-2 font-mono-tag text-xs font-bold uppercase">
+                      <span>Step 3: NEED (Kebutuhan Personal)</span>
+                      <span className="material-symbols-outlined text-[16px]">favorite</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {currentNeeds.map((need, i) => (
+                        <span
+                          key={i}
+                          className="px-2.5 py-1 rounded-full bg-sticker-sage border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold"
+                        >
+                          {need}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4. ACTION */}
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] flex items-center justify-center font-mono-tag text-xs sm:text-sm font-bold">
+                    04
+                  </div>
+                  <div className="flex-1 bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl p-3.5 sm:p-4 shadow-[3px_3px_0px_#171717]">
+                    <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-2 mb-2 font-mono-tag text-xs font-bold uppercase">
+                      <span>Step 4: ACTION (Langkah Pilihanmu)</span>
+                      <span className="material-symbols-outlined text-marker-orange text-[16px]">
+                        auto_awesome
+                      </span>
+                    </div>
+                    <p className="text-xs sm:text-sm font-headline italic font-semibold text-ink-charcoal">
+                      “{currentAction}”
+                    </p>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* 2. LOAD */}
-            <div className="flex items-start gap-3 sm:gap-4">
-              <div className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] flex items-center justify-center font-mono-tag text-xs sm:text-sm font-bold">
-                02
-              </div>
-              <div className="flex-1 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-3.5 sm:p-4 shadow-[2px_2px_0px_#171717]">
-                <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-2 mb-2 font-mono-tag text-xs font-bold uppercase">
-                  <span>Step 2: LOAD (Beban yang Diurai)</span>
-                  <span className="material-symbols-outlined text-[16px]">weight</span>
-                </div>
-                <p className="text-xs text-ink-charcoal/80 mb-2">Tema utama yang sedang dipikul:</p>
-                <div className="flex flex-wrap gap-2">
-                  {currentThemes.map((theme, i) => (
-                    <span
-                      key={i}
-                      className="px-2.5 py-1 rounded-full bg-sticker-blue/40 border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold"
-                    >
-                      {theme}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
 
-            {/* 3. NEED */}
-            <div className="flex items-start gap-3 sm:gap-4">
-              <div className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] flex items-center justify-center font-mono-tag text-xs sm:text-sm font-bold">
-                03
-              </div>
-              <div className="flex-1 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-3.5 sm:p-4 shadow-[2px_2px_0px_#171717]">
-                <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-2 mb-2 font-mono-tag text-xs font-bold uppercase">
-                  <span>Step 3: NEED (Kebutuhan Personal)</span>
-                  <span className="material-symbols-outlined text-[16px]">favorite</span>
+              {/* AI Error state */}
+              {error && !summaryData && (
+                <div className="max-w-xl mx-auto mt-6">
+                  <AIErrorCard
+                    title="Refleksi Penutup Belum Terhubung"
+                    message={error}
+                    technicalError={technicalError}
+                    onRetry={() => fetchSummary(true)}
+                    isRetrying={loading}
+                    continueUrl="/selesai"
+                    continueLabel="Tetap Selesaikan Perjalanan"
+                  />
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {currentNeeds.map((need, i) => (
-                    <span
-                      key={i}
-                      className="px-2.5 py-1 rounded-full bg-sticker-sage border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold"
-                    >
-                      {need}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
+              )}
 
-            {/* 4. ACTION */}
-            <div className="flex items-start gap-3 sm:gap-4">
-              <div className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] flex items-center justify-center font-mono-tag text-xs sm:text-sm font-bold">
-                04
-              </div>
-              <div className="flex-1 bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl p-3.5 sm:p-4 shadow-[3px_3px_0px_#171717]">
-                <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-2 mb-2 font-mono-tag text-xs font-bold uppercase">
-                  <span>Step 4: ACTION (Langkah Pilihanmu)</span>
-                  <span className="material-symbols-outlined text-marker-orange text-[16px]">
-                    auto_awesome
+              {/* Reflection synthesis note */}
+              {summaryData?.reflection && (
+                <div className="max-w-xl mx-auto mt-6 sm:mt-8 p-4 bg-[#FFF8F2] border-[1.5px] border-ink-charcoal rounded-xl text-center shadow-[2px_2px_0px_#171717]">
+                  <span className="font-mono-tag text-[10px] text-burnt-orange font-bold uppercase block mb-1">
+                    Catatan Penutup untuk Hatimu:
                   </span>
+                  <p className="font-headline text-xs sm:text-sm text-ink-charcoal font-medium leading-relaxed">
+                    “{summaryData.reflection}”
+                  </p>
                 </div>
-                <p className="text-xs sm:text-sm font-headline italic font-semibold text-ink-charcoal">
-                  “{currentAction}”
-                </p>
+              )}
+
+              {/* Bottom Actions */}
+              <div className="mt-8 pt-6 border-t-[1.5px] border-ink-charcoal/20 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
+                <button
+                  type="button"
+                  onClick={handleDownload}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 sm:py-3 rounded-full bg-paper-base text-ink-charcoal border-[1.5px] border-ink-charcoal font-mono-tag text-xs uppercase shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] transition-all font-bold"
+                >
+                  <span className="material-symbols-outlined text-[16px]">download</span>
+                  <span>{downloaded ? "✓ Tersimpan di Perangkat" : "Unduh File Rangkuman"}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    resetSession();
+                    router.push("/onboarding");
+                  }}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 sm:py-3 rounded-full bg-paper-warm text-ink-charcoal border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold uppercase shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] transition-all"
+                >
+                  <span className="material-symbols-outlined text-[16px]">refresh</span>
+                  <span>Mulai Sesi Baru</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => router.push("/selesai")}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-2.5 sm:py-3 rounded-full bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold uppercase shadow-[3px_3px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] transition-all"
+                >
+                  <span>Selesai Sesi</span>
+                  <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                </button>
               </div>
             </div>
-          </div>
-
-          {/* AI Loading state */}
-          {loading && (
-            <div className="max-w-xl mx-auto mt-6">
-              <MindfulLoading message="Menyatukan rangkuman refleksi perjalananmu..." />
-            </div>
           )}
-
-          {/* AI Error state */}
-          {error && !summaryData && (
-            <div className="max-w-xl mx-auto mt-6">
-              <AIErrorCard
-                title="Refleksi Penutup Belum Terhubung"
-                message={error}
-                technicalError={technicalError}
-                onRetry={() => fetchSummary(true)}
-                isRetrying={loading}
-                continueUrl="/selesai"
-                continueLabel="Tetap Selesaikan Perjalanan"
-              />
-            </div>
-          )}
-
-          {/* Reflection synthesis note */}
-          {summaryData?.reflection && (
-            <div className="max-w-xl mx-auto mt-6 sm:mt-8 p-4 bg-[#FFF8F2] border-[1.5px] border-ink-charcoal rounded-xl text-center shadow-[2px_2px_0px_#171717]">
-              <span className="font-mono-tag text-[10px] text-burnt-orange font-bold uppercase block mb-1">
-                Catatan Penutup untuk Hatimu:
-              </span>
-              <p className="font-headline text-xs sm:text-sm text-ink-charcoal font-medium leading-relaxed">
-                “{summaryData.reflection}”
-              </p>
-            </div>
-          )}
-
-          {/* Bottom Actions */}
-          <div className="mt-8 pt-6 border-t-[1.5px] border-ink-charcoal/20 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4">
-            <button
-              type="button"
-              onClick={handleDownload}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 sm:py-3 rounded-full bg-paper-base text-ink-charcoal border-[1.5px] border-ink-charcoal font-mono-tag text-xs uppercase shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] transition-all font-bold"
-            >
-              <span className="material-symbols-outlined text-[16px]">download</span>
-              <span>{downloaded ? "✓ Tersimpan di Perangkat" : "Unduh File Rangkuman"}</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                resetSession();
-                router.push("/onboarding");
-              }}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 sm:py-3 rounded-full bg-paper-warm text-ink-charcoal border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold uppercase shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] transition-all"
-            >
-              <span className="material-symbols-outlined text-[16px]">refresh</span>
-              <span>Mulai Sesi Baru</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => router.push("/selesai")}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-2.5 sm:py-3 rounded-full bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold uppercase shadow-[3px_3px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] transition-all"
-            >
-              <span>Selesai Sesi</span>
-              <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-            </button>
-          </div>
         </div>
       </main>
+
+      {/* Hidden Receipt for PDF Export */}
+      <div className="fixed top-[200vh] left-[200vw] pointer-events-none opacity-0">
+        <div id="receipt-export-content" className="w-[380px] bg-[#FFF8F2] border-[2px] border-ink-charcoal p-6 font-mono-tag text-ink-charcoal">
+          {/* Header */}
+          <div className="text-center border-b-[2px] border-dashed border-ink-charcoal pb-4 mb-4">
+            <h2 className="font-headline font-bold text-2xl uppercase tracking-widest mb-1">UNMASKED</h2>
+            <p className="text-[10px] uppercase font-bold tracking-wider">Tanda Terima Refleksi Batin</p>
+            <p className="text-[10px] mt-1">{new Date().toLocaleDateString("id-ID")} - {new Date().toLocaleTimeString("id-ID")}</p>
+          </div>
+
+          {/* Items */}
+          <div className="space-y-4 text-[12px] leading-relaxed">
+            <div>
+              <p className="font-bold border-b-[1.5px] border-ink-charcoal/30 pb-1 mb-1">1. TAMPILAN LUAR (WHAT YOU SHOW)</p>
+              <p>{currentPublicTags.join(" · ")}</p>
+            </div>
+            <div>
+              <p className="font-bold border-b-[1.5px] border-ink-charcoal/30 pb-1 mb-1">2. RUANG BATIN (WHAT YOU FEEL)</p>
+              <p>{currentActualFeelings.join(" · ")}</p>
+            </div>
+            <div>
+              <p className="font-bold border-b-[1.5px] border-ink-charcoal/30 pb-1 mb-1">3. BEBAN PIKIRAN (WHAT YOU CARRY)</p>
+              <ul className="list-none space-y-1 mb-2">
+                {currentThemes.map((t, i) => <li key={i}>- {t}</li>)}
+              </ul>
+              <p className="text-ink-charcoal/80 italic">Catatan: {loadInsight?.summary || "-"}</p>
+            </div>
+            <div>
+              <p className="font-bold border-b-[1.5px] border-ink-charcoal/30 pb-1 mb-1">4. KEBUTUHAN DIRI (WHAT YOU MAY NEED)</p>
+              <ul className="list-none space-y-1 mb-2">
+                {currentNeeds.map((n, i) => <li key={i}>- {n}</li>)}
+              </ul>
+              <p className="text-ink-charcoal/80 italic">Penjelasan: {needInsight?.explanation || "-"}</p>
+            </div>
+            <div>
+              <p className="font-bold border-b-[1.5px] border-ink-charcoal/30 pb-1 mb-1">5. LANGKAH KECIL (YOUR NEXT STEP)</p>
+              <p className="font-headline italic font-bold">"{currentAction}"</p>
+            </div>
+
+            {summaryData?.reflection && (
+              <div className="mt-4 pt-4 border-t-[1.5px] border-ink-charcoal/30">
+                <p className="font-bold pb-1 mb-1">6. CATATAN PENUTUP (A FINAL NOTE)</p>
+                <p>"{summaryData.reflection}"</p>
+              </div>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="text-center border-t-[2px] border-dashed border-ink-charcoal pt-5 mt-5">
+            <div className="w-10 h-10 mx-auto border-[1.5px] border-ink-charcoal rounded-full flex items-center justify-center mb-3 -rotate-6">
+              <span className="material-symbols-outlined text-[20px]">done_all</span>
+            </div>
+            <p className="font-script text-xl text-burnt-orange mb-2">"look how much you unpacked"</p>
+            <p className="text-[10px] uppercase font-bold tracking-widest mt-2">Beyond "I'm Fine"</p>
+          </div>
+        </div>
+      </div>
 
       <BottomDock
         backTo="/action-step"
