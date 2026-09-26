@@ -20,20 +20,7 @@ export function LandingSection() {
             <span className="w-3.5 h-3.5 bg-marker-orange border-[1.5px] border-ink-charcoal rotate-45 inline-block shadow-[1px_1px_0px_#171717]"></span>
             UNMASKED
           </Link>
-          <nav className="hidden md:flex items-center gap-8">
-            <Link
-              className="font-mono-tag text-xs text-ink-charcoal/80 hover:text-burnt-orange transition-colors"
-              href="/onboarding"
-            >
-              Cara Kerja
-            </Link>
-            <Link
-              className="font-mono-tag text-xs text-ink-charcoal/80 hover:text-burnt-orange transition-colors"
-              href="/onboarding"
-            >
-              Tentang Ruang
-            </Link>
-          </nav>
+
           <div className="flex items-center gap-2 sm:gap-3">
             <Link
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border-[1.5px] border-ink-charcoal bg-surface text-ink-cocoa font-mono-tag text-xs shadow-[2px_2px_0px_#171717] hover:bg-paper-warm active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#171717] transition-all"
@@ -105,7 +92,7 @@ export function LandingSection() {
                   <img
                     alt="Reflektif dan tenang"
                     className="w-full h-full object-cover"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7fcF3HQQlrdz3qMIIctd1lClJEIhQbrapWgBmrRXuB4LQrKet21kZScIRb4slE7-V522Fa866VTcAnA-Bp4bP0Zz4WnnDq6KmvRp_DHM2zNI-N-jM9lnsLFvtG34eq380LEK2TyNKkDopD-3MxJTmB_Zr7WHlTJ2FKGrFPOns8ycYiJMcdMsJWWIV2q8q0w8nfK_4-bpGGir_bD7E24IVEHQm6-LS6cc1tfY7BYFdsAWorguYcY4Trg"
+                    src="/study-desk.png"
                   />
                 </div>
 
