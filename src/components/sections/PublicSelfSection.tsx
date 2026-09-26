@@ -56,19 +56,8 @@ export function PublicSelfSection() {
       <Header subtitle="MASK 01/04" showSteps={true} stepNumber={1} totalSteps={4} />
 
       <main className="flex-grow w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 pt-6 md:pt-12">
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-5 md:mb-8">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="bg-marker-orange text-ink-charcoal font-mono-tag text-xs font-bold px-3 py-1 rounded-full border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] flex items-center gap-1.5 uppercase">
-              <span className="w-2 h-2 rounded-full bg-paper-base border border-ink-charcoal"></span>
-              MASK
-            </div>
-            <span className="font-mono-tag text-xs text-ink-charcoal/70">
-              Tahap 01 • Eksplorasi Persona Publik
-            </span>
-          </div>
-        </div>
 
-        <div className="relative bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl shadow-[4px_4px_0px_#171717] p-5 sm:p-8 md:p-12 mb-10">
+        <div className="relative bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl shadow-[4px_4px_0px_#171717] p-5 sm:p-8 md:p-10">
           {/* Desktop Sticker Badge */}
           <aside className="hidden md:flex absolute -top-8 right-8 z-10 rotate-6 hover:rotate-2 transition-transform duration-300">
             <div className="bg-sticker-blue border-[1.5px] border-ink-charcoal rounded-xl p-3 md:p-4 shadow-[3px_3px_0px_#171717] flex flex-col items-center max-w-[130px]">
@@ -77,10 +66,6 @@ export function PublicSelfSection() {
                   theater_comedy
                 </span>
               </div>
-              <span className="font-mono-tag text-[10px] font-bold text-ink-charcoal uppercase">
-                PUBLIC SELF
-              </span>
-              <span className="text-[10px] text-ink-charcoal/80">lapisan pertama</span>
             </div>
           </aside>
 
@@ -98,25 +83,14 @@ export function PublicSelfSection() {
             <h1 className="font-headline text-2xl sm:text-3xl md:text-4xl text-ink-charcoal lowercase tracking-tight leading-snug mb-2">
               “bagaimana kamu terlihat di mata orang lain?”
             </h1>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="material-symbols-outlined text-marker-orange text-xl rotate-45 select-none">
-                subdirectory_arrow_right
-              </span>
-              <span className="font-mono-tag text-xs md:text-sm text-marker-orange font-bold italic">
-                “the version they see.”
-              </span>
-            </div>
             <p className="text-sm md:text-base text-ink-charcoal/90">
-              Pilih beberapa kata yang menurutmu menggambarkan dirimu di mata orang lain. Tidak ada
-              penilaian benar atau salah—hanya kejujuran atas apa yang kamu tampilkan.
+              Pilih beberapa kata yang menurutmu menggambarkan dirimu di mata orang lain.
             </p>
           </div>
 
           <div className="space-y-4">
             <div className="flex items-center justify-between pb-2 border-b-[1.5px] border-ink-charcoal/20">
               <span className="font-mono-tag text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-ink-charcoal">
-                <span className="material-symbols-outlined text-[16px]">touch_app</span>
-                Pilihan Sifat Publik
               </span>
               <span className="font-mono-tag text-xs text-ink-charcoal/70">
                 {selected.length} kata dipilih
@@ -131,18 +105,16 @@ export function PublicSelfSection() {
                     key={tag}
                     onClick={() => togglePublicTag(tag)}
                     type="button"
-                    className={`select-none flex items-center gap-2 px-4 py-2.5 rounded-full border-[1.5px] border-ink-charcoal font-mono-tag text-xs sm:text-sm transition-all shadow-[2px_2px_0px_#171717] active:translate-x-[2px] active:translate-y-[2px] ${
-                      isSelected
-                        ? "bg-paper-warm text-ink-charcoal font-bold"
-                        : "bg-paper-base text-ink-charcoal hover:bg-paper-warm"
-                    }`}
+                    className={`select-none flex items-center gap-2 px-4 py-2.5 rounded-full border-[1.5px] border-ink-charcoal font-mono-tag text-xs sm:text-sm transition-all shadow-[2px_2px_0px_#171717] active:translate-x-[2px] active:translate-y-[2px] ${isSelected
+                      ? "bg-paper-warm text-ink-charcoal font-bold"
+                      : "bg-paper-base text-ink-charcoal hover:bg-paper-warm"
+                      }`}
                   >
                     <span
-                      className={`w-3.5 h-3.5 rounded-full border border-ink-charcoal flex items-center justify-center text-[10px] ${
-                        isSelected
-                          ? "bg-marker-orange text-ink-charcoal"
-                          : "bg-surface"
-                      }`}
+                      className={`w-3.5 h-3.5 rounded-full border border-ink-charcoal flex items-center justify-center text-[10px] ${isSelected
+                        ? "bg-marker-orange text-ink-charcoal"
+                        : "bg-surface"
+                        }`}
                     >
                       {isSelected && (
                         <span className="material-symbols-outlined text-[11px] font-bold">
@@ -187,21 +159,9 @@ export function PublicSelfSection() {
 
           <div className="mt-8 pt-5 border-t-[1.5px] border-dashed border-ink-charcoal/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="flex items-start gap-3 max-w-[620px]">
-              <span className="material-symbols-outlined text-marker-orange text-2xl mt-0.5">
-                tips_and_updates
-              </span>
-              <div>
-                <h4 className="font-mono-tag text-xs font-bold text-ink-charcoal">
-                  Catatan Pensil:
-                </h4>
-                <p className="text-xs text-ink-charcoal/80 leading-relaxed">
-                  Topeng ini bukan tentang kebohongan, melainkan cara kita beradaptasi saat
-                  berhadapan dengan dunia luar.
-                </p>
-              </div>
             </div>
             <div className="px-3 py-1 border-[1.5px] border-ink-charcoal rounded bg-sticker-sage/30 text-ink-charcoal font-mono-tag text-[10px] uppercase tracking-wider rotate-1 shadow-[1.5px_1.5px_0px_#171717]">
-              REFLEKSI AKTIF
+              REFLEKSI
             </div>
           </div>
         </div>
