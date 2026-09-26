@@ -79,7 +79,7 @@ export function PublicSelfSection() {
             </span>
           </div>
 
-          <div className="max-w-[700px] mb-6 sm:mb-8">
+          <div className="max-w-[800px] mb-6 sm:mb-8">
             <h1 className="font-headline text-2xl sm:text-3xl md:text-4xl text-ink-charcoal lowercase tracking-tight leading-snug mb-2">
               “bagaimana kamu terlihat di mata orang lain?”
             </h1>
@@ -167,7 +167,7 @@ export function PublicSelfSection() {
         </div>
       </main>
 
-      <BottomDock backTo="/onboarding" nextTo="/actual-feeling" centerLabel="MASK: Persona Publik" />
+      <BottomDock backTo="/onboarding" nextTo="/actual-feeling" centerLabel="" />
 
       {/* Custom Tag Modal */}
       {showModal && (

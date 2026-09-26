@@ -27,32 +27,40 @@ export function ActualFeelingSection() {
     <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-28">
       <Header subtitle="MASK 02/04" showSteps={true} stepNumber={1} totalSteps={4} />
 
-      <main className="max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 pt-6 md:pt-12 flex-grow">
-        <div className="flex items-center gap-2 sm:gap-3 mb-5">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] -rotate-1 rounded font-script text-lg font-bold">
-            MASK
-          </div>
-          <span className="font-mono-tag text-xs text-outline">Bagian 2 : Lapisan Terdalam Batin</span>
-        </div>
+      <main className="flex-grow w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 pt-6 md:pt-12">
 
-        <div className="relative bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl shadow-[4px_4px_0px_#171717] p-5 sm:p-8 md:p-10">
-          <div className="relative max-w-2xl z-10 mb-6">
-            <h1 className="font-headline text-2xl sm:text-3xl md:text-4xl font-bold text-ink-charcoal tracking-tight lowercase mb-2">
-              “bagaimana kamu benar-benar merasa?”
+        <div className="relative bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl shadow-[4px_4px_0px_#171717] p-4 sm:p-6 md:p-8">
+          {/* Desktop Sticker Badge */}
+          <aside className="hidden md:flex absolute -top-8 right-8 z-10 rotate-6 hover:rotate-2 transition-transform duration-300">
+            <div className="bg-sticker-blue border-[1.5px] border-ink-charcoal rounded-xl p-3 md:p-4 shadow-[3px_3px_0px_#171717] flex flex-col items-center max-w-[130px]">
+              <div className="w-12 h-12 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal flex items-center justify-center mb-1 shadow-[1px_1px_0px_#171717]">
+                <span className="material-symbols-outlined text-2xl text-ink-charcoal">
+                  theater_comedy
+                </span>
+              </div>
+            </div>
+          </aside>
+
+          {/* Mobile Badge - Clean inline position so it never overlaps the title */}
+          <div className="md:hidden flex items-center gap-2 mb-3 bg-sticker-blue/30 border border-ink-charcoal px-3 py-1 rounded-lg w-fit shadow-[1px_1px_0px_#171717]">
+            <span className="material-symbols-outlined text-[16px] text-ink-charcoal">
+              theater_comedy
+            </span>
+            <span className="font-mono-tag text-[10px] font-bold text-ink-charcoal uppercase tracking-wider">
+              ACTUAL FEELING · LAPISAN KEDUA
+            </span>
+          </div>
+          <div className="max-w-[800px] mb-4 sm:mb-6">
+            <h1 className="font-headline text-2xl sm:text-3xl md:text-4xl text-ink-charcoal lowercase tracking-tight leading-snug mb-2">
+              “bagaimana perasaanmu sebenarnya?”
             </h1>
-            <p className="text-sm md:text-base text-ink-charcoal/80">
-              Pilih beberapa kata yang paling menggambarkan perasaanmu saat ini. Tidak perlu
-              disaring, tidak perlu ditutupi.
+            <p className="text-sm md:text-base text-ink-charcoal/90">
+              Pilih beberapa kata yang paling menggambarkan perasaanmu saat ini.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-8">
-              <div className="flex items-center gap-2 mb-3 text-marker-orange font-script text-xl font-bold select-none">
-                <span>{"“what's underneath?”"}</span>
-                <span className="material-symbols-outlined text-lg">draw</span>
-              </div>
-
+          <div className="w-full">
+            <div className="w-full">
               <div className="flex flex-wrap gap-2 sm:gap-3">
                 {FEELING_OPTIONS.map((item) => {
                   const isSelected = selected.includes(item);
@@ -61,16 +69,14 @@ export function ActualFeelingSection() {
                       key={item}
                       onClick={() => toggleActualFeeling(item)}
                       type="button"
-                      className={`flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] font-mono-tag text-xs sm:text-sm transition-all ${
-                        isSelected
-                          ? "bg-paper-warm text-ink-charcoal font-bold"
-                          : "bg-paper-base text-ink-charcoal hover:bg-paper-warm"
-                      }`}
+                      className={`flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] font-mono-tag text-xs sm:text-sm transition-all ${isSelected
+                        ? "bg-paper-warm text-ink-charcoal font-bold"
+                        : "bg-paper-base text-ink-charcoal hover:bg-paper-warm"
+                        }`}
                     >
                       <span
-                        className={`w-2 h-2 rounded-full border border-ink-charcoal ${
-                          isSelected ? "bg-marker-orange" : "bg-transparent"
-                        }`}
+                        className={`w-2 h-2 rounded-full border border-ink-charcoal ${isSelected ? "bg-marker-orange" : "bg-transparent"
+                          }`}
                       ></span>
                       <span>{item}</span>
                       {isSelected && (
@@ -83,7 +89,7 @@ export function ActualFeelingSection() {
                 })}
               </div>
 
-              <div className="mt-8 p-4 bg-paper-warm rounded-lg border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717]">
+              <div className="mt-6 p-4 bg-paper-warm rounded-lg border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717]">
                 <label
                   className="font-mono-tag text-xs uppercase tracking-wider text-ink-charcoal font-bold flex items-center gap-1.5 mb-2"
                   htmlFor="inner-note"
@@ -103,40 +109,11 @@ export function ActualFeelingSection() {
               </div>
             </div>
 
-            <div className="lg:col-span-4 flex flex-col items-center gap-6">
-              <div className="w-full max-w-[240px] bg-sticker-pink p-5 rounded-2xl border-[1.5px] border-ink-charcoal shadow-[4px_4px_0px_#171717] rotate-2">
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-20 h-24 my-2 relative flex flex-col items-center justify-center border-[1.5px] border-ink-charcoal rounded-t-full rounded-b-[36px] bg-paper-base shadow-[2px_2px_0px_#171717]">
-                    <div className="flex gap-3 mb-2">
-                      <div className="w-2.5 h-1 bg-ink-charcoal rounded-full rotate-6"></div>
-                      <div className="w-2.5 h-1 bg-ink-charcoal rounded-full -rotate-6"></div>
-                    </div>
-                    <div className="w-3.5 h-0.5 bg-ink-charcoal rounded-full mt-1"></div>
-                  </div>
-                  <span className="font-mono-tag text-[10px] uppercase font-bold bg-paper-base px-2 py-0.5 border border-ink-charcoal rounded mt-2">
-                    Ruang Otentik
-                  </span>
-                  <p className="text-xs text-ink-cocoa mt-2 italic font-script text-base" suppressHydrationWarning>
-                    {`"Di balik kata 'baik-baik saja', ada jiwa yang hanya butuh diakui lelahnya."`}
-                  </p>
-                </div>
-              </div>
-
-              <div className="w-full max-w-[240px] bg-sticker-sage p-4 rounded-xl border-[1.5px] border-ink-charcoal shadow-[3px_3px_0px_#171717] -rotate-1">
-                <div className="font-mono-tag text-xs font-bold text-ink-charcoal mb-1 flex items-center gap-1">
-                  <span className="material-symbols-outlined text-[15px]">lightbulb</span>
-                  PENGINGAT KECIL
-                </div>
-                <p className="text-xs text-ink-charcoal/90">
-                  Semua emosi valid. Mengakui kewalahan adalah langkah awal kembali bernapas lega.
-                </p>
-              </div>
-            </div>
           </div>
         </div>
       </main>
 
-      <BottomDock backTo="/public-self" nextTo="/mask-result" centerLabel="MASK: Perasaan Sebenarnya" />
+      <BottomDock backTo="/public-self" nextTo="/mask-result" centerLabel="" />
     </div>
   );
 }
