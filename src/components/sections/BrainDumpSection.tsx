@@ -220,11 +220,17 @@ export function BrainDumpSection() {
               <button
                 type="button"
                 onClick={() => addStickyNote("act")}
-                className="flex items-center gap-1 text-ink-charcoal hover:text-burnt-orange underline decoration-marker-orange transition-colors shrink-0 font-medium"
+                className="flex items-center gap-1.5 text-ink-charcoal hover:text-burnt-orange transition-colors shrink-0 font-medium group cursor-pointer"
               >
-                <span className="material-symbols-outlined text-[15px]">add_circle</span>
-                <span className="hidden sm:inline">+ Tambah poin beban</span>
-                <span className="sm:hidden">+ Poin beban</span>
+                <span className="material-symbols-outlined text-[16px] text-marker-orange group-hover:scale-110 transition-transform">
+                  add_circle
+                </span>
+                <span className="hidden sm:inline underline decoration-marker-orange underline-offset-2">
+                  Tambah poin beban
+                </span>
+                <span className="sm:hidden underline decoration-marker-orange underline-offset-2">
+                  Poin beban
+                </span>
               </button>
               <div className="flex items-center gap-1 shrink-0 text-right">
                 <span>
