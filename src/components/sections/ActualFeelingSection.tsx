@@ -25,7 +25,7 @@ export function ActualFeelingSection() {
 
   return (
     <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-28">
-      <Header subtitle="MASK 02/04" showSteps={true} stepNumber={1} totalSteps={4} />
+      <Header subtitle="MASK 02/03" showSteps={true} stepNumber={1} totalSteps={4} />
 
       <main className="flex-grow w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 pt-6 md:pt-12">
 
