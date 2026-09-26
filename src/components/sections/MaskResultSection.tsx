@@ -90,11 +90,8 @@ export function MaskResultSection() {
 
           <div className="text-center mb-8 pt-3">
             <h1 className="font-headline text-2xl sm:text-3xl md:text-4xl text-ink-charcoal lowercase tracking-tight leading-snug">
-              “ada jarak antara yang kamu tampilkan dan rasakan.”
+              “ada jarak antara yang kamu tampilkan dan yang kamu rasakan.”
             </h1>
-            <p className="text-xs sm:text-sm text-ink-charcoal/70 mt-2 max-w-md mx-auto">
-              Memahami dua lapisan diri yang kamu bawa dalam interaksi sehari-hari.
-            </p>
           </div>
 
           {!hasInputs && !maskInsight && (
@@ -120,9 +117,9 @@ export function MaskResultSection() {
             {/* Left Card: Tampilan luar */}
             <div className="w-full sm:w-1/2 bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl p-5 shadow-[4px_4px_0px_#171717] -rotate-1">
               <div className="flex items-center justify-between mb-3 border-b border-ink-charcoal/20 pb-2">
-                <span className="font-mono-tag text-xs text-ink-charcoal/70 lowercase flex items-center gap-1 font-semibold">
+                <span className="font-mono-tag text-xs text-ink-charcoal/70 flex items-center gap-1 font-semibold">
                   <span className="w-2 h-2 rounded-full bg-sticker-blue border border-ink-charcoal"></span>
-                  tampilan luar (public self)
+                  YANG DITAMPILKAN
                 </span>
                 <span className="material-symbols-outlined text-ink-charcoal/40 text-[16px]">
                   visibility
@@ -146,9 +143,9 @@ export function MaskResultSection() {
             {/* Right Card: Perasaan batin */}
             <div className="w-full sm:w-1/2 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-5 shadow-[5px_5px_0px_#171717] rotate-1">
               <div className="flex items-center justify-between mb-3 border-b border-ink-charcoal/20 pb-2">
-                <span className="font-mono-tag text-xs text-burnt-orange font-bold lowercase flex items-center gap-1">
+                <span className="font-mono-tag text-xs text-burnt-orange font-bold flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-marker-orange border border-ink-charcoal"></span>
-                  ruang batin (actual feeling)
+                  YANG DIRASAKAN
                 </span>
                 <span className="material-symbols-outlined text-marker-orange text-[16px]">
                   favorite
@@ -200,12 +197,12 @@ export function MaskResultSection() {
                           key={i}
                           className="p-3.5 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl shadow-[2px_2px_0px_#171717]"
                         >
-                          <div className="flex items-center gap-2 font-mono-tag text-xs font-bold mb-1">
-                            <span className="text-sticker-blue bg-paper-base border border-ink-charcoal px-2 py-0.5 rounded">
+                          <div className="flex items-center gap-2 font-mono-tag text-xs font-bold mb-2">
+                            <span className="bg-sticker-blue/40 text-ink-charcoal border-[1.5px] border-ink-charcoal px-3 py-1 rounded-full shadow-[1.5px_1.5px_0px_#171717]">
                               {c.publicTrait}
                             </span>
                             <span className="text-ink-charcoal">↔</span>
-                            <span className="text-burnt-orange bg-paper-base border border-ink-charcoal px-2 py-0.5 rounded">
+                            <span className="bg-sticker-pink text-ink-charcoal border-[1.5px] border-ink-charcoal px-3 py-1 rounded-full shadow-[1.5px_1.5px_0px_#171717]">
                               {c.internalState}
                             </span>
                           </div>
@@ -218,34 +215,12 @@ export function MaskResultSection() {
                   </div>
                 )}
 
-                {/* Overall Reflection */}
-                <div className="bg-[#FFF8F2] border-[1.5px] border-ink-charcoal rounded-xl p-5 shadow-[3px_3px_0px_#171717]">
-                  <div className="flex items-center gap-2 text-burnt-orange font-script text-xl font-bold mb-2">
-                    <span className="material-symbols-outlined text-[18px]">auto_awesome</span>
-                    <span>“Refleksi Ruang Batin”</span>
-                  </div>
-                  <p className="text-sm sm:text-base text-ink-charcoal leading-relaxed font-medium">
-                    {maskInsight.reflection}
-                  </p>
-
-                  {maskInsight.question && (
-                    <div className="mt-4 pt-3 border-t border-ink-charcoal/20">
-                      <p className="font-mono-tag text-xs uppercase font-bold text-marker-orange mb-1">
-                        Pertanyaan Refleksi untuk Dirimu:
-                      </p>
-                      <p className="font-headline italic font-bold text-sm sm:text-base text-ink-charcoal">
-                        “{maskInsight.question}”
-                      </p>
-                    </div>
-                  )}
-                </div>
-
                 {/* User Confirmation Card */}
                 <UserConfirmationCard
                   currentConfirmation={maskConfirmation}
                   onConfirm={(conf) => setMaskConfirmation(conf)}
                   title="Apakah telaah kontras ini terasa akurat?"
-                  subtitle="Kamu bisa mengonfirmasi, atau meluruskan konteks ini sebelum lanjut ke tahap penguraian beban."
+                  subtitle=""
                 />
               </div>
             )}
@@ -257,7 +232,7 @@ export function MaskResultSection() {
         backTo="/actual-feeling"
         nextTo="/brain-dump"
         nextLabel="Lanjut ke LOAD"
-        centerLabel="MASK Selesai"
+        centerLabel=""
       />
     </div>
   );
