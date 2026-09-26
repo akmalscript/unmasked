@@ -38,9 +38,6 @@ export function CheckinSection() {
                 <h4 className="font-headline font-bold text-sm text-ink-charcoal">
                   Ditemukan Draf Sesi Sebelumnya di Perangkat Ini
                 </h4>
-                <p className="font-sans text-xs text-ink-charcoal/70">
-                  Lanjutkan sesi sebelumnya atau hapus dan mulai dari awal?
-                </p>
               </div>
             </div>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto shrink-0 justify-end">

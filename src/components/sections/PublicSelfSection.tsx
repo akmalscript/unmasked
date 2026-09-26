@@ -160,14 +160,14 @@ export function PublicSelfSection() {
           <div className="mt-8 pt-5 border-t-[1.5px] border-dashed border-ink-charcoal/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="flex items-start gap-3 max-w-[620px]">
             </div>
-            <div className="px-3 py-1 border-[1.5px] border-ink-charcoal rounded bg-sticker-sage/30 text-ink-charcoal font-mono-tag text-[10px] uppercase tracking-wider rotate-1 shadow-[1.5px_1.5px_0px_#171717]">
+            <div className="px-3 py-1 border-[1.5px] border-ink-charcoal rounded bg-paper-warm text-black font-mono-tag text-[10px] uppercase tracking-wider rotate-1 shadow-[1.5px_1.5px_0px_#171717]">
               REFLEKSI
             </div>
           </div>
         </div>
       </main>
 
-      <BottomDock backTo="/onboarding" nextTo="/actual-feeling" centerLabel="" />
+      <BottomDock backTo="/onboarding" nextTo="/actual-feeling" centerLabel="" isNextDisabled={selected.length === 0} />
 
       {/* Custom Tag Modal */}
       {showModal && (

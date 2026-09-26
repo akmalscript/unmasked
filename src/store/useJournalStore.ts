@@ -89,6 +89,7 @@ export interface JournalState {
   togglePublicTag: (tag: string) => void;
   addCustomPublicTag: (tag: string) => void;
   toggleActualFeeling: (feeling: string) => void;
+  addCustomActualFeeling: (feeling: string) => void;
   setFeelingNote: (note: string) => void;
   setMaskInsight: (insight: MaskInsight | null) => void;
   setMaskConfirmation: (conf: UserConfirmation) => void;
@@ -211,6 +212,13 @@ export const useJournalStore = create<JournalState>()(
             ? state.actualFeelings.filter((f) => f !== feeling)
             : [...state.actualFeelings, feeling],
         })),
+
+      addCustomActualFeeling: (feeling) =>
+        set((state) => {
+          const trimmed = feeling.trim();
+          if (!trimmed || state.actualFeelings.includes(trimmed)) return state;
+          return { actualFeelings: [...state.actualFeelings, trimmed] };
+        }),
 
       setFeelingNote: (note) => set({ feelingNote: note }),
       setMaskInsight: (insight) => set({ maskInsight: insight }),
