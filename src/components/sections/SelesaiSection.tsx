@@ -161,7 +161,7 @@ export function SelesaiSection() {
               <Link
                 href="/onboarding"
                 onClick={() => resetSession()}
-                className="inline-flex items-center justify-center gap-2 bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[3px_3px_0px_#171717] rounded-full px-6 py-2.5 font-mono-tag text-xs font-bold uppercase hover:translate-x-[1px] hover:translate-y-[1px] transition-transform"
+                className="inline-flex items-center justify-center gap-2 bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[3px_3px_0px_#171717] rounded-full px-6 py-2.5 font-mono-tag text-xs font-bold uppercase hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_#171717] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-150"
               >
                 <span>Mulai Refleksi Baru</span>
                 <span className="material-symbols-outlined text-[16px]">refresh</span>
@@ -169,7 +169,7 @@ export function SelesaiSection() {
               <Link
                 href="/"
                 onClick={() => resetSession()}
-                className="inline-flex items-center justify-center gap-2 bg-paper-base text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] rounded-full px-5 py-2.5 font-mono-tag text-xs font-semibold hover:bg-paper-warm hover:translate-x-[1px] hover:translate-y-[1px] transition-all"
+                className="inline-flex items-center justify-center gap-2 bg-paper-base text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] rounded-full px-5 py-2.5 font-mono-tag text-xs font-semibold hover:bg-paper-warm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#171717] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-150"
               >
                 <span className="material-symbols-outlined text-[16px]">home</span>
                 <span>Kembali ke Beranda</span>
@@ -177,7 +177,7 @@ export function SelesaiSection() {
               <button
                 type="button"
                 onClick={() => setShowConfirm(true)}
-                className="inline-flex items-center justify-center gap-2 bg-paper-base hover:bg-sticker-pink text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] rounded-full px-4 py-2.5 font-mono-tag text-xs font-semibold hover:translate-x-[1px] hover:translate-y-[1px] transition-all"
+                className="inline-flex items-center justify-center gap-2 bg-paper-base hover:bg-sticker-pink text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] rounded-full px-4 py-2.5 font-mono-tag text-xs font-semibold hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#171717] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-150"
                 title="Hapus penyimpanan lokal perangkat untuk privasi"
               >
                 <span className="material-symbols-outlined text-[15px]">delete_sweep</span>

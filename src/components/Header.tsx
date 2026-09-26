@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useJournalStore } from "@/store/useJournalStore";
 import { CrisisModal } from "@/components/CrisisModal";
+import { ConfirmModal } from "@/components/ConfirmModal";
 
 interface HeaderProps {
   subtitle?: string;
@@ -23,6 +24,7 @@ export function Header({
   const { bookmarked, toggleBookmarked, clearAllData } = useJournalStore();
   const [showHelp, setShowHelp] = useState(false);
   const [showCrisis, setShowCrisis] = useState(false);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   return (
     <header className="relative z-40 w-full bg-paper-base border-b-[1.5px] border-ink-charcoal dark:border-outline shadow-[0px_2px_0px_#171717] dark:shadow-none sticky top-0">
@@ -82,16 +84,7 @@ export function Header({
             <span className="material-symbols-outlined text-[17px] sm:text-[18px]">bookmark</span>
           </button>
           <button
-            onClick={() => {
-              if (
-                window.confirm(
-                  "Hapus semua jejak dan mulai ulang sesi dari 0? Semua data refleksi di perangkat ini akan dibersihkan demi privasimu."
-                )
-              ) {
-                clearAllData();
-                router.push("/onboarding");
-              }
-            }}
+            onClick={() => setShowResetConfirm(true)}
             aria-label="Mulai Ulang Sesi & Hapus Jejak"
             className="cursor-pointer p-1.5 sm:p-2 border-[1.5px] border-ink-charcoal rounded-full bg-paper-warm shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] hover:bg-sticker-pink transition-all flex items-center justify-center text-ink-charcoal"
             title="Hapus Jejak & Mulai Ulang (Reset ke 0)"
@@ -131,6 +124,19 @@ export function Header({
       )}
 
       <CrisisModal isOpen={showCrisis} onClose={() => setShowCrisis(false)} />
+
+      <ConfirmModal
+        isOpen={showResetConfirm}
+        onClose={() => setShowResetConfirm(false)}
+        onConfirm={() => {
+          clearAllData();
+          setShowResetConfirm(false);
+          router.push("/onboarding");
+        }}
+        title="Mulai Ulang Sesi?"
+        description="Hapus semua jejak dan mulai ulang sesi dari awal? Semua data refleksi di perangkat ini akan dibersihkan demi privasimu."
+        confirmText="Ya, Mulai Ulang"
+      />
     </header>
   );
 }

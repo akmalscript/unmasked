@@ -40,14 +40,14 @@ export function ConfirmModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 bg-paper-warm hover:bg-paper-warm/80 text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] rounded-full px-4 py-2.5 font-mono-tag text-xs font-semibold hover:translate-x-[1px] hover:translate-y-[1px] transition-all"
+              className="flex-1 bg-paper-warm hover:bg-paper-warm/80 text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] rounded-full px-4 py-2.5 font-mono-tag text-xs font-semibold hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#171717] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-150"
             >
               {cancelText}
             </button>
             <button
               type="button"
               onClick={onConfirm}
-              className="flex-1 bg-sticker-pink hover:bg-sticker-pink/80 text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] rounded-full px-4 py-2.5 font-mono-tag text-xs font-bold hover:translate-x-[1px] hover:translate-y-[1px] transition-all"
+              className="flex-1 bg-sticker-pink hover:bg-sticker-pink/80 text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] rounded-full px-4 py-2.5 font-mono-tag text-xs font-bold hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#171717] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-150"
             >
               {confirmText}
             </button>
