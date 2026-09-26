@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
@@ -12,6 +13,7 @@ import { MaskInsight } from "@/types/session";
 
 export function MaskResultSection() {
   const isHydrated = useStoreHydrated();
+  const router = useRouter();
   const isFetchingRef = useRef(false);
 
   const {
@@ -67,6 +69,17 @@ export function MaskResultSection() {
 
   useEffect(() => {
     if (!isHydrated) return;
+
+    if (publicTags.length === 0) {
+      router.replace("/public-self");
+      return;
+    }
+
+    if (actualFeelings.length === 0) {
+      router.replace("/actual-feeling");
+      return;
+    }
+
     if (maskInsight) return;
     if (!hasInputs) return;
     if (isFetchingRef.current) return;
@@ -74,7 +87,7 @@ export function MaskResultSection() {
 
     fetchMaskAnalysis();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHydrated, maskInsight, hasInputs]);
+  }, [isHydrated, maskInsight, hasInputs, publicTags, actualFeelings, router]);
 
   return (
     <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-36 sm:pb-28">
@@ -106,7 +119,7 @@ export function MaskResultSection() {
                 href="/public-self"
                 className="inline-flex items-center gap-1.5 px-5 py-2 bg-marker-orange text-ink-charcoal font-mono-tag text-xs font-bold rounded-full border border-ink-charcoal shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] transition-all"
               >
-                <span>Mulai Pilih Persona</span>
+                <span>Mulai Kenali Dirimu</span>
                 <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
               </Link>
             </div>
