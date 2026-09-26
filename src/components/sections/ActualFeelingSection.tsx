@@ -27,15 +27,15 @@ export function ActualFeelingSection() {
     <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-28">
       <Header subtitle="MASK 02/04" showSteps={true} stepNumber={1} totalSteps={4} />
 
-      <main className="max-w-[1120px] mx-auto px-6 md:px-12 pt-8 md:pt-12 flex-grow">
-        <div className="flex items-center gap-3 mb-6">
+      <main className="max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 pt-6 md:pt-12 flex-grow">
+        <div className="flex items-center gap-2 sm:gap-3 mb-5">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] -rotate-1 rounded font-script text-lg font-bold">
             MASK
           </div>
           <span className="font-mono-tag text-xs text-outline">Bagian 2 : Lapisan Terdalam Batin</span>
         </div>
 
-        <div className="relative bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl shadow-[4px_4px_0px_#171717] p-6 md:p-10">
+        <div className="relative bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl shadow-[4px_4px_0px_#171717] p-5 sm:p-8 md:p-10">
           <div className="relative max-w-2xl z-10 mb-6">
             <h1 className="font-headline text-2xl sm:text-3xl md:text-4xl font-bold text-ink-charcoal tracking-tight lowercase mb-2">
               “bagaimana kamu benar-benar merasa?”
@@ -53,7 +53,7 @@ export function ActualFeelingSection() {
                 <span className="material-symbols-outlined text-lg">draw</span>
               </div>
 
-              <div className="flex flex-wrap gap-2.5 sm:gap-3">
+              <div className="flex flex-wrap gap-2 sm:gap-3">
                 {FEELING_OPTIONS.map((item) => {
                   const isSelected = selected.includes(item);
                   return (
@@ -61,7 +61,7 @@ export function ActualFeelingSection() {
                       key={item}
                       onClick={() => toggleActualFeeling(item)}
                       type="button"
-                      className={`flex items-center gap-2 px-5 py-2.5 rounded-full border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] font-mono-tag text-xs sm:text-sm transition-all ${
+                      className={`flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] font-mono-tag text-xs sm:text-sm transition-all ${
                         isSelected
                           ? "bg-paper-warm text-ink-charcoal font-bold"
                           : "bg-paper-base text-ink-charcoal hover:bg-paper-warm"

@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useJournalStore } from "@/store/useJournalStore";
 import { CrisisModal } from "@/components/CrisisModal";
 
@@ -18,19 +19,20 @@ export function Header({
   stepNumber = 1,
   totalSteps = 4,
 }: HeaderProps) {
-  const { bookmarked, toggleBookmarked, resetSession, clearAllData } = useJournalStore();
+  const router = useRouter();
+  const { bookmarked, toggleBookmarked, clearAllData } = useJournalStore();
   const [showHelp, setShowHelp] = useState(false);
   const [showCrisis, setShowCrisis] = useState(false);
 
   return (
-    <header className="relative z-40 w-full bg-paper-base  border-b-[1.5px] border-ink-charcoal dark:border-outline shadow-[0px_2px_0px_#171717] dark:shadow-none sticky top-0">
-      <div className="flex justify-between items-center w-full px-6 md:px-12 max-w-[1120px] mx-auto py-3.5">
-        <div className="flex items-center gap-3">
+    <header className="relative z-40 w-full bg-paper-base border-b-[1.5px] border-ink-charcoal dark:border-outline shadow-[0px_2px_0px_#171717] dark:shadow-none sticky top-0">
+      <div className="flex justify-between items-center w-full px-3.5 sm:px-6 md:px-12 max-w-[1120px] mx-auto py-2.5 sm:py-3.5">
+        <div className="flex items-center gap-2 sm:gap-3">
           <Link
-            className="font-headline text-xl font-bold tracking-tight text-ink-charcoal uppercase hover:text-burnt-orange transition-colors flex items-center gap-2"
+            className="font-headline text-lg sm:text-xl font-bold tracking-tight text-ink-charcoal uppercase hover:text-burnt-orange transition-colors flex items-center gap-1.5 sm:gap-2 shrink-0"
             href="/"
           >
-            <span className="w-3.5 h-3.5 bg-marker-orange border-[1.5px] border-ink-charcoal rotate-45 inline-block shadow-[1px_1px_0px_#171717]"></span>
+            <span className="w-3 h-3 sm:w-3.5 sm:h-3.5 bg-marker-orange border-[1.5px] border-ink-charcoal rotate-45 inline-block shadow-[1px_1px_0px_#171717]"></span>
             UNMASKED
           </Link>
           {subtitle && (
@@ -61,23 +63,23 @@ export function Header({
           </div>
         )}
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           <button
             onClick={() => setShowCrisis(true)}
             aria-label="Bantuan Krisis"
-            className="cursor-pointer p-2 border-[1.5px] border-ink-charcoal rounded-full bg-sticker-pink/50 text-ink-charcoal shadow-[2px_2px_0px_#171717] hover:bg-sticker-pink transition-all flex items-center justify-center"
+            className="cursor-pointer p-1.5 sm:p-2 border-[1.5px] border-ink-charcoal rounded-full bg-sticker-pink/50 text-ink-charcoal shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] hover:bg-sticker-pink transition-all flex items-center justify-center"
             title="Layanan Dukungan & Bantuan Krisis"
           >
-            <span className="material-symbols-outlined text-[18px] text-burnt-orange">support_agent</span>
+            <span className="material-symbols-outlined text-[17px] sm:text-[18px] text-burnt-orange">support_agent</span>
           </button>
           <button
             onClick={toggleBookmarked}
             aria-label="Simpan Bookmark"
-            className={`cursor-pointer p-2 border-[1.5px] border-ink-charcoal rounded-full ${bookmarked ? "bg-marker-orange text-white" : "bg-paper-warm text-ink-charcoal"
-              } shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center`}
+            className={`cursor-pointer p-1.5 sm:p-2 border-[1.5px] border-ink-charcoal rounded-full ${bookmarked ? "bg-marker-orange text-white" : "bg-paper-warm text-ink-charcoal"
+              } shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center`}
             title={bookmarked ? "Tersimpan" : "Simpan Sesi"}
           >
-            <span className="material-symbols-outlined text-[18px]">bookmark</span>
+            <span className="material-symbols-outlined text-[17px] sm:text-[18px]">bookmark</span>
           </button>
           <button
             onClick={() => {
@@ -87,22 +89,22 @@ export function Header({
                 )
               ) {
                 clearAllData();
-                window.location.href = "/onboarding";
+                router.push("/onboarding");
               }
             }}
             aria-label="Mulai Ulang Sesi & Hapus Jejak"
-            className="cursor-pointer p-2 border-[1.5px] border-ink-charcoal rounded-full bg-paper-warm shadow-[2px_2px_0px_#171717] hover:bg-sticker-pink transition-all flex items-center justify-center text-ink-charcoal"
+            className="cursor-pointer p-1.5 sm:p-2 border-[1.5px] border-ink-charcoal rounded-full bg-paper-warm shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] hover:bg-sticker-pink transition-all flex items-center justify-center text-ink-charcoal"
             title="Hapus Jejak & Mulai Ulang (Reset ke 0)"
           >
-            <span className="material-symbols-outlined text-[18px]">restart_alt</span>
+            <span className="material-symbols-outlined text-[17px] sm:text-[18px]">restart_alt</span>
           </button>
           <button
             onClick={() => setShowHelp(!showHelp)}
             aria-label="Bantuan"
-            className="cursor-pointer p-2 border-[1.5px] border-ink-charcoal rounded-full bg-paper-warm shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center text-ink-charcoal"
+            className="cursor-pointer p-1.5 sm:p-2 border-[1.5px] border-ink-charcoal rounded-full bg-paper-warm shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center text-ink-charcoal"
             title="Bantuan & Privasi"
           >
-            <span className="material-symbols-outlined text-[18px]">help</span>
+            <span className="material-symbols-outlined text-[17px] sm:text-[18px]">help</span>
           </button>
           <Link
             href="/summary"

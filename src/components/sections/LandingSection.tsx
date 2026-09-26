@@ -2,7 +2,6 @@
 
 import React from "react";
 import Link from "next/link";
-import { Header } from "@/components/Header";
 import { useJournalStore } from "@/store/useJournalStore";
 
 export function LandingSection() {
@@ -13,9 +12,9 @@ export function LandingSection() {
       <div className="pointer-events-none absolute inset-0 tactile-dot-grid opacity-30"></div>
 
       <header className="relative z-20 w-full bg-paper-base border-b-[1.5px] border-ink-charcoal shadow-[0px_2px_0px_#171717] sticky top-0">
-        <div className="flex justify-between items-center w-full px-6 md:px-12 max-w-[1120px] mx-auto py-3.5">
+        <div className="flex justify-between items-center w-full px-4 sm:px-6 md:px-12 max-w-[1120px] mx-auto py-2.5 sm:py-3.5">
           <Link
-            className="font-headline text-xl font-bold tracking-tight text-ink-charcoal uppercase hover:text-burnt-orange transition-colors flex items-center gap-2"
+            className="font-headline text-lg sm:text-xl font-bold tracking-tight text-ink-charcoal uppercase hover:text-burnt-orange transition-colors flex items-center gap-2"
             href="/"
           >
             <span className="w-3.5 h-3.5 bg-marker-orange border-[1.5px] border-ink-charcoal rotate-45 inline-block shadow-[1px_1px_0px_#171717]"></span>
@@ -35,24 +34,25 @@ export function LandingSection() {
               Tentang Ruang
             </Link>
           </nav>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <Link
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border-[1.5px] border-ink-charcoal bg-surface text-ink-cocoa font-mono-tag text-xs shadow-[2px_2px_0px_#171717] hover:bg-paper-warm active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#171717] transition-all"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border-[1.5px] border-ink-charcoal bg-surface text-ink-cocoa font-mono-tag text-xs shadow-[2px_2px_0px_#171717] hover:bg-paper-warm active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#171717] transition-all"
               href="/summary"
+              title="Arsip Jurnal"
             >
               <span className="material-symbols-outlined text-[16px]">menu_book</span>
-              <span>Arsip Jurnal</span>
+              <span className="hidden sm:inline">Arsip Jurnal</span>
             </Link>
           </div>
         </div>
       </header>
 
-      <main className="relative z-10 flex-grow flex items-center w-full max-w-[1120px] mx-auto px-6 md:px-12 py-10 md:py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center w-full">
+      <main className="relative z-10 flex-grow flex items-center w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 py-8 md:py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center w-full">
           <div className="lg:col-span-6 flex flex-col justify-center relative">
-            <div className="inline-flex items-center gap-2 self-start px-3 py-1 rounded-full bg-marker-orange/15 border-[1.5px] border-ink-charcoal text-ink-cocoa mb-6 shadow-[2px_2px_0px_#171717] -rotate-1">
+            <div className="inline-flex items-center gap-2 self-start px-3 py-1 rounded-full bg-marker-orange/15 border-[1.5px] border-ink-charcoal text-ink-cocoa mb-5 shadow-[2px_2px_0px_#171717] -rotate-1">
               <span className="w-2 h-2 rounded-full bg-marker-orange"></span>
-              <span className="font-mono-tag text-xs font-semibold tracking-wider uppercase">jurnal relfektif harian</span>
+              <span className="font-mono-tag text-xs font-semibold tracking-wider uppercase">jurnal reflektif harian</span>
             </div>
 
             <h1 className="font-headline text-4xl sm:text-5xl lg:text-[54px] font-bold text-ink-charcoal tracking-tight leading-tight mb-5">

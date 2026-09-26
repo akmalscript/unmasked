@@ -17,19 +17,19 @@ export function CheckinSection() {
     <div className="min-h-screen flex flex-col justify-between bg-paper-base tactile-dot-grid relative">
       <Header subtitle="ONBOARDING" showSteps={true} stepNumber={1} totalSteps={4} />
 
-      <main className="flex-grow flex flex-col justify-center items-center px-6 md:px-12 py-10 max-w-[1120px] mx-auto w-full relative">
-        <div className="text-center max-w-2xl mx-auto mb-8 relative">
-          <h1 className="font-headline text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-ink-charcoal mb-3">
+      <main className="flex-grow flex flex-col justify-center items-center px-4 sm:px-6 md:px-12 py-8 sm:py-10 max-w-[1120px] mx-auto w-full relative">
+        <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-8 relative">
+          <h1 className="font-headline text-2xl sm:text-4xl md:text-5xl font-bold tracking-tight text-ink-charcoal mb-3">
             Sebelum Kita Mulai...
           </h1>
-          <p className="mt-3 text-base md:text-lg text-ink-charcoal/80 leading-relaxed max-w-2xl mx-auto">
+          <p className="mt-2 sm:mt-3 text-sm sm:text-base md:text-lg text-ink-charcoal/80 leading-relaxed max-w-2xl mx-auto">
             UNMASKED adalah ruang refleksi untuk membantumu memahami diri sendiri, <br className="hidden sm:block" />
             bukan layanan diagnosis atau pengganti tenaga profesional.
           </p>
         </div>
 
         {hasExistingDraft && (
-          <div className="w-full max-w-2xl mx-auto mb-8 bg-paper-warm border-[1.5px] border-ink-charcoal p-4 sm:p-5 rounded-2xl shadow-[4px_4px_0px_#171717] flex flex-col sm:flex-row items-center justify-between gap-4 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="w-full max-w-2xl mx-auto mb-8 bg-paper-warm border-[1.5px] border-ink-charcoal p-4 sm:p-5 rounded-2xl shadow-[4px_4px_0px_#171717] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 animate-in fade-in slide-in-from-top-2 duration-200">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-marker-orange/20 border border-ink-charcoal flex items-center justify-center shrink-0">
                 <span className="material-symbols-outlined text-burnt-orange text-xl">history_edu</span>
@@ -43,17 +43,17 @@ export function CheckinSection() {
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 justify-end">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto shrink-0 justify-end">
               <button
                 type="button"
                 onClick={() => resetSession()}
-                className="px-3.5 py-1.5 bg-paper-base hover:bg-sticker-pink/40 text-ink-charcoal font-mono-tag text-xs font-bold border border-ink-charcoal rounded-full shadow-[2px_2px_0px_#171717] transition-all"
+                className="w-full sm:w-auto text-center px-3.5 py-2 bg-paper-base hover:bg-sticker-pink/40 text-ink-charcoal font-mono-tag text-xs font-bold border border-ink-charcoal rounded-full shadow-[2px_2px_0px_#171717] transition-all"
               >
                 Hapus & Mulai Baru
               </button>
               <Link
                 href="/public-self"
-                className="px-4 py-1.5 bg-marker-orange text-ink-charcoal font-mono-tag text-xs font-bold border border-ink-charcoal rounded-full shadow-[2px_2px_0px_#171717] transition-all"
+                className="w-full sm:w-auto text-center px-4 py-2 bg-marker-orange text-ink-charcoal font-mono-tag text-xs font-bold border border-ink-charcoal rounded-full shadow-[2px_2px_0px_#171717] transition-all"
               >
                 Lanjutkan Draf
               </Link>
