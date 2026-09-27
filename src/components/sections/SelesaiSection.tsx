@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useJournalStore } from "@/store/useJournalStore";
 
@@ -15,10 +16,17 @@ export function SelesaiSection() {
         <div className="flex justify-between items-center w-full px-4 sm:px-6 md:px-12 max-w-[1120px] mx-auto py-2.5 sm:py-3.5">
           <Link
             href="/"
-            className="font-headline text-lg sm:text-xl font-bold tracking-tight text-ink-charcoal uppercase flex items-center gap-2 hover:text-burnt-orange transition-colors"
+            className="flex items-center shrink-0 hover:opacity-85 transition-opacity"
+            aria-label="UNMASKED - Beranda"
           >
-            <span className="w-3.5 h-3.5 bg-marker-orange border-[1.5px] border-ink-charcoal rotate-45 inline-block shadow-[1px_1px_0px_#171717]"></span>
-            UNMASKED
+            <Image
+              src="/images/unmaskedlogo.png"
+              alt="UNMASKED"
+              width={140}
+              height={34}
+              className="h-7 sm:h-8 w-auto object-contain"
+              priority
+            />
           </Link>
           <div className="flex items-center gap-2 bg-paper-warm border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] px-3 py-1 rounded-full">
             <span className="w-2 h-2 rounded-full bg-sticker-sage animate-pulse"></span>

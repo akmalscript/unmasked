@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useJournalStore } from "@/store/useJournalStore";
 import { CrisisModal } from "@/components/CrisisModal";
@@ -29,11 +30,18 @@ export function Header({
       <div className="flex justify-between items-center w-full px-3.5 sm:px-6 md:px-12 max-w-[1120px] mx-auto py-2.5 sm:py-3.5">
         <div className="flex items-center gap-2 sm:gap-3">
           <Link
-            className="font-headline text-lg sm:text-xl font-bold tracking-tight text-ink-charcoal uppercase hover:text-burnt-orange transition-colors flex items-center gap-1.5 sm:gap-2 shrink-0"
+            className="flex items-center shrink-0 hover:opacity-85 transition-opacity"
             href="/"
+            aria-label="UNMASKED - Beranda"
           >
-            <span className="w-3 h-3 sm:w-3.5 sm:h-3.5 bg-marker-orange border-[1.5px] border-ink-charcoal rotate-45 inline-block shadow-[1px_1px_0px_#171717]"></span>
-            UNMASKED
+            <Image
+              src="/images/unmaskedlogo.png"
+              alt="UNMASKED"
+              width={140}
+              height={34}
+              className="h-7 sm:h-8 w-auto object-contain"
+              priority
+            />
           </Link>
           {subtitle && (
             <span className="hidden sm:inline-block font-mono-tag text-[11px] font-semibold text-ink-charcoal/80 bg-paper-warm border-[1.5px] border-ink-charcoal px-2.5 py-0.5 rounded-full shadow-[1px_1px_0px_#171717]">
