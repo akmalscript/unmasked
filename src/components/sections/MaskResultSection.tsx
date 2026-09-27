@@ -30,6 +30,9 @@ export function MaskResultSection() {
   const [error, setError] = useState<string | null>(null);
   const [technicalError, setTechnicalError] = useState<string | null>(null);
 
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
+
   const hasInputs = publicTags.length > 0 || actualFeelings.length > 0;
   const currentPublicTags = publicTags.length ? publicTags : ["(Belum memilih)"];
   const currentActualFeelings = actualFeelings.length ? actualFeelings : ["(Belum memilih)"];
@@ -37,6 +40,7 @@ export function MaskResultSection() {
   const fetchMaskAnalysis = async (force = false) => {
     if (maskInsight && !force) return;
     setLoading(true);
+    setHasScrolledToBottom(false);
     setError(null);
     setTechnicalError(null);
 
@@ -66,6 +70,23 @@ export function MaskResultSection() {
       isFetchingRef.current = false;
     }
   };
+
+  useEffect(() => {
+    if (!bottomRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setHasScrolledToBottom(true);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    observer.observe(bottomRef.current);
+
+    return () => observer.disconnect();
+  }, [loading, maskInsight]);
 
   useEffect(() => {
     if (!isHydrated) return;
@@ -235,6 +256,7 @@ export function MaskResultSection() {
                   title="Apakah telaah kontras ini terasa akurat?"
                   subtitle=""
                 />
+                <div ref={bottomRef} className="h-1 w-full" />
               </div>
             )}
           </div>
@@ -246,6 +268,7 @@ export function MaskResultSection() {
         nextTo="/brain-dump"
         nextLabel="Lanjut ke LOAD"
         centerLabel=""
+        isNextDisabled={loading || !hasScrolledToBottom}
       />
     </div>
   );
