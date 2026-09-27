@@ -115,7 +115,7 @@ export function NeedResultSection() {
             </Link>
           </div>
         </main>
-        <BottomDock backTo="/need-sheet" centerLabel="Jawaban Masih Kosong" />
+        <BottomDock backTo="/need-sheet" centerLabel="Jawaban Masih Kosong" stageBadge="NEED 02/02" />
       </div>
     );
   }
@@ -246,7 +246,7 @@ export function NeedResultSection() {
         backTo="/need-sheet"
         nextTo="/action-step"
         nextLabel="Lanjut ke ACTION"
-        centerLabel="Kebutuhan Terpetakan"
+        stageBadge="NEED 02/02"
       />
     </div>
   );

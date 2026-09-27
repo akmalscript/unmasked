@@ -113,7 +113,7 @@ export function SummarySection() {
             </Link>
           </div>
         </main>
-        <BottomDock backTo="/" centerLabel="Belum Ada Rangkuman" />
+        <BottomDock backTo="/" centerLabel="Belum Ada Rangkuman" stageBadge="RANGKUMAN" />
       </div>
     );
   }
@@ -404,7 +404,7 @@ export function SummarySection() {
         backTo="/action-step"
         nextTo="/selesai"
         nextLabel="Selesai"
-        centerLabel="Semua Langkah Selesai"
+        stageBadge="RANGKUMAN"
       />
     </div>
   );

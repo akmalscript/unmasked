@@ -9,6 +9,8 @@ interface BottomDockProps {
   backLabel?: string;
   nextLabel?: string;
   centerLabel?: string;
+  stageBadge?: string;
+  isNextDisabled?: boolean;
 }
 
 export function BottomDock({
@@ -17,6 +19,8 @@ export function BottomDock({
   backLabel = "Kembali",
   nextLabel = "Lanjutkan",
   centerLabel = "",
+  stageBadge,
+  isNextDisabled = false,
 }: BottomDockProps) {
   return (
     <nav className="fixed bottom-0 left-0 right-0 w-full z-50 bg-paper-warm border-t-[1.5px] border-ink-charcoal dark:border-outline shadow-[0px_-2px_0px_#171717] dark:shadow-none">
@@ -33,17 +37,30 @@ export function BottomDock({
           <div />
         )}
 
-        {centerLabel && (
+        {stageBadge ? (
+          <span className="hidden sm:inline-block font-mono-tag text-[13px] font-semibold text-ink-charcoal/80 bg-paper-warm border-[1.5px] border-ink-charcoal px-3 py-1 rounded-full shadow-[1px_1px_0px_#171717]">
+            {stageBadge}
+          </span>
+        ) : centerLabel ? (
           <div className="hidden sm:flex items-center gap-2 text-ink-charcoal/70 font-mono-tag text-xs">
             <span className="w-2 h-2 rounded-full bg-marker-orange inline-block"></span>
             <span>{centerLabel}</span>
           </div>
-        )}
+        ) : null}
 
         {nextTo ? (
           <Link
-            href={nextTo}
-            className="flex items-center gap-1.5 sm:gap-2 bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] sm:shadow-[3px_3px_0px_#171717] rounded-full px-4 sm:px-7 py-2 font-mono-tag text-xs sm:text-sm font-bold hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#171717] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-150"
+            href={isNextDisabled ? "#" : nextTo}
+            onClick={(e) => {
+              if (isNextDisabled) {
+                e.preventDefault();
+              }
+            }}
+            className={`flex items-center gap-1.5 sm:gap-2 border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] sm:shadow-[3px_3px_0px_#171717] rounded-full px-4 sm:px-7 py-2 font-mono-tag text-xs sm:text-sm font-bold transition-all duration-150 ${
+              isNextDisabled
+                ? "bg-paper-warm text-ink-charcoal/40 opacity-60 cursor-not-allowed shadow-none"
+                : "bg-marker-orange text-ink-charcoal hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#171717] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+            }`}
           >
             <span>{nextLabel}</span>
             <span className="material-symbols-outlined text-[17px] sm:text-[18px]">arrow_forward</span>

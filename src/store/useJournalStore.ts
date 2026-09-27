@@ -89,6 +89,7 @@ export interface JournalState {
   togglePublicTag: (tag: string) => void;
   addCustomPublicTag: (tag: string) => void;
   toggleActualFeeling: (feeling: string) => void;
+  addCustomActualFeeling: (feeling: string) => void;
   setFeelingNote: (note: string) => void;
   setMaskInsight: (insight: MaskInsight | null) => void;
   setMaskConfirmation: (conf: UserConfirmation) => void;
@@ -212,6 +213,13 @@ export const useJournalStore = create<JournalState>()(
             : [...state.actualFeelings, feeling],
         })),
 
+      addCustomActualFeeling: (feeling) =>
+        set((state) => {
+          const trimmed = feeling.trim();
+          if (!trimmed || state.actualFeelings.includes(trimmed)) return state;
+          return { actualFeelings: [...state.actualFeelings, trimmed] };
+        }),
+
       setFeelingNote: (note) => set({ feelingNote: note }),
       setMaskInsight: (insight) => set({ maskInsight: insight }),
       setMaskConfirmation: (conf) => set({ maskConfirmation: conf }),
@@ -220,6 +228,10 @@ export const useJournalStore = create<JournalState>()(
 
       addBrainDumpTopic: (topic) =>
         set((state) => {
+          const topicText = `#${topic}`;
+          if (state.stickyNotes.some((n) => n.text === topicText)) {
+            return state;
+          }
           const leftCount = state.stickyNotes.filter((n) => n.side === "left").length;
           const rightCount = state.stickyNotes.filter((n) => n.side === "right").length;
           const side: "left" | "right" = leftCount <= rightCount ? "left" : "right";

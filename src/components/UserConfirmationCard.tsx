@@ -48,7 +48,7 @@ export function UserConfirmationCard({
   return (
     <div className="w-full bg-paper-warm/80 border-[1.5px] border-ink-charcoal rounded-xl p-5 shadow-[3px_3px_0px_#171717] mt-6">
       <div className="flex items-center gap-2 mb-1.5 font-mono-tag text-xs font-bold uppercase text-ink-charcoal">
-        <span className="material-symbols-outlined text-[16px] text-marker-orange">
+        <span className="material-symbols-outlined text-[16px] text-ink-charcoal">
           verified_user
         </span>
         <span>Validasi & Kendali Pengguna</span>

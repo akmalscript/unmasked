@@ -38,9 +38,6 @@ export function CheckinSection() {
                 <h4 className="font-headline font-bold text-sm text-ink-charcoal">
                   Ditemukan Draf Sesi Sebelumnya di Perangkat Ini
                 </h4>
-                <p className="font-sans text-xs text-ink-charcoal/70">
-                  Lanjutkan sesi sebelumnya atau hapus dan mulai dari awal?
-                </p>
               </div>
             </div>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto shrink-0 justify-end">
@@ -136,6 +133,9 @@ export function CheckinSection() {
             <span>Lanjutkan</span>
             <span className="material-symbols-outlined text-xl">arrow_forward</span>
           </Link>
+          <span className="hidden sm:inline-block font-mono-tag text-[13px] font-semibold text-ink-charcoal/80 bg-paper-warm border-[1.5px] border-ink-charcoal px-3 py-1 rounded-full shadow-[1px_1px_0px_#171717]">
+            ONBOARDING
+          </span>
           <Link href="/" className="w-full sm:w-auto px-6 py-2.5 bg-paper-base text-ink-charcoal font-headline text-base font-bold border-[1.5px] border-ink-charcoal rounded-full shadow-[3px_3px_0px_#171717] hover:shadow-[5px_5px_0px_#171717] transition-all active:translate-y-[2px] active:translate-x-[2px] active:shadow-[1px_1px_0px_#171717] inline-flex items-center justify-center gap-2">
             <span className="material-symbols-outlined text-xl">arrow_back</span>
             <span>Kembali</span>
