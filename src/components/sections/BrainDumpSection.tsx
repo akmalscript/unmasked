@@ -118,13 +118,12 @@ export function BrainDumpSection() {
     stickyNotes,
     addStickyNote,
     removeStickyNote,
+    updateStickyText,
     updateStickyCategory,
   } = useJournalStore();
 
   const handleStickyText = (id: string, val: string) => {
-    useJournalStore.setState((state) => ({
-      stickyNotes: state.stickyNotes.map((n) => (n.id === id ? { ...n, text: val } : n)),
-    }));
+    updateStickyText(id, val);
   };
 
   const leftNotes = stickyNotes.filter((n) => n.side === "left");
@@ -186,6 +185,7 @@ export function BrainDumpSection() {
                 note={note}
                 onRemove={removeStickyNote}
                 onTextChange={handleStickyText}
+                onCategoryChange={updateStickyCategory}
               />
             ))}
           </div>
@@ -251,6 +251,7 @@ export function BrainDumpSection() {
                 note={note}
                 onRemove={removeStickyNote}
                 onTextChange={handleStickyText}
+                onCategoryChange={updateStickyCategory}
               />
             ))}
           </div>
@@ -265,6 +266,7 @@ export function BrainDumpSection() {
                 note={note}
                 onRemove={removeStickyNote}
                 onTextChange={handleStickyText}
+                onCategoryChange={updateStickyCategory}
               />
             ))}
           </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { INDONESIA_EMERGENCY_RESOURCES } from "@/lib/safety/crisisKeywords";
+import { CRISIS_RESOURCES } from "@/lib/safety/crisisResources";
 
 interface CrisisModalProps {
   isOpen: boolean;
@@ -36,7 +36,7 @@ export function CrisisModal({ isOpen, onClose }: CrisisModalProps) {
         </p>
 
         <div className="space-y-3 mb-6">
-          {INDONESIA_EMERGENCY_RESOURCES.map((res, i) => (
+          {CRISIS_RESOURCES.map((res, i) => (
             <a
               key={i}
               href={res.actionUrl}

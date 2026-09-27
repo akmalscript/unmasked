@@ -7,7 +7,12 @@ import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
 import { AIErrorCard } from "@/components/AIErrorCard";
 import { UserConfirmationCard } from "@/components/UserConfirmationCard";
-import { useJournalStore, useStoreHydrated } from "@/store/useJournalStore";
+import { CrisisModal } from "@/components/CrisisModal";
+import {
+  useJournalStore,
+  useStoreHydrated,
+  getConfirmedLoadSummary,
+} from "@/store/useJournalStore";
 import { NeedInsight } from "@/types/session";
 
 export function NeedResultSection() {
@@ -33,6 +38,7 @@ export function NeedResultSection() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [technicalError, setTechnicalError] = useState<string | null>(null);
+  const [isCrisisOpen, setIsCrisisOpen] = useState(false);
 
   const hasNeedInput = needCandidates.length > 0 || needAnswers.length > 0;
 
@@ -44,6 +50,8 @@ export function NeedResultSection() {
     setTechnicalError(null);
 
     try {
+      const summary = getConfirmedLoadSummary({ loadInsight, loadConfirmation, brainDump });
+
       const res = await fetch("/api/ai/need/synthesize", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -55,7 +63,7 @@ export function NeedResultSection() {
           },
           loadContext: {
             themes: loadInsight?.themes?.map((t) => t.name) || [],
-            summary: loadInsight?.summary || brainDump.trim() || "Kondisi batin yang memerlukan perhatian.",
+            summary,
             userCorrection: loadConfirmation?.correction,
           },
           candidates: needCandidates,
@@ -66,8 +74,11 @@ export function NeedResultSection() {
 
       const json = await res.json();
       if (!res.ok || !json.success) {
-        setTechnicalError(json.technicalError || null);
-        throw new Error(json.error || "Gagal menyintesis kebutuhan.");
+        if (json.code === "SAFETY_INTERVENTION") {
+          setIsCrisisOpen(true);
+        }
+        setTechnicalError(json.code || null);
+        throw new Error(json.message || "Gagal menyintesis kebutuhan.");
       }
 
       setNeedInsight(json.data as NeedInsight);
@@ -241,6 +252,8 @@ export function NeedResultSection() {
           </div>
         )}
       </main>
+
+      <CrisisModal isOpen={isCrisisOpen} onClose={() => setIsCrisisOpen(false)} />
 
       <BottomDock
         backTo="/need-sheet"

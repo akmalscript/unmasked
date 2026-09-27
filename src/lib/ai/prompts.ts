@@ -49,16 +49,16 @@ export function buildLoadPrompt(params: {
   brainDump: string;
   items?: LoadItem[];
   maskContext?: {
-    publicTags: string[];
-    actualFeelings: string[];
+    publicTags?: string[];
+    actualFeelings?: string[];
     reflection?: string;
-    confirmation?: UserConfirmation;
+    confirmation?: UserConfirmation | { status: string; correction?: string };
   };
 }): string {
   const maskSummary = params.maskContext
     ? `Konteks Stage MASK Sebelumnya:
-- Tampilan luar: ${params.maskContext.publicTags.join(", ")}
-- Perasaan sebenarnya: ${params.maskContext.actualFeelings.join(", ")}
+- Tampilan luar: ${params.maskContext.publicTags?.join(", ") || "-"}
+- Perasaan sebenarnya: ${params.maskContext.actualFeelings?.join(", ") || "-"}
 ${params.maskContext.confirmation?.correction ? `- Koreksi pengguna terhadap refleksi MASK: "${params.maskContext.confirmation.correction}"` : ""}
 `
     : "";
@@ -110,8 +110,8 @@ KEMBALIKAN DALAM FORMAT JSON BERIKUT:
 
 export function buildNeedPreparePrompt(params: {
   maskContext?: {
-    publicTags: string[];
-    actualFeelings: string[];
+    publicTags?: string[];
+    actualFeelings?: string[];
     reflection?: string;
     userCorrection?: string;
   };
@@ -122,8 +122,8 @@ export function buildNeedPreparePrompt(params: {
   };
 }): string {
   const maskText = params.maskContext
-    ? `- Tampilan luar: ${params.maskContext.publicTags.join(", ")}
-- Perasaan batin: ${params.maskContext.actualFeelings.join(", ")}
+    ? `- Tampilan luar: ${params.maskContext.publicTags?.join(", ") || "-"}
+- Perasaan batin: ${params.maskContext.actualFeelings?.join(", ") || "-"}
 ${params.maskContext.userCorrection ? `- Catatan/Koreksi MASK pengguna: "${params.maskContext.userCorrection}"` : ""}`
     : "- (Belum ada konteks MASK)";
 
@@ -193,8 +193,8 @@ KEMBALIKAN DALAM FORMAT JSON BERIKUT:
 
 export function buildNeedSynthesizePrompt(params: {
   maskContext?: {
-    publicTags: string[];
-    actualFeelings: string[];
+    publicTags?: string[];
+    actualFeelings?: string[];
     userCorrection?: string;
   };
   loadContext?: {
@@ -212,7 +212,7 @@ export function buildNeedSynthesizePrompt(params: {
   }).join("\n\n");
 
   const maskInfo = params.maskContext
-    ? `Tampilan Luar: ${params.maskContext.publicTags.join(", ")} | Perasaan: ${params.maskContext.actualFeelings.join(", ")}`
+    ? `Tampilan Luar: ${params.maskContext.publicTags?.join(", ") || "-"} | Perasaan: ${params.maskContext.actualFeelings?.join(", ") || "-"}`
     : "";
 
   return `
@@ -256,8 +256,8 @@ KEMBALIKAN DALAM FORMAT JSON BERIKUT:
 
 export function buildActionPrompt(params: {
   maskContext?: {
-    publicTags: string[];
-    actualFeelings: string[];
+    publicTags?: string[];
+    actualFeelings?: string[];
     userCorrection?: string;
   };
   primaryNeed: { key: string; title: string; reason: string };
@@ -266,8 +266,8 @@ export function buildActionPrompt(params: {
   needCorrection?: string;
 }): string {
   const maskContextText = params.maskContext
-    ? `- Persona yang biasanya ditampilkan: ${params.maskContext.publicTags.join(", ")}
-- Perasaan sebenarnya: ${params.maskContext.actualFeelings.join(", ")}`
+    ? `- Persona yang biasanya ditampilkan: ${params.maskContext.publicTags?.join(", ") || "-"}
+- Perasaan sebenarnya: ${params.maskContext.actualFeelings?.join(", ") || "-"}`
     : "";
 
   return `

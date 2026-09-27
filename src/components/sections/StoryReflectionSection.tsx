@@ -2,17 +2,16 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
 import { AIErrorCard } from "@/components/AIErrorCard";
 import { UserConfirmationCard } from "@/components/UserConfirmationCard";
+import { CrisisModal } from "@/components/CrisisModal";
 import { useJournalStore, useStoreHydrated } from "@/store/useJournalStore";
 import { LoadInsight } from "@/types/session";
 
 export function StoryReflectionSection() {
-  const router = useRouter();
   const isHydrated = useStoreHydrated();
   const isFetchingRef = useRef(false);
 
@@ -32,6 +31,7 @@ export function StoryReflectionSection() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [technicalError, setTechnicalError] = useState<string | null>(null);
+  const [isCrisisOpen, setIsCrisisOpen] = useState(false);
 
   const hasBrainDump = brainDump.trim().length > 0 || stickyNotes.length > 0;
   const currentBrainDump =
@@ -54,7 +54,7 @@ export function StoryReflectionSection() {
           items: stickyNotes.map((n) => ({
             id: n.id,
             text: n.text,
-            category: n.category || "act",
+            category: n.category,
           })),
           maskContext: {
             publicTags,
@@ -67,8 +67,11 @@ export function StoryReflectionSection() {
 
       const json = await res.json();
       if (!res.ok || !json.success) {
-        setTechnicalError(json.technicalError || null);
-        throw new Error(json.error || "Gagal menganalisis curahan pikiran.");
+        if (json.code === "SAFETY_INTERVENTION") {
+          setIsCrisisOpen(true);
+        }
+        setTechnicalError(json.code || null);
+        throw new Error(json.message || "Gagal menganalisis curahan pikiran.");
       }
 
       setLoadInsight(json.data as LoadInsight);
@@ -254,6 +257,8 @@ export function StoryReflectionSection() {
           </div>
         </div>
       </main>
+
+      <CrisisModal isOpen={isCrisisOpen} onClose={() => setIsCrisisOpen(false)} />
 
       <BottomDock
         backTo="/brain-dump"

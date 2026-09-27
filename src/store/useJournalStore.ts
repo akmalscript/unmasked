@@ -1,6 +1,19 @@
 import { useSyncExternalStore } from "react";
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { persist, createJSONStorage, type StateStorage } from "zustand/middleware";
+
+const fallbackStorage: StateStorage = {
+  getItem: (key: string) => {
+    if (typeof localStorage !== "undefined") return localStorage.getItem(key);
+    return null;
+  },
+  setItem: (key: string, value: string) => {
+    if (typeof localStorage !== "undefined") localStorage.setItem(key, value);
+  },
+  removeItem: (key: string) => {
+    if (typeof localStorage !== "undefined") localStorage.removeItem(key);
+  },
+};
 import {
   MaskInsight,
   LoadInsight,
@@ -51,18 +64,19 @@ export interface JournalState {
   needInsight: NeedInsight | null;
   needConfirmation: UserConfirmation | null;
 
-  // Stage 4: ACTION
+  // Stage 4: ACTION (Strictly user-selected)
   actionRecommendations: ActionRecommendation[];
-  selectedAction: string;
-  selectedActionId: string;
+  selectedAction: string | null;
+  selectedActionId: string | null;
   actionCompleted: boolean;
 
   // Stage 5: SUMMARY
   summaryData: SummaryStage | null;
   bookmarked: boolean;
 
-  // Session activity & shared device protection
+  // Session activity & shared device protection (2 hours inactivity)
   lastActiveTimestamp: number;
+  touchActivity: () => void;
 
   // Hydration status
   hasHydrated: boolean;
@@ -109,7 +123,7 @@ export interface JournalState {
   setNeedConfirmation: (conf: UserConfirmation) => void;
 
   setActionRecommendations: (recs: ActionRecommendation[]) => void;
-  setSelectedAction: (actionText: string, actionId?: string) => void;
+  setSelectedAction: (actionText: string | null, actionId?: string | null) => void;
   toggleActionCompleted: () => void;
 
   setSummaryData: (summary: SummaryStage | null) => void;
@@ -161,8 +175,8 @@ const initialValues = {
   needConfirmation: null as UserConfirmation | null,
 
   actionRecommendations: [] as ActionRecommendation[],
-  selectedAction: "",
-  selectedActionId: "",
+  selectedAction: null as string | null,
+  selectedActionId: null as string | null,
   actionCompleted: false,
 
   summaryData: null as SummaryStage | null,
@@ -192,8 +206,11 @@ export const useJournalStore = create<JournalState>()(
 
       setHasHydrated: (val) => set({ hasHydrated: val }),
 
+      touchActivity: () => set({ lastActiveTimestamp: Date.now() }),
+
       togglePublicTag: (tag) =>
         set((state) => ({
+          lastActiveTimestamp: Date.now(),
           publicTags: state.publicTags.includes(tag)
             ? state.publicTags.filter((t) => t !== tag)
             : [...state.publicTags, tag],
@@ -203,11 +220,15 @@ export const useJournalStore = create<JournalState>()(
         set((state) => {
           const trimmed = tag.trim();
           if (!trimmed || state.publicTags.includes(trimmed)) return state;
-          return { publicTags: [...state.publicTags, trimmed] };
+          return {
+            lastActiveTimestamp: Date.now(),
+            publicTags: [...state.publicTags, trimmed],
+          };
         }),
 
       toggleActualFeeling: (feeling) =>
         set((state) => ({
+          lastActiveTimestamp: Date.now(),
           actualFeelings: state.actualFeelings.includes(feeling)
             ? state.actualFeelings.filter((f) => f !== feeling)
             : [...state.actualFeelings, feeling],
@@ -217,14 +238,35 @@ export const useJournalStore = create<JournalState>()(
         set((state) => {
           const trimmed = feeling.trim();
           if (!trimmed || state.actualFeelings.includes(trimmed)) return state;
-          return { actualFeelings: [...state.actualFeelings, trimmed] };
+          return {
+            lastActiveTimestamp: Date.now(),
+            actualFeelings: [...state.actualFeelings, trimmed],
+          };
         }),
 
-      setFeelingNote: (note) => set({ feelingNote: note }),
-      setMaskInsight: (insight) => set({ maskInsight: insight }),
-      setMaskConfirmation: (conf) => set({ maskConfirmation: conf }),
+      setFeelingNote: (note) =>
+        set({
+          feelingNote: note,
+          lastActiveTimestamp: Date.now(),
+        }),
 
-      setBrainDump: (text) => set({ brainDump: text.slice(0, 2000) }),
+      setMaskInsight: (insight) =>
+        set({
+          maskInsight: insight,
+          lastActiveTimestamp: Date.now(),
+        }),
+
+      setMaskConfirmation: (conf) =>
+        set({
+          maskConfirmation: conf,
+          lastActiveTimestamp: Date.now(),
+        }),
+
+      setBrainDump: (text) =>
+        set({
+          brainDump: text.slice(0, 2000),
+          lastActiveTimestamp: Date.now(),
+        }),
 
       addBrainDumpTopic: (topic) =>
         set((state) => {
@@ -239,14 +281,17 @@ export const useJournalStore = create<JournalState>()(
           const color: StickyColor = TOPIC_COLORS[topic] ?? STICKY_COLORS[order % STICKY_COLORS.length];
           const newNote: StickyNote = {
             id: Date.now().toString(),
-            text: `#${topic}`,
+            text: topicText,
             color,
             rotate: randomRotate(),
             side,
             order,
             category: "act",
           };
-          return { stickyNotes: [...state.stickyNotes, newNote] };
+          return {
+            lastActiveTimestamp: Date.now(),
+            stickyNotes: [...state.stickyNotes, newNote],
+          };
         }),
 
       addStickyNote: (category = "act") =>
@@ -265,11 +310,15 @@ export const useJournalStore = create<JournalState>()(
             order,
             category,
           };
-          return { stickyNotes: [...state.stickyNotes, newNote] };
+          return {
+            lastActiveTimestamp: Date.now(),
+            stickyNotes: [...state.stickyNotes, newNote],
+          };
         }),
 
       updateStickyCategory: (id, category) =>
         set((state) => ({
+          lastActiveTimestamp: Date.now(),
           stickyNotes: state.stickyNotes.map((n) =>
             n.id === id ? { ...n, category } : n
           ),
@@ -277,6 +326,7 @@ export const useJournalStore = create<JournalState>()(
 
       updateStickyText: (id, text) =>
         set((state) => ({
+          lastActiveTimestamp: Date.now(),
           stickyNotes: state.stickyNotes.map((n) =>
             n.id === id ? { ...n, text } : n
           ),
@@ -284,32 +334,80 @@ export const useJournalStore = create<JournalState>()(
 
       removeStickyNote: (id) =>
         set((state) => ({
+          lastActiveTimestamp: Date.now(),
           stickyNotes: state.stickyNotes.filter((n) => n.id !== id),
         })),
 
-      setLoadInsight: (insight) => set({ loadInsight: insight }),
-      setLoadConfirmation: (conf) => set({ loadConfirmation: conf }),
+      setLoadInsight: (insight) =>
+        set({
+          loadInsight: insight,
+          lastActiveTimestamp: Date.now(),
+        }),
+
+      setLoadConfirmation: (conf) =>
+        set({
+          loadConfirmation: conf,
+          lastActiveTimestamp: Date.now(),
+        }),
 
       setNeedCandidatesAndQuestions: (candidates, questions) =>
-        set({ needCandidates: candidates, needQuestions: questions }),
+        set({
+          needCandidates: candidates,
+          needQuestions: questions,
+          lastActiveTimestamp: Date.now(),
+        }),
 
       setNeedAnswer: (questionId, answer) =>
         set((state) => {
           const filtered = state.needAnswers.filter((a) => a.questionId !== questionId);
-          return { needAnswers: [...filtered, { questionId, answer }] };
+          return {
+            lastActiveTimestamp: Date.now(),
+            needAnswers: [...filtered, { questionId, answer }],
+          };
         }),
 
-      setNeedInsight: (insight) => set({ needInsight: insight }),
-      setNeedConfirmation: (conf) => set({ needConfirmation: conf }),
+      setNeedInsight: (insight) =>
+        set({
+          needInsight: insight,
+          lastActiveTimestamp: Date.now(),
+        }),
 
-      setActionRecommendations: (recs) => set({ actionRecommendations: recs }),
-      setSelectedAction: (actionText, actionId = "action-primary") =>
-        set({ selectedAction: actionText, selectedActionId: actionId }),
+      setNeedConfirmation: (conf) =>
+        set({
+          needConfirmation: conf,
+          lastActiveTimestamp: Date.now(),
+        }),
+
+      setActionRecommendations: (recs) =>
+        set({
+          actionRecommendations: recs,
+          lastActiveTimestamp: Date.now(),
+        }),
+
+      setSelectedAction: (actionText, actionId = null) =>
+        set({
+          selectedAction: actionText,
+          selectedActionId: actionId,
+          lastActiveTimestamp: Date.now(),
+        }),
+
       toggleActionCompleted: () =>
-        set((state) => ({ actionCompleted: !state.actionCompleted })),
+        set((state) => ({
+          actionCompleted: !state.actionCompleted,
+          lastActiveTimestamp: Date.now(),
+        })),
 
-      setSummaryData: (summary) => set({ summaryData: summary }),
-      toggleBookmarked: () => set((state) => ({ bookmarked: !state.bookmarked })),
+      setSummaryData: (summary) =>
+        set({
+          summaryData: summary,
+          lastActiveTimestamp: Date.now(),
+        }),
+
+      toggleBookmarked: () =>
+        set((state) => ({
+          bookmarked: !state.bookmarked,
+          lastActiveTimestamp: Date.now(),
+        })),
 
       setLoading: (stage, isLoading) =>
         set((state) => ({
@@ -347,7 +445,11 @@ export const useJournalStore = create<JournalState>()(
     }),
     {
       name: "unmasked-session-store",
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() =>
+        typeof window !== "undefined" && window.localStorage
+          ? window.localStorage
+          : fallbackStorage
+      ),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
         // Shared device protection: if the last activity was > 2 hours ago, auto-reset session
@@ -390,7 +492,6 @@ export const useJournalStore = create<JournalState>()(
 /**
  * Custom hook to safely determine whether the persistent Zustand store
  * has completed rehydration from localStorage.
- * This prevents firing duplicate AI fetches on mount before saved data is restored.
  */
 export function useStoreHydrated(): boolean {
   return useSyncExternalStore(
@@ -405,3 +506,92 @@ export function useStoreHydrated(): boolean {
   );
 }
 
+// ========================================================
+// USER CONFIRMATION AS SOURCE OF TRUTH (Prioritas 3 Helpers)
+// ========================================================
+
+/**
+ * Mengambil interpretasi NEED yang telah dikonfirmasi pengguna.
+ * Jika pengguna menolak ("rejected") atau memberikan koreksi,
+ * maka koreksi pengguna menjadi sumber kebenaran (source of truth).
+ */
+export function getConfirmedNeed(state: Pick<JournalState, "needInsight" | "needConfirmation">) {
+  if (!state.needInsight?.primaryNeed) return null;
+
+  const rawPrimary = state.needInsight.primaryNeed;
+  const conf = state.needConfirmation;
+
+  if (conf?.status === "rejected" || (conf?.correction && conf.correction.trim().length > 0)) {
+    const correctionText = conf.correction?.trim() || "Koreksi Kebutuhan Pengguna";
+    return {
+      key: rawPrimary.key,
+      title: correctionText,
+      reason: `Disesuaikan berdasarkan konfirmasi pengguna: "${correctionText}"`,
+      relevance: "high" as const,
+      isUserCorrected: true,
+    };
+  }
+
+  return {
+    ...rawPrimary,
+    isUserCorrected: false,
+  };
+}
+
+/**
+ * Mengambil interpretasi LOAD yang telah dikonfirmasi pengguna.
+ */
+export function getConfirmedLoadSummary(state: Pick<JournalState, "loadInsight" | "loadConfirmation" | "brainDump">): string {
+  const conf = state.loadConfirmation;
+  if (conf?.status === "rejected" || (conf?.correction && conf.correction.trim().length > 0)) {
+    return conf.correction?.trim() || state.loadInsight?.summary || state.brainDump.trim();
+  }
+  return state.loadInsight?.summary || state.brainDump.trim();
+}
+
+/**
+ * Mengambil interpretasi MASK yang telah dikonfirmasi pengguna.
+ */
+export function getConfirmedMaskReflection(state: Pick<JournalState, "maskInsight" | "maskConfirmation">): string {
+  const conf = state.maskConfirmation;
+  if (conf?.status === "rejected" || (conf?.correction && conf.correction.trim().length > 0)) {
+    return conf.correction?.trim() || state.maskInsight?.reflection || "";
+  }
+  return state.maskInsight?.reflection || "";
+}
+
+// ========================================================
+// STAGE PREREQUISITE VALIDATORS (Prioritas 1 & 14)
+// ========================================================
+
+export function isMaskCompleted(state: Pick<JournalState, "publicTags" | "actualFeelings" | "maskInsight">): boolean {
+  return state.publicTags.length > 0 && state.actualFeelings.length > 0 && Boolean(state.maskInsight);
+}
+
+export function isLoadCompleted(state: Pick<JournalState, "brainDump" | "stickyNotes" | "loadInsight">): boolean {
+  const hasInput = state.brainDump.trim().length > 0 || state.stickyNotes.some((n) => n.text.trim().length > 0);
+  return hasInput && Boolean(state.loadInsight);
+}
+
+export function isNeedCompleted(state: Pick<JournalState, "needQuestions" | "needAnswers" | "needInsight">): boolean {
+  const hasAnswers = state.needAnswers.length > 0 && state.needAnswers.every((a) => a.answer.trim().length > 0);
+  return hasAnswers && Boolean(state.needInsight);
+}
+
+export function isActionSelected(state: Pick<JournalState, "selectedAction">): boolean {
+  return typeof state.selectedAction === "string" && state.selectedAction.trim().length > 0;
+}
+
+export function canProceedToSummary(
+  state: Parameters<typeof isMaskCompleted>[0] &
+    Parameters<typeof isLoadCompleted>[0] &
+    Parameters<typeof isNeedCompleted>[0] &
+    Parameters<typeof isActionSelected>[0]
+): boolean {
+  return (
+    isMaskCompleted(state) &&
+    isLoadCompleted(state) &&
+    isNeedCompleted(state) &&
+    isActionSelected(state)
+  );
+}

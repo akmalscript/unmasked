@@ -6,7 +6,12 @@ import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
 import { AIErrorCard } from "@/components/AIErrorCard";
-import { useJournalStore, useStoreHydrated } from "@/store/useJournalStore";
+import {
+  useJournalStore,
+  useStoreHydrated,
+  getConfirmedNeed,
+  getConfirmedLoadSummary,
+} from "@/store/useJournalStore";
 import { ActionRecommendation } from "@/types/session";
 
 export function ActionStepSection() {
@@ -17,39 +22,51 @@ export function ActionStepSection() {
     publicTags,
     actualFeelings,
     maskConfirmation,
+    brainDump,
+    loadInsight,
+    loadConfirmation,
     needInsight,
     needConfirmation,
-    loadInsight,
     actionRecommendations,
     setActionRecommendations,
     selectedAction,
+    selectedActionId,
     setSelectedAction,
   } = useJournalStore();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [technicalError, setTechnicalError] = useState<string | null>(null);
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [agreed, setAgreed] = useState(false);
+  const [activeTabOverride, setActiveTabOverride] = useState<number | null>(null);
 
-  const hasNeedContext = Boolean(needInsight);
+  const confirmedNeed = getConfirmedNeed({ needInsight, needConfirmation });
+  const hasNeedContext = Boolean(confirmedNeed);
+
+  const selectedIndex =
+    activeTabOverride !== null
+      ? activeTabOverride
+      : selectedActionId && actionRecommendations.length > 0
+        ? Math.max(0, actionRecommendations.findIndex((r) => r.id === selectedActionId))
+        : 0;
 
   const fetchActionRecommendations = async (force = false) => {
     if (actionRecommendations.length > 0 && !force) return;
-    if (!hasNeedContext) return;
+    if (!hasNeedContext || !confirmedNeed) return;
+    if (!loadInsight?.themes || loadInsight.themes.length === 0) return;
+
     setLoading(true);
     setError(null);
     setTechnicalError(null);
 
     try {
-      const primaryNeed = needInsight?.primaryNeed || {
-        key: "control",
-        title: "Rasa Kendali",
-        reason: needConfirmation?.correction || "Perlu merapikan ritme dan batasan tugas.",
+      const primaryNeed = {
+        key: confirmedNeed.key,
+        title: confirmedNeed.title,
+        reason: confirmedNeed.reason,
       };
 
-      const themes = loadInsight?.themes?.map((t) => t.name) || ["Refleksi Diri"];
-      const summary = loadInsight?.summary || "Kondisi batin yang memerlukan perhatian.";
+      const themes = loadInsight.themes.map((t) => t.name);
+      const summary = getConfirmedLoadSummary({ loadInsight, loadConfirmation, brainDump });
 
       const res = await fetch("/api/ai/action", {
         method: "POST",
@@ -69,15 +86,14 @@ export function ActionStepSection() {
 
       const json = await res.json();
       if (!res.ok || !json.success) {
-        setTechnicalError(json.technicalError || null);
-        throw new Error(json.error || "Gagal menyusun langkah aksi.");
+        setTechnicalError(json.code || null);
+        throw new Error(json.message || "Gagal menyusun langkah aksi.");
       }
 
       const recs = json.data.recommendations as ActionRecommendation[];
       setActionRecommendations(recs);
-      if (recs.length > 0 && !selectedAction) {
-        setSelectedAction(recs[0].title + " — " + recs[0].description, recs[0].id);
-      }
+      // Prioritas 2: JANGAN otomatis memilih rekomendasi pertama!
+      // selectedAction tetap null/sebelumnya sampai user memilih sendiri.
     } catch (err) {
       console.error(err);
       setError(err instanceof Error ? err.message : "Terjadi kesalahan koneksi.");
@@ -91,14 +107,15 @@ export function ActionStepSection() {
     if (!isHydrated) return;
     if (actionRecommendations.length > 0) return;
     if (!hasNeedContext) return;
+    if (!loadInsight?.themes || loadInsight.themes.length === 0) return;
     if (isFetchingRef.current) return;
     isFetchingRef.current = true;
 
     fetchActionRecommendations();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHydrated, actionRecommendations.length, hasNeedContext]);
+  }, [isHydrated, actionRecommendations.length, hasNeedContext, loadInsight]);
 
-  if (isHydrated && !hasNeedContext && actionRecommendations.length === 0) {
+  if (isHydrated && (!hasNeedContext || !loadInsight?.themes || loadInsight.themes.length === 0) && actionRecommendations.length === 0) {
     return (
       <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-28">
         <Header subtitle="ACTION 01/01" showSteps={true} stepNumber={4} totalSteps={4} />
@@ -127,16 +144,18 @@ export function ActionStepSection() {
     );
   }
 
-  const handleSelectRecommendation = (idx: number) => {
-    setSelectedIndex(idx);
-    const rec = actionRecommendations[idx];
-    if (rec) {
-      setSelectedAction(rec.title + " — " + rec.description, rec.id);
-      setAgreed(false);
-    }
+  const handleSelectTab = (idx: number) => {
+    setActiveTabOverride(idx);
+  };
+
+  const handleConfirmAction = (rec: ActionRecommendation) => {
+    setSelectedAction(rec.title + " — " + rec.description, rec.id);
   };
 
   const currentRec = actionRecommendations[selectedIndex] || null;
+  const isCurrentActionSelected = Boolean(
+    selectedAction && currentRec && selectedActionId === currentRec.id
+  );
 
   return (
     <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-36 sm:pb-28">
@@ -168,8 +187,8 @@ export function ActionStepSection() {
               technicalError={technicalError}
               onRetry={() => fetchActionRecommendations(true)}
               isRetrying={loading}
-              continueUrl="/summary"
-              continueLabel="Tetap Lanjut ke Halaman Rangkuman"
+              continueUrl="/need-result"
+              continueLabel="Kembali ke Hasil Kebutuhan"
             />
           </div>
         )}
@@ -191,20 +210,26 @@ export function ActionStepSection() {
                     : rec.type === "low_energy"
                     ? "Energi Rendah (5m)"
                     : "Alternatif";
-                const isSelected = selectedIndex === idx;
+                const isTabActive = selectedIndex === idx;
+                const isThisRecChosen = selectedActionId === rec.id;
 
                 return (
                   <button
                     key={rec.id || idx}
                     type="button"
-                    onClick={() => handleSelectRecommendation(idx)}
-                    className={`px-3 py-1.5 rounded-full border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold transition-all shadow-[2px_2px_0px_#171717] ${
-                      isSelected
+                    onClick={() => handleSelectTab(idx)}
+                    className={`px-3 py-1.5 rounded-full border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold transition-all shadow-[2px_2px_0px_#171717] flex items-center gap-1.5 ${
+                      isTabActive
                         ? "bg-marker-orange text-ink-charcoal ring-1 ring-ink-charcoal"
                         : "bg-paper-base hover:bg-paper-warm text-ink-charcoal/80"
                     }`}
                   >
-                    {label}
+                    {isThisRecChosen && (
+                      <span className="material-symbols-outlined text-[13px] text-ink-charcoal font-bold">
+                        check_circle
+                      </span>
+                    )}
+                    <span>{label}</span>
                   </button>
                 );
               })}
@@ -218,7 +243,7 @@ export function ActionStepSection() {
                     1. Kebutuhan yang Disasar
                   </span>
                   <span className="font-headline font-bold text-sm text-ink-charcoal uppercase">
-                    {needInsight?.primaryNeed?.title || "Rasa Kendali"}
+                    {confirmedNeed?.title || "Kebutuhan Diri"}
                   </span>
                 </div>
                 <div className="bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl p-3 shadow-[1.5px_1.5px_0px_#171717]">
@@ -260,7 +285,7 @@ export function ActionStepSection() {
                 <button
                   type="button"
                   onClick={() =>
-                    handleSelectRecommendation(
+                    handleSelectTab(
                       (selectedIndex + 1) % actionRecommendations.length
                     )
                   }
@@ -270,14 +295,21 @@ export function ActionStepSection() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setAgreed(!agreed)}
-                  className={`w-full sm:w-auto px-6 py-2.5 rounded-full font-mono-tag text-xs font-bold border-[1.5px] border-ink-charcoal shadow-[3px_3px_0px_#171717] transition-all active:translate-x-[1px] active:translate-y-[1px] ${
-                    agreed
+                  onClick={() => handleConfirmAction(currentRec)}
+                  className={`w-full sm:w-auto px-6 py-2.5 rounded-full font-mono-tag text-xs font-bold border-[1.5px] border-ink-charcoal shadow-[3px_3px_0px_#171717] transition-all active:translate-x-[1px] active:translate-y-[1px] flex items-center justify-center gap-2 ${
+                    isCurrentActionSelected
                       ? "bg-sticker-sage text-ink-charcoal ring-1 ring-ink-charcoal"
                       : "bg-marker-orange text-ink-charcoal hover:bg-burnt-orange"
                   }`}
                 >
-                  {agreed ? "✓ Langkah Ini Disepakati" : "Saya akan mencoba ini"}
+                  {isCurrentActionSelected ? (
+                    <>
+                      <span className="material-symbols-outlined text-[16px]">check</span>
+                      <span>✓ Langkah Ini Dipilih</span>
+                    </>
+                  ) : (
+                    <span>Pilih langkah ini</span>
+                  )}
                 </button>
               </div>
             </div>
@@ -290,6 +322,7 @@ export function ActionStepSection() {
         nextTo="/summary"
         nextLabel="Lihat Rangkuman"
         stageBadge="ACTION"
+        isNextDisabled={!selectedAction}
       />
     </div>
   );

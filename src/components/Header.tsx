@@ -16,7 +16,6 @@ interface HeaderProps {
 }
 
 export function Header({
-  subtitle = "",
   showSteps = false,
   stepNumber = 1,
   totalSteps = 4,

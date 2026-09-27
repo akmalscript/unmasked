@@ -1,19 +1,81 @@
 import { NextResponse } from "next/server";
 import { generateStructuredAI, parseAIError } from "@/lib/ai/client";
 import { buildSummaryPrompt, SYSTEM_GUIDELINES } from "@/lib/ai/prompts";
-import { SummaryOutputSchema } from "@/schemas/reflection";
+import { SummaryInputSchema, SummaryOutputSchema } from "@/schemas/reflection";
+import { checkRateLimit, getClientIdentifier, validateBodySize } from "@/lib/ai/rateLimit";
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { whatYouShow, whatYouCarry, whatYouMayNeed, selectedActionTitle, selectedActionDesc } = body;
+    const rawBody = await req.text();
+    if (!validateBodySize(rawBody)) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: "REQUEST_TOO_LARGE",
+          message: "Ukuran request melebihi batas maksimal yang diizinkan.",
+          retryable: false,
+        },
+        { status: 413 }
+      );
+    }
+
+    const clientId = getClientIdentifier(req);
+    const rateCheck = checkRateLimit(clientId, { maxRequestsPerMinute: 15, cooldownMs: 1200 });
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: rateCheck.code || "RATE_LIMIT_EXCEEDED",
+          message: rateCheck.message,
+          retryAfterSeconds: rateCheck.retryAfterSeconds,
+          retryable: true,
+        },
+        { status: 429 }
+      );
+    }
+
+    let jsonBody: unknown;
+    try {
+      jsonBody = JSON.parse(rawBody);
+    } catch {
+      return NextResponse.json(
+        {
+          success: false,
+          code: "MALFORMED_JSON",
+          message: "Format JSON tidak valid.",
+          retryable: false,
+        },
+        { status: 400 }
+      );
+    }
+
+    const parseResult = SummaryInputSchema.safeParse(jsonBody);
+    if (!parseResult.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: "PREREQUISITE_MISSING",
+          message: parseResult.error.issues[0]?.message || "Data tahap sebelumnya belum lengkap untuk menyusun rangkuman final.",
+          retryable: false,
+        },
+        { status: 400 }
+      );
+    }
+
+    const {
+      whatYouShow,
+      whatYouCarry,
+      whatYouMayNeed,
+      selectedActionTitle,
+      selectedActionDesc,
+    } = parseResult.data;
 
     const prompt = buildSummaryPrompt({
-      whatYouShow: whatYouShow || ["Produktif", "Kuat"],
-      whatYouCarry: whatYouCarry || ["Academic Pressure"],
-      whatYouMayNeed: whatYouMayNeed || ["Rasa Kendali"],
-      selectedActionTitle: selectedActionTitle || "Langkah Kecil",
-      selectedActionDesc: selectedActionDesc || "Luangkan 10 menit jeda.",
+      whatYouShow,
+      whatYouCarry,
+      whatYouMayNeed,
+      selectedActionTitle,
+      selectedActionDesc,
     });
 
     const { data, modelUsed } = await generateStructuredAI(
@@ -28,7 +90,7 @@ export async function POST(req: Request) {
         ...data,
         meta: {
           model: modelUsed,
-          promptVersion: "summary-v1",
+          promptVersion: "summary-v2",
           generatedAt: new Date().toISOString(),
         },
       },
@@ -39,8 +101,9 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         success: false,
-        error: parsed.userFriendlyMessage,
-        technicalError: parsed.rawError,
+        code: parsed.code,
+        message: parsed.message,
+        retryable: parsed.retryable,
       },
       { status: parsed.statusCode }
     );

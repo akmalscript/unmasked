@@ -1,33 +1,99 @@
 import { NextResponse } from "next/server";
 import { generateStructuredAI, parseAIError } from "@/lib/ai/client";
 import { buildNeedPreparePrompt, SYSTEM_GUIDELINES } from "@/lib/ai/prompts";
-import { NeedPrepareOutputSchema } from "@/schemas/reflection";
+import { NeedPrepareInputSchema, NeedPrepareOutputSchema } from "@/schemas/reflection";
+import { checkCrisisRisk } from "@/lib/safety/crisisKeywords";
+import { checkRateLimit, getClientIdentifier, validateBodySize } from "@/lib/ai/rateLimit";
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { maskContext, loadContext, loadThemes, loadSummary, userCorrection } = body;
+    const rawBody = await req.text();
+    if (!validateBodySize(rawBody)) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: "REQUEST_TOO_LARGE",
+          message: "Ukuran request melebihi batas maksimal yang diizinkan.",
+          retryable: false,
+        },
+        { status: 413 }
+      );
+    }
 
-    const resolvedLoadContext = loadContext || {
-      themes: loadThemes || ["Tuntutan Tugas & Waktu"],
-      summary: loadSummary || "Pengguna merasa banyak hal yang harus diselesaikan sekaligus.",
-      userCorrection,
-    };
+    const clientId = getClientIdentifier(req);
+    const rateCheck = checkRateLimit(clientId, { maxRequestsPerMinute: 15, cooldownMs: 1200 });
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: rateCheck.code || "RATE_LIMIT_EXCEEDED",
+          message: rateCheck.message,
+          retryAfterSeconds: rateCheck.retryAfterSeconds,
+          retryable: true,
+        },
+        { status: 429 }
+      );
+    }
+
+    let jsonBody: unknown;
+    try {
+      jsonBody = JSON.parse(rawBody);
+    } catch {
+      return NextResponse.json(
+        {
+          success: false,
+          code: "MALFORMED_JSON",
+          message: "Format JSON tidak valid.",
+          retryable: false,
+        },
+        { status: 400 }
+      );
+    }
+
+    const parseResult = NeedPrepareInputSchema.safeParse(jsonBody);
+    if (!parseResult.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: "VALIDATION_ERROR",
+          message: parseResult.error.issues[0]?.message || "Input NEED prepare tidak valid. Konteks LOAD wajib diisi.",
+          retryable: false,
+        },
+        { status: 400 }
+      );
+    }
+
+    const { maskContext, loadContext } = parseResult.data;
+
+    // Safety Pipeline Check
+    const safetyCheck = checkCrisisRisk(`${loadContext.summary} ${loadContext.userCorrection || ""}`);
+    if (safetyCheck.isCrisis) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: "SAFETY_INTERVENTION",
+          message: "Kami mendeteksi situasi yang membutuhkan pendampingan krisis. Keselamatanmu adalah hal paling utama.",
+          riskLevel: "high",
+          emergencyContacts: safetyCheck.emergencyContacts,
+          retryable: false,
+        },
+        { status: 400 }
+      );
+    }
 
     const prompt = buildNeedPreparePrompt({
       maskContext,
-      loadContext: resolvedLoadContext,
+      loadContext,
     });
 
-    const { data } = await generateStructuredAI(
+    const { data, modelUsed } = await generateStructuredAI(
       prompt,
       NeedPrepareOutputSchema,
       SYSTEM_GUIDELINES
     );
 
-    // Question Quality Safeguard (Bab 36):
-    // Ensure all questions end with '?', are between 2-3 questions, and not overly long.
-    const validatedQuestions = data.questions.slice(0, 3).map((q) => {
+    // Pastikan pertanyaan berakhiran tanda tanya dan tetap bersih
+    const validatedQuestions = data.questions.map((q) => {
       let cleaned = q.question.trim();
       if (!cleaned.endsWith("?")) {
         cleaned += "?";
@@ -43,6 +109,11 @@ export async function POST(req: Request) {
       data: {
         ...data,
         questions: validatedQuestions,
+        meta: {
+          model: modelUsed,
+          promptVersion: "need-prepare-v2",
+          generatedAt: new Date().toISOString(),
+        },
       },
     });
   } catch (error) {
@@ -51,8 +122,9 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         success: false,
-        error: parsed.userFriendlyMessage,
-        technicalError: parsed.rawError,
+        code: parsed.code,
+        message: parsed.message,
+        retryable: parsed.retryable,
       },
       { status: parsed.statusCode }
     );

@@ -6,7 +6,12 @@ import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
 import { AIErrorCard } from "@/components/AIErrorCard";
-import { useJournalStore, useStoreHydrated } from "@/store/useJournalStore";
+import { CrisisModal } from "@/components/CrisisModal";
+import {
+  useJournalStore,
+  useStoreHydrated,
+  getConfirmedLoadSummary,
+} from "@/store/useJournalStore";
 import { CandidateNeed, NeedQuestion } from "@/types/session";
 
 export function NeedSheetSection() {
@@ -31,19 +36,20 @@ export function NeedSheetSection() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [technicalError, setTechnicalError] = useState<string | null>(null);
+  const [isCrisisOpen, setIsCrisisOpen] = useState(false);
 
-  const hasLoadContext = Boolean(loadInsight || brainDump.trim() || publicTags.length > 0);
+  const hasLoadContext = Boolean(loadInsight && loadInsight.themes && loadInsight.themes.length > 0);
 
   const fetchNeedQuestions = async (force = false) => {
     if (needQuestions.length > 0 && !force) return;
-    if (!hasLoadContext) return;
+    if (!hasLoadContext || !loadInsight) return;
     setLoading(true);
     setError(null);
     setTechnicalError(null);
 
     try {
-      const themes = loadInsight?.themes?.map((t) => t.name) || ["Refleksi Diri"];
-      const summary = loadInsight?.summary || brainDump.trim() || "Merasa ada beban batin yang perlu diurai.";
+      const themes = loadInsight.themes.map((t) => t.name);
+      const summary = getConfirmedLoadSummary({ loadInsight, loadConfirmation, brainDump });
 
       const res = await fetch("/api/ai/need/prepare", {
         method: "POST",
@@ -65,8 +71,11 @@ export function NeedSheetSection() {
 
       const json = await res.json();
       if (!res.ok || !json.success) {
-        setTechnicalError(json.technicalError || null);
-        throw new Error(json.error || "Gagal menyiapkan pertanyaan.");
+        if (json.code === "SAFETY_INTERVENTION") {
+          setIsCrisisOpen(true);
+        }
+        setTechnicalError(json.code || null);
+        throw new Error(json.message || "Gagal menyiapkan pertanyaan.");
       }
 
       const { candidates, questions } = json.data as {
@@ -234,6 +243,8 @@ export function NeedSheetSection() {
           )}
         </section>
       </main>
+
+      <CrisisModal isOpen={isCrisisOpen} onClose={() => setIsCrisisOpen(false)} />
 
       {/* Dock - Revised per Section 19 */}
       <BottomDock

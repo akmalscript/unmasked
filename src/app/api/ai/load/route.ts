@@ -1,24 +1,88 @@
 import { NextResponse } from "next/server";
 import { generateStructuredAI, parseAIError } from "@/lib/ai/client";
 import { buildLoadPrompt, SYSTEM_GUIDELINES } from "@/lib/ai/prompts";
-import { LoadInsightSchema } from "@/schemas/reflection";
+import { LoadInputSchema, LoadInsightSchema } from "@/schemas/reflection";
+import { checkCrisisRisk } from "@/lib/safety/crisisKeywords";
+import { checkRateLimit, getClientIdentifier, validateBodySize } from "@/lib/ai/rateLimit";
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { brainDump, items, maskContext } = body;
-
-    if (!brainDump || typeof brainDump !== "string" || brainDump.trim().length === 0) {
+    const rawBody = await req.text();
+    if (!validateBodySize(rawBody)) {
       return NextResponse.json(
-        { error: "brainDump is required and must not be empty" },
+        {
+          success: false,
+          code: "REQUEST_TOO_LARGE",
+          message: "Ukuran request melebihi batas maksimal yang diizinkan.",
+          retryable: false,
+        },
+        { status: 413 }
+      );
+    }
+
+    const clientId = getClientIdentifier(req);
+    const rateCheck = checkRateLimit(clientId, { maxRequestsPerMinute: 15, cooldownMs: 1200 });
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: rateCheck.code || "RATE_LIMIT_EXCEEDED",
+          message: rateCheck.message,
+          retryAfterSeconds: rateCheck.retryAfterSeconds,
+          retryable: true,
+        },
+        { status: 429 }
+      );
+    }
+
+    let jsonBody: unknown;
+    try {
+      jsonBody = JSON.parse(rawBody);
+    } catch {
+      return NextResponse.json(
+        {
+          success: false,
+          code: "MALFORMED_JSON",
+          message: "Format JSON tidak valid.",
+          retryable: false,
+        },
         { status: 400 }
       );
     }
 
-    // Defensive safeguard: ensure brainDump does not exceed 2000 characters
-    const sanitizedBrainDump = brainDump.trim().slice(0, 2000);
+    const parseResult = LoadInputSchema.safeParse(jsonBody);
+    if (!parseResult.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: "VALIDATION_ERROR",
+          message: parseResult.error.issues[0]?.message || "Input LOAD tidak valid.",
+          retryable: false,
+        },
+        { status: 400 }
+      );
+    }
 
-    const prompt = buildLoadPrompt({ brainDump: sanitizedBrainDump, items, maskContext });
+    const { brainDump, items, maskContext } = parseResult.data;
+
+    // Safety Pipeline Check
+    const itemTexts = items ? items.map((i) => i.text).join(" ") : "";
+    const safetyCheck = checkCrisisRisk(`${brainDump} ${itemTexts}`);
+    if (safetyCheck.isCrisis) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: "SAFETY_INTERVENTION",
+          message: "Kami mendeteksi situasi yang membutuhkan pendampingan krisis. Keselamatanmu adalah hal paling utama.",
+          riskLevel: "high",
+          emergencyContacts: safetyCheck.emergencyContacts,
+          retryable: false,
+        },
+        { status: 400 }
+      );
+    }
+
+    const prompt = buildLoadPrompt({ brainDump, items, maskContext });
     const { data, modelUsed } = await generateStructuredAI(
       prompt,
       LoadInsightSchema,
@@ -31,7 +95,7 @@ export async function POST(req: Request) {
         ...data,
         meta: {
           model: modelUsed,
-          promptVersion: "load-v1",
+          promptVersion: "load-v2",
           generatedAt: new Date().toISOString(),
         },
       },
@@ -42,8 +106,9 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         success: false,
-        error: parsed.userFriendlyMessage,
-        technicalError: parsed.rawError,
+        code: parsed.code,
+        message: parsed.message,
+        retryable: parsed.retryable,
       },
       { status: parsed.statusCode }
     );

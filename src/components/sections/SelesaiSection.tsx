@@ -4,21 +4,27 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useJournalStore, useStoreHydrated } from "@/store/useJournalStore";
+import { useJournalStore } from "@/store/useJournalStore";
 import confetti from "canvas-confetti";
 import { ConfirmModal } from "@/components/ConfirmModal";
 
 export function SelesaiSection() {
   const router = useRouter();
   const { resetSession, clearAllData, sessionId, actualFeelings, loadInsight } = useJournalStore();
-  const isHydrated = useStoreHydrated();
   const [showConfirm, setShowConfirm] = useState(false);
 
-  // Kalkulasi statistik dinamis
-  const sessionStartTime = parseInt(sessionId.split("-")[1] || "0");
-  const minutesSpent = isHydrated && sessionStartTime > 0
-    ? Math.max(1, Math.round((Date.now() - sessionStartTime) / 60000))
-    : 1;
+  const [minutesSpent, setMinutesSpent] = useState(1);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const sessionStartTime = parseInt(sessionId.split("-")[1] || "0");
+      if (sessionStartTime > 0) {
+        setMinutesSpent(Math.max(1, Math.round((Date.now() - sessionStartTime) / 60000)));
+      }
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [sessionId]);
+
   const mainFocus = loadInsight?.themes?.[0]?.name || actualFeelings?.[0] || "Refleksi Diri";
 
   useEffect(() => {

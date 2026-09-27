@@ -7,7 +7,16 @@ import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
 import { AIErrorCard } from "@/components/AIErrorCard";
-import { useJournalStore, useStoreHydrated } from "@/store/useJournalStore";
+import {
+  useJournalStore,
+  useStoreHydrated,
+  isMaskCompleted,
+  isLoadCompleted,
+  isNeedCompleted,
+  isActionSelected,
+  getConfirmedNeed,
+  getConfirmedLoadSummary,
+} from "@/store/useJournalStore";
 import { SummaryStage } from "@/types/session";
 
 export function SummarySection() {
@@ -18,8 +27,15 @@ export function SummarySection() {
   const {
     publicTags,
     actualFeelings,
+    maskInsight,
+    brainDump,
+    stickyNotes,
     loadInsight,
+    loadConfirmation,
+    needQuestions,
+    needAnswers,
     needInsight,
+    needConfirmation,
     selectedAction,
     summaryData,
     setSummaryData,
@@ -31,20 +47,25 @@ export function SummarySection() {
   const [error, setError] = useState<string | null>(null);
   const [technicalError, setTechnicalError] = useState<string | null>(null);
 
-  const hasAnyData = publicTags.length > 0 || actualFeelings.length > 0 || Boolean(loadInsight) || Boolean(needInsight);
+  // Prioritas 14: Assert prerequisites
+  const maskOk = isMaskCompleted({ publicTags, actualFeelings, maskInsight });
+  const loadOk = isLoadCompleted({ brainDump, stickyNotes, loadInsight });
+  const needOk = isNeedCompleted({ needQuestions, needAnswers, needInsight });
+  const actionOk = isActionSelected({ selectedAction });
+  const allPrerequisitesMet = maskOk && loadOk && needOk && actionOk;
 
-  const currentPublicTags = publicTags.length ? publicTags : ["-"];
-  const currentActualFeelings = actualFeelings.length ? actualFeelings : ["-"];
-  const currentThemes = loadInsight?.themes?.map((t) => t.name) || ["Refleksi Diri"];
-  const currentNeeds = needInsight?.primaryNeed
-    ? [needInsight.primaryNeed.title, ...(needInsight.secondaryNeeds?.map((s) => s.title) || [])]
-    : ["Kebutuhan Diri"];
-  const currentAction =
-    selectedAction || "Berikan jeda dan waktu untuk diri sendiri malam ini.";
+  const confirmedNeed = getConfirmedNeed({ needInsight, needConfirmation });
+  const confirmedSummary = getConfirmedLoadSummary({ loadInsight, loadConfirmation, brainDump });
+
+  const currentPublicTags = publicTags;
+  const currentActualFeelings = actualFeelings;
+  const currentThemes = loadInsight?.themes?.map((t) => t.name) || [];
+  const currentNeeds = confirmedNeed ? [confirmedNeed.title] : [];
+  const currentAction = selectedAction || "";
 
   const fetchSummary = async (force = false) => {
     if (summaryData && !force) return;
-    if (!hasAnyData) return;
+    if (!allPrerequisitesMet) return;
     setLoading(true);
     setError(null);
     setTechnicalError(null);
@@ -66,8 +87,8 @@ export function SummarySection() {
       if (res.ok && json.success) {
         setSummaryData(json.data as SummaryStage);
       } else {
-        setTechnicalError(json.technicalError || null);
-        setError(json.error || "Gagal menyusun refleksi penutup.");
+        setTechnicalError(json.code || null);
+        setError(json.message || "Gagal menyusun refleksi penutup.");
       }
     } catch (err) {
       console.error("Failed to generate summary:", err);
@@ -81,39 +102,84 @@ export function SummarySection() {
   useEffect(() => {
     if (!isHydrated) return;
     if (summaryData) return;
-    if (!hasAnyData) return;
+    if (!allPrerequisitesMet) return;
     if (isFetchingRef.current) return;
     isFetchingRef.current = true;
 
     fetchSummary();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHydrated, summaryData, hasAnyData]);
+  }, [isHydrated, summaryData, allPrerequisitesMet]);
 
-  if (isHydrated && !hasAnyData && !summaryData) {
+  // Prioritas 14: Controlled redirect / feedback jika prerequisite belum lengkap
+  if (isHydrated && !allPrerequisitesMet && !summaryData) {
+    let missingInfo = {
+      title: "Tahap Belum Lengkap",
+      message: "Kamu belum menyelesaikan seluruh tahapan refleksi. Mulai perjalananmu agar mendapatkan rangkuman yang utuh.",
+      targetUrl: "/onboarding",
+      targetLabel: "Mulai Perjalanan Refleksi",
+      icon: "auto_stories",
+    };
+
+    if (!maskOk) {
+      missingInfo = {
+        title: "Tahap MASK Belum Selesai",
+        message: "Kamu belum melengkapi pilihan tampilan luar atau perasaan batin di tahap MASK.",
+        targetUrl: "/public-self",
+        targetLabel: "Buka Tahap MASK",
+        icon: "theater_comedy",
+      };
+    } else if (!loadOk) {
+      missingInfo = {
+        title: "Tahap LOAD Belum Selesai",
+        message: "Kamu belum mencurahkan dan menelaah beban pikiran di tahap LOAD.",
+        targetUrl: "/brain-dump",
+        targetLabel: "Buka Tahap Brain Dump",
+        icon: "edit_note",
+      };
+    } else if (!needOk) {
+      missingInfo = {
+        title: "Tahap NEED Belum Selesai",
+        message: "Kamu belum menjawab pertanyaan pemetaan kebutuhan di tahap NEED.",
+        targetUrl: "/need-sheet",
+        targetLabel: "Buka Tahap Pemetaan Kebutuhan",
+        icon: "psychology_alt",
+      };
+    } else if (!actionOk) {
+      missingInfo = {
+        title: "Langkah Aksi Belum Dipilih",
+        message: "Kamu belum memilih satu langkah mikro di tahap ACTION.",
+        targetUrl: "/action-step",
+        targetLabel: "Pilih Satu Langkah Aksi",
+        icon: "route",
+      };
+    }
+
     return (
       <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-28">
         <Header subtitle="RANGKUMAN" showSteps={false} />
         <main className="flex-grow w-full max-w-[1120px] mx-auto px-6 md:px-12 py-12 flex flex-col items-center justify-center">
           <div className="w-full max-w-md bg-paper-base border-[2px] border-ink-charcoal rounded-2xl p-6 sm:p-8 text-center shadow-[6px_6px_0px_#171717]">
             <div className="w-14 h-14 rounded-full bg-paper-warm border-[1.5px] border-ink-charcoal flex items-center justify-center mx-auto mb-4">
-              <span className="material-symbols-outlined text-marker-orange text-3xl">auto_stories</span>
+              <span className="material-symbols-outlined text-marker-orange text-3xl">
+                {missingInfo.icon}
+              </span>
             </div>
             <h2 className="font-headline text-xl sm:text-2xl font-bold text-ink-charcoal mb-2">
-              Belum Ada Rangkuman
+              {missingInfo.title}
             </h2>
             <p className="font-sans text-xs sm:text-sm text-ink-charcoal/80 mb-6 leading-relaxed">
-              Kamu belum memulai atau mengisi perjalanan refleksi. Mulai dari awal agar kamu mendapatkan telaah persona, beban pikiran, dan kebutuhan diri yang utuh.
+              {missingInfo.message}
             </p>
             <Link
-              href="/onboarding"
+              href={missingInfo.targetUrl}
               className="inline-flex items-center justify-center gap-2 bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[3px_3px_0px_#171717] rounded-full px-6 py-2.5 font-mono-tag text-xs font-bold uppercase hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_#171717] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-150"
             >
-              <span className="material-symbols-outlined text-[16px]">play_arrow</span>
-              <span>Mulai Perjalanan Refleksi</span>
+              <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+              <span>{missingInfo.targetLabel}</span>
             </Link>
           </div>
         </main>
-        <BottomDock backTo="/" centerLabel="Belum Ada Rangkuman" stageBadge="RANGKUMAN" />
+        <BottomDock backTo={missingInfo.targetUrl} centerLabel={missingInfo.title} stageBadge="RANGKUMAN" />
       </div>
     );
   }
@@ -126,9 +192,6 @@ export function SummarySection() {
       const { toPng } = await import("html-to-image");
       const { jsPDF } = await import("jspdf");
 
-      // Next.js dev server mengintersep console.error dan membuat layar merah.
-      // html-to-image secara internal memunculkan console.error saat mencoba membaca 
-      // stylesheet dari Google Fonts (CORS). Kita matikan sementara console.error untuk itu.
       const originalError = console.error;
       console.error = (...args) => {
         if (args.join(" ").includes("cssRules")) return;
@@ -143,7 +206,7 @@ export function SummarySection() {
       console.error = originalError;
 
       const rect = element.getBoundingClientRect();
-      const pdfWidth = 80; // Lebar standar struk (mm)
+      const pdfWidth = 80;
       const pdfHeight = (rect.height * pdfWidth) / rect.width;
 
       const pdf = new jsPDF({
@@ -279,7 +342,6 @@ export function SummarySection() {
                 </div>
               </div>
 
-
               {/* AI Error state */}
               {error && !summaryData && (
                 <div className="max-w-xl mx-auto mt-6">
@@ -367,7 +429,7 @@ export function SummarySection() {
               <ul className="list-none space-y-1 mb-2">
                 {currentThemes.map((t, i) => <li key={i}>- {t}</li>)}
               </ul>
-              <p className="text-ink-charcoal/80 italic">Catatan: {loadInsight?.summary || "-"}</p>
+              <p className="text-ink-charcoal/80 italic">Catatan: {confirmedSummary || "-"}</p>
             </div>
             <div>
               <p className="font-bold border-b-[1.5px] border-ink-charcoal/30 pb-1 mb-1">4. KEBUTUHAN DIRI (WHAT YOU MAY NEED)</p>
@@ -378,13 +440,13 @@ export function SummarySection() {
             </div>
             <div>
               <p className="font-bold border-b-[1.5px] border-ink-charcoal/30 pb-1 mb-1">5. LANGKAH KECIL (YOUR NEXT STEP)</p>
-              <p className="font-headline italic font-bold">"{currentAction}"</p>
+              <p className="font-headline italic font-bold">&ldquo;{currentAction}&rdquo;</p>
             </div>
 
             {summaryData?.reflection && (
               <div className="mt-4 pt-4 border-t-[1.5px] border-ink-charcoal/30">
                 <p className="font-bold pb-1 mb-1">6. CATATAN PENUTUP (A FINAL NOTE)</p>
-                <p>"{summaryData.reflection}"</p>
+                <p>&ldquo;{summaryData.reflection}&rdquo;</p>
               </div>
             )}
           </div>
@@ -394,8 +456,8 @@ export function SummarySection() {
             <div className="w-10 h-10 mx-auto border-[1.5px] border-ink-charcoal rounded-full flex items-center justify-center mb-3 -rotate-6">
               <span className="material-symbols-outlined text-[20px]">done_all</span>
             </div>
-            <p className="font-script text-xl text-burnt-orange mb-2">"look how much you unpacked"</p>
-            <p className="text-[10px] uppercase font-bold tracking-widest mt-2">Beyond "I'm Fine"</p>
+            <p className="font-script text-xl text-burnt-orange mb-2">&ldquo;look how much you unpacked&rdquo;</p>
+            <p className="text-[10px] uppercase font-bold tracking-widest mt-2">Beyond &quot;I&apos;m Fine&quot;</p>
           </div>
         </div>
       </div>
