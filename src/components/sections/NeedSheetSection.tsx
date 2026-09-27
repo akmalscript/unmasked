@@ -119,7 +119,7 @@ export function NeedSheetSection() {
             </Link>
           </div>
         </main>
-        <BottomDock backTo="/brain-dump" centerLabel="Tahap Belum Selesai" />
+        <BottomDock backTo="/brain-dump" centerLabel="Tahap Belum Selesai" stageBadge="NEED 01/02" />
       </div>
     );
   }
@@ -146,7 +146,7 @@ export function NeedSheetSection() {
             “apa yang paling kamu butuhkan sekarang?”
           </h1>
           <p className="text-sm md:text-base text-ink-charcoal/80 max-w-lg mx-auto">
-            Kami akan memberikan beberapa pertanyaan singkat berdasarkan ceritamu. Jawab saja sesuai yang paling terasa benar.
+            Kami akan memberikan beberapa pertanyaan singkat berdasarkan ceritamu. Jawab saja apa adanya.
           </p>
         </section>
 
@@ -240,7 +240,8 @@ export function NeedSheetSection() {
         backTo="/story-reflection"
         nextTo="/need-result"
         nextLabel="Lanjut ke Hasil Refleksi"
-        centerLabel="NEED: Pertanyaan Refleksi"
+        stageBadge="NEED 01/02"
+        isNextDisabled={loading || needQuestions.length === 0 || needQuestions.some(q => getAnswerForQuestion(q.id).trim() === "")}
       />
     </div>
   );

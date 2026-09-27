@@ -15,10 +15,10 @@ const STICKERS = [
 ];
 
 const COLOR_MAP: Record<StickyColor, { bg: string; text: string }> = {
-  pink:   { bg: "bg-sticker-pink",  text: "text-ink-charcoal" },
-  sage:   { bg: "bg-sticker-sage",  text: "text-ink-charcoal" },
-  blue:   { bg: "bg-sticker-blue",  text: "text-ink-charcoal" },
-  warm:   { bg: "bg-paper-warm",    text: "text-ink-charcoal" },
+  pink: { bg: "bg-sticker-pink", text: "text-ink-charcoal" },
+  sage: { bg: "bg-sticker-sage", text: "text-ink-charcoal" },
+  blue: { bg: "bg-sticker-blue", text: "text-ink-charcoal" },
+  warm: { bg: "bg-paper-warm", text: "text-ink-charcoal" },
   orange: { bg: "bg-marker-orange", text: "text-ink-charcoal" },
 };
 
@@ -40,7 +40,7 @@ function StickyNoteCard({
     if (note.text === "" && textareaRef.current) {
       textareaRef.current.focus();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [note.id]);
 
   return (
@@ -74,11 +74,10 @@ function StickyNoteCard({
           <button
             type="button"
             onClick={() => onCategoryChange(note.id, "act")}
-            className={`text-[9px] font-mono-tag px-1.5 py-0.5 rounded border transition-colors ${
-              note.category === "act" || !note.category
-                ? "bg-ink-charcoal text-paper-base border-ink-charcoal font-bold"
-                : "bg-paper-base/60 text-ink-charcoal/70 border-ink-charcoal/30 hover:bg-paper-base"
-            }`}
+            className={`text-[9px] font-mono-tag px-1.5 py-0.5 rounded border transition-colors ${note.category === "act" || !note.category
+              ? "bg-ink-charcoal text-paper-base border-ink-charcoal font-bold"
+              : "bg-paper-base/60 text-ink-charcoal/70 border-ink-charcoal/30 hover:bg-paper-base"
+              }`}
             title="Bisa Diubah / Aksi"
           >
             Aksi
@@ -86,11 +85,10 @@ function StickyNoteCard({
           <button
             type="button"
             onClick={() => onCategoryChange(note.id, "share")}
-            className={`text-[9px] font-mono-tag px-1.5 py-0.5 rounded border transition-colors ${
-              note.category === "share"
-                ? "bg-ink-charcoal text-paper-base border-ink-charcoal font-bold"
-                : "bg-paper-base/60 text-ink-charcoal/70 border-ink-charcoal/30 hover:bg-paper-base"
-            }`}
+            className={`text-[9px] font-mono-tag px-1.5 py-0.5 rounded border transition-colors ${note.category === "share"
+              ? "bg-ink-charcoal text-paper-base border-ink-charcoal font-bold"
+              : "bg-paper-base/60 text-ink-charcoal/70 border-ink-charcoal/30 hover:bg-paper-base"
+              }`}
             title="Bisa Dibagi / Butuh Teman"
           >
             Bagi
@@ -98,11 +96,10 @@ function StickyNoteCard({
           <button
             type="button"
             onClick={() => onCategoryChange(note.id, "let_go")}
-            className={`text-[9px] font-mono-tag px-1.5 py-0.5 rounded border transition-colors ${
-              note.category === "let_go"
-                ? "bg-ink-charcoal text-paper-base border-ink-charcoal font-bold"
-                : "bg-paper-base/60 text-ink-charcoal/70 border-ink-charcoal/30 hover:bg-paper-base"
-            }`}
+            className={`text-[9px] font-mono-tag px-1.5 py-0.5 rounded border transition-colors ${note.category === "let_go"
+              ? "bg-ink-charcoal text-paper-base border-ink-charcoal font-bold"
+              : "bg-paper-base/60 text-ink-charcoal/70 border-ink-charcoal/30 hover:bg-paper-base"
+              }`}
             title="Di Luar Kendali / Ikhlaskan"
           >
             Lepas
@@ -130,7 +127,7 @@ export function BrainDumpSection() {
     }));
   };
 
-  const leftNotes  = stickyNotes.filter((n) => n.side === "left");
+  const leftNotes = stickyNotes.filter((n) => n.side === "left");
   const rightNotes = stickyNotes.filter((n) => n.side === "right");
 
   return (
@@ -144,12 +141,9 @@ export function BrainDumpSection() {
             <span className="bg-marker-orange text-ink-charcoal font-mono-tag text-xs uppercase px-3 py-1 rounded-full border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] -rotate-2 font-bold">
               Tahap 02 - LOAD
             </span>
-            <span className="font-script text-lg text-burnt-orange font-bold hidden sm:inline-block">
-              (curahkan isi kepalamu)
-            </span>
           </div>
-          <h1 className="font-headline text-3xl sm:text-4xl md:text-5xl font-bold text-ink-charcoal tracking-tight lowercase mb-2">
-            tulis semua yang ada di pikiranmu.
+          <h1 className="font-headline text-3xl sm:text-4xl md:text-5xl font-bold text-ink-charcoal tracking-tight mb-2">
+            Curahkan Isi Pikiran
           </h1>
           <p className="text-sm md:text-base text-ink-charcoal/80">
             Tidak perlu rapi. Tidak perlu masuk akal. Tulis saja.
@@ -171,6 +165,14 @@ export function BrainDumpSection() {
               # {s}
             </button>
           ))}
+          <button
+            type="button"
+            onClick={() => addStickyNote("act")}
+            className="bg-paper-base hover:bg-marker-orange/20 text-ink-charcoal border-[1.5px] border-ink-charcoal w-[28px] h-[28px] flex items-center justify-center rounded-full text-base font-bold shadow-[1px_1px_0px_#171717] active:translate-x-[1px] active:translate-y-[1px] transition-all"
+            title="Tambah poin beban manual"
+          >
+            <span className="leading-none mt-[-1px]">+</span>
+          </button>
         </div>
 
         {/* Main layout: left sticky | textarea | right sticky */}
@@ -184,7 +186,6 @@ export function BrainDumpSection() {
                 note={note}
                 onRemove={removeStickyNote}
                 onTextChange={handleStickyText}
-                onCategoryChange={updateStickyCategory}
               />
             ))}
           </div>
@@ -200,11 +201,7 @@ export function BrainDumpSection() {
             <div className="flex items-center justify-between border-b-[1.5px] border-ink-charcoal/20 pb-3 mb-2">
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-[18px] text-marker-orange">edit_note</span>
-                <span className="font-mono-tag text-xs text-ink-charcoal/70 uppercase">Lembar Curahan Pikiran</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="font-script text-base text-burnt-orange font-bold">mode tanpa sensor</span>
-                <span className="w-2 h-2 rounded-full bg-marker-orange animate-pulse"></span>
+                <span className="font-mono-tag text-xs text-ink-charcoal/70 uppercase">Tulis semua yang ada di pikiranmu</span>
               </div>
             </div>
 
@@ -224,39 +221,20 @@ export function BrainDumpSection() {
               }}
             />
 
-            <div className="flex items-center justify-between gap-2 pt-2.5 sm:pt-3 border-t-[1.5px] border-ink-charcoal/15 mt-2 font-mono-tag text-[11px] sm:text-xs text-ink-charcoal/70">
-              <button
-                type="button"
-                onClick={() => addStickyNote("act")}
-                className="flex items-center gap-1.5 text-ink-charcoal hover:text-burnt-orange transition-colors shrink-0 font-medium group cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-[16px] text-marker-orange group-hover:scale-110 transition-transform">
-                  add_circle
-                </span>
-                <span className="hidden sm:inline underline decoration-marker-orange underline-offset-2">
-                  Tambah poin beban
-                </span>
-                <span className="sm:hidden underline decoration-marker-orange underline-offset-2">
-                  Poin beban
-                </span>
-              </button>
+            <div className="flex items-center justify-end gap-2 pt-2.5 sm:pt-3 border-t-[1.5px] border-ink-charcoal/15 mt-2 font-mono-tag text-[11px] sm:text-xs text-ink-charcoal/70">
               <div className="flex items-center gap-1.5 shrink-0 text-right">
                 {(brainDump || "").length >= 2000 && (
                   <span className="text-[10px] text-burnt-orange font-bold uppercase tracking-wider animate-pulse hidden sm:inline">
                     Maksimal 2000
                   </span>
                 )}
-                <span>
-                  {brainDump.trim() ? brainDump.trim().split(/\s+/).filter(Boolean).length : 0} kata
-                </span>
-                <span className="text-ink-charcoal/40">·</span>
                 <span
                   className={
                     (brainDump || "").length >= 2000
                       ? "text-burnt-orange font-bold"
                       : (brainDump || "").length >= 1800
-                      ? "text-amber-800 font-bold"
-                      : "text-ink-charcoal/70"
+                        ? "text-amber-800 font-bold"
+                        : "text-ink-charcoal/70"
                   }
                 >
                   {(brainDump || "").length}/2000 karakter
@@ -273,7 +251,6 @@ export function BrainDumpSection() {
                 note={note}
                 onRemove={removeStickyNote}
                 onTextChange={handleStickyText}
-                onCategoryChange={updateStickyCategory}
               />
             ))}
           </div>
@@ -288,7 +265,6 @@ export function BrainDumpSection() {
                 note={note}
                 onRemove={removeStickyNote}
                 onTextChange={handleStickyText}
-                onCategoryChange={updateStickyCategory}
               />
             ))}
           </div>
@@ -299,7 +275,8 @@ export function BrainDumpSection() {
         backTo="/mask-result"
         nextTo="/story-reflection"
         nextLabel="Analisis Beban"
-        centerLabel="LOAD: Curahan Pikiran"
+        stageBadge="LOAD 01/02"
+        isNextDisabled={brainDump.trim().length === 0 && stickyNotes.every(note => note.text.trim().length === 0)}
       />
     </div>
   );

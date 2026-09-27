@@ -122,7 +122,7 @@ export function ActionStepSection() {
             </Link>
           </div>
         </main>
-        <BottomDock backTo="/need-result" centerLabel="Kebutuhan Belum Ada" />
+        <BottomDock backTo="/need-result" centerLabel="Kebutuhan Belum Ada" stageBadge="ACTION 01/01" />
       </div>
     );
   }
@@ -289,7 +289,7 @@ export function ActionStepSection() {
         backTo="/need-result"
         nextTo="/summary"
         nextLabel="Lihat Rangkuman"
-        centerLabel="ACTION: Langkah Terpilih"
+        stageBadge="ACTION"
       />
     </div>
   );

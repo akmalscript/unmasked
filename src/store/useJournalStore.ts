@@ -228,6 +228,10 @@ export const useJournalStore = create<JournalState>()(
 
       addBrainDumpTopic: (topic) =>
         set((state) => {
+          const topicText = `#${topic}`;
+          if (state.stickyNotes.some((n) => n.text === topicText)) {
+            return state;
+          }
           const leftCount = state.stickyNotes.filter((n) => n.side === "left").length;
           const rightCount = state.stickyNotes.filter((n) => n.side === "right").length;
           const side: "left" | "right" = leftCount <= rightCount ? "left" : "right";

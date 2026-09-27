@@ -9,6 +9,7 @@ interface BottomDockProps {
   backLabel?: string;
   nextLabel?: string;
   centerLabel?: string;
+  stageBadge?: string;
   isNextDisabled?: boolean;
 }
 
@@ -18,6 +19,7 @@ export function BottomDock({
   backLabel = "Kembali",
   nextLabel = "Lanjutkan",
   centerLabel = "",
+  stageBadge,
   isNextDisabled = false,
 }: BottomDockProps) {
   return (
@@ -35,12 +37,16 @@ export function BottomDock({
           <div />
         )}
 
-        {centerLabel && (
+        {stageBadge ? (
+          <span className="hidden sm:inline-block font-mono-tag text-[13px] font-semibold text-ink-charcoal/80 bg-paper-warm border-[1.5px] border-ink-charcoal px-3 py-1 rounded-full shadow-[1px_1px_0px_#171717]">
+            {stageBadge}
+          </span>
+        ) : centerLabel ? (
           <div className="hidden sm:flex items-center gap-2 text-ink-charcoal/70 font-mono-tag text-xs">
             <span className="w-2 h-2 rounded-full bg-marker-orange inline-block"></span>
             <span>{centerLabel}</span>
           </div>
-        )}
+        ) : null}
 
         {nextTo ? (
           <Link

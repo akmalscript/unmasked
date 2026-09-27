@@ -43,15 +43,11 @@ export function Header({
               priority
             />
           </Link>
-          {subtitle && (
-            <span className="hidden sm:inline-block font-mono-tag text-[11px] font-semibold text-ink-charcoal/80 bg-paper-warm border-[1.5px] border-ink-charcoal px-2.5 py-0.5 rounded-full shadow-[1px_1px_0px_#171717]">
-              {subtitle}
-            </span>
-          )}
+          {/* subtitle badge moved to BottomDock / inline for onboarding */}
         </div>
 
         {showSteps && (
-          <div className="hidden sm:flex items-center gap-1.5 md:gap-2 font-mono-tag text-xs tracking-wider bg-paper-warm border-[1.5px] border-ink-charcoal px-3.5 py-1.5 rounded-full shadow-[2px_2px_0px_#171717]">
+          <div className="hidden sm:flex absolute left-1/2 -translate-x-1/2 items-center gap-1.5 md:gap-2 font-mono-tag text-xs tracking-wider bg-paper-warm border-[1.5px] border-ink-charcoal px-3.5 py-1.5 rounded-full shadow-[2px_2px_0px_#171717]">
             {Array.from({ length: totalSteps }, (_, i) => i + 1).map((s, idx) => (
               <React.Fragment key={s}>
                 <span

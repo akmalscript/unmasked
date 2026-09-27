@@ -116,7 +116,7 @@ export function StoryReflectionSection() {
             </Link>
           </div>
         </main>
-        <BottomDock backTo="/brain-dump" centerLabel="Curahan Masih Kosong" />
+        <BottomDock backTo="/brain-dump" centerLabel="Curahan Masih Kosong" stageBadge="LOAD 02/02" />
       </div>
     );
   }
@@ -127,14 +127,9 @@ export function StoryReflectionSection() {
 
       <main className="flex-grow w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 py-6 md:py-12 flex flex-col items-center">
         <div className="w-full max-w-[780px] text-center mb-6">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-paper-warm border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] mb-3">
-            <span className="w-2 h-2 rounded-full bg-marker-orange animate-pulse"></span>
-            <span className="font-mono-tag text-xs uppercase font-semibold text-ink-cocoa">
-              Tahap: LOAD / Telaah Beban Batin
-            </span>
-          </div>
+
           <h1 className="font-headline text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-ink-charcoal lowercase mb-2">
-            “ini yang kami tangkap dari ceritamu.”
+            ini yang kami tangkap dari ceritamu
           </h1>
           <p className="text-xs sm:text-sm md:text-base text-ink-charcoal/80 max-w-[620px] mx-auto">
             Kami mencoba merapikan apa yang kamu tulis menjadi beberapa hal yang mungkin sedang kamu bawa saat ini.
@@ -149,7 +144,7 @@ export function StoryReflectionSection() {
               <span className="w-2.5 h-2.5 rounded-full border border-ink-charcoal bg-sticker-sage"></span>
               <span className="ml-1 font-semibold">telaah_beban_refleksi.md</span>
             </div>
-            <span className="text-[11px] font-semibold text-burnt-orange">Refleksi Cermin</span>
+
           </div>
 
           <div className="p-6 md:p-8 flex flex-col gap-6">
@@ -192,17 +187,12 @@ export function StoryReflectionSection() {
                     {loadInsight.themes.map((theme, i) => (
                       <div
                         key={i}
-                        className="inline-flex flex-col gap-1 px-3.5 py-1.5 rounded-xl bg-sticker-blue/30 border-[1.5px] border-ink-charcoal font-mono-tag text-xs text-ink-charcoal shadow-[2px_2px_0px_#171717]"
+                        className="inline-flex items-center px-3.5 py-2 rounded-xl bg-sticker-blue/30 border-[1.5px] border-ink-charcoal font-mono-tag text-xs text-ink-charcoal shadow-[2px_2px_0px_#171717]"
                       >
-                        <span className="font-bold flex items-center gap-1">
+                        <span className="font-bold flex items-center gap-1.5">
                           <span className="material-symbols-outlined text-[14px]">label</span>
                           {theme.name}
                         </span>
-                        {theme.description && (
-                          <span className="text-[11px] text-ink-charcoal/75 max-w-xs">
-                            {theme.description}
-                          </span>
-                        )}
                       </div>
                     ))}
                   </div>
@@ -212,7 +202,7 @@ export function StoryReflectionSection() {
                 <div>
                   <div className="font-mono-tag text-xs font-bold text-ink-charcoal flex items-center gap-1.5 mb-2">
                     <span className="w-2 h-2 bg-sticker-sage inline-block"></span>
-                    3. KONTEKS EMOSIONAL & POLA YANG TERBENTUK
+                    3. KONTEKS EMOSIONAL
                   </div>
 
                   {/* Emotional chips */}
@@ -227,18 +217,7 @@ export function StoryReflectionSection() {
                     ))}
                   </div>
 
-                  {/* Patterns */}
-                  {loadInsight.patterns.map((p, i) => (
-                    <div
-                      key={i}
-                      className="p-3 bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl text-xs sm:text-sm text-ink-charcoal shadow-[2px_2px_0px_#171717] mb-2"
-                    >
-                      <span className="font-mono-tag text-[10px] uppercase font-bold text-marker-orange block mb-0.5">
-                        Pola Batin:
-                      </span>
-                      {p.description}
-                    </div>
-                  ))}
+
                 </div>
 
                 {/* 4. PERTANYAAN FOKUS (JIKA ADA) */}
@@ -258,25 +237,15 @@ export function StoryReflectionSection() {
                   currentConfirmation={loadConfirmation}
                   onConfirm={(conf) => setLoadConfirmation(conf)}
                   title="Apakah rangkuman tema & beban ini sesuai dengan ceritamu?"
-                  subtitle="Jika ada bagian yang kurang tepat atau ingin kamu luruskan, kamu memegang kendali penuh."
+                  subtitle=""
                 />
               </>
             )}
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-3 border-t border-ink-charcoal/15">
-              <button
-                type="button"
-                onClick={() => router.push("/brain-dump")}
-                className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-full border-[1.5px] border-ink-charcoal bg-paper-base text-ink-charcoal font-mono-tag text-xs font-semibold hover:bg-paper-warm transition-colors"
-              >
-                <span className="material-symbols-outlined text-[15px]">edit</span>
-                <span>Edit Tulisan Brain Dump</span>
-              </button>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-3 border-t border-ink-charcoal/15">
 
               <div className="flex items-center justify-center sm:justify-end gap-1.5 pr-2">
-                <span className="material-symbols-outlined text-marker-orange text-[18px]">
-                  stylus_note
-                </span>
+
                 <p className="font-script text-xl text-burnt-orange font-bold">
                   “you know yourself best.”
                 </p>
@@ -290,7 +259,8 @@ export function StoryReflectionSection() {
         backTo="/brain-dump"
         nextTo="/need-sheet"
         nextLabel="Lanjut ke NEED"
-        centerLabel="Analisis Beban Selesai"
+        stageBadge="LOAD 02/02"
+        isNextDisabled={loading || !loadInsight}
       />
     </div>
   );

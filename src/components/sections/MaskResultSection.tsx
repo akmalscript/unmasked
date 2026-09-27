@@ -268,6 +268,7 @@ export function MaskResultSection() {
         nextTo="/brain-dump"
         nextLabel="Lanjut ke LOAD"
         centerLabel=""
+        stageBadge="MASK 03/03"
         isNextDisabled={loading || !hasScrolledToBottom}
       />
     </div>
