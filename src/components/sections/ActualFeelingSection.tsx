@@ -176,7 +176,7 @@ export function ActualFeelingSection() {
         </div>
       </main>
 
-      <BottomDock backTo="/public-self" nextTo="/mask-result" centerLabel="" isNextDisabled={selected.length === 0} />
+      <BottomDock backTo="/public-self" nextTo="/mask-result" centerLabel="" stageBadge="MASK 02/03" isNextDisabled={selected.length === 0} />
 
       {/* Custom Feeling Modal */}
       {showModal && (

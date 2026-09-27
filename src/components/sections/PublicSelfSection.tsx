@@ -58,6 +58,13 @@ export function PublicSelfSection() {
       <main className="flex-grow w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 pt-6 md:pt-12">
 
         <div className="relative bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl shadow-[4px_4px_0px_#171717] p-5 sm:p-8 md:p-10">
+          {/* Badge: Tahap 01 - MASK */}
+          <div className="absolute left-6 sm:left-8 -top-4 sm:-top-5 z-20 flex pointer-events-none">
+            <span className="bg-white text-ink-charcoal font-mono-tag text-[13px] uppercase px-4 py-[5px] rounded-full border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] -rotate-2 font-bold whitespace-nowrap pointer-events-auto">
+              Tahap 01 - MASK
+            </span>
+          </div>
+
           {/* Desktop Sticker Badge */}
           <aside className="hidden md:flex absolute -top-8 right-8 z-10 rotate-6 hover:rotate-2 transition-transform duration-300">
             <div className="bg-sticker-blue border-[1.5px] border-ink-charcoal rounded-xl p-3 md:p-4 shadow-[3px_3px_0px_#171717] flex flex-col items-center max-w-[130px]">
@@ -167,7 +174,7 @@ export function PublicSelfSection() {
         </div>
       </main>
 
-      <BottomDock backTo="/onboarding" nextTo="/actual-feeling" centerLabel="" isNextDisabled={selected.length === 0} />
+      <BottomDock backTo="/onboarding" nextTo="/actual-feeling" centerLabel="" stageBadge="MASK 01/03" isNextDisabled={selected.length === 0} />
 
       {/* Custom Tag Modal */}
       {showModal && (
