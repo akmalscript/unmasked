@@ -186,4 +186,4 @@ unmasked-new/
 
 ---
 
-*Dikembangkan dengan penuh kepedulian untuk kesehatan batin mahasiswa.*
+*Dikembangkan dengan penuh kepedulian untuk kesehatan mental mahasiswa.*
