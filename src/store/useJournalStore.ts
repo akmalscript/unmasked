@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "react";
+import { useSyncExternalStore, useEffect } from "react";
 import { create } from "zustand";
 import { persist, createJSONStorage, type StateStorage } from "zustand/middleware";
 
@@ -506,6 +506,41 @@ export function useStoreHydrated(): boolean {
   );
 }
 
+export const SESSION_TIMEOUT_MS = 2 * 60 * 60 * 1000;
+
+export function isSessionExpired(lastActiveTimestamp: number): boolean {
+  return Date.now() - lastActiveTimestamp > SESSION_TIMEOUT_MS;
+}
+
+/**
+ * Hook system untuk memeriksa timeout sesi secara periodik (setiap 60s)
+ * agar sesi kedaluwarsa otomatis dibersihkan tanpa perlu reload tab.
+ */
+export function useSessionExpiryGuard() {
+  const hasHydrated = useStoreHydrated();
+  const lastActiveTimestamp = useJournalStore((state) => state.lastActiveTimestamp);
+  const resetSession = useJournalStore((state) => state.resetSession);
+
+  useEffect(() => {
+    if (!hasHydrated) return;
+
+    const check = () => {
+      if (isSessionExpired(lastActiveTimestamp)) {
+        console.info("Active session expired due to inactivity (>2 hours). Resetting for safety.");
+        resetSession();
+      }
+    };
+
+    check();
+
+    const interval = window.setInterval(check, 60_000);
+
+    return () => {
+      window.clearInterval(interval);
+    };
+  }, [hasHydrated, lastActiveTimestamp, resetSession]);
+}
+
 // ========================================================
 // USER CONFIRMATION AS SOURCE OF TRUTH (Prioritas 3 Helpers)
 // ========================================================
@@ -547,6 +582,22 @@ export function getConfirmedLoadSummary(state: Pick<JournalState, "loadInsight" 
     return conf.correction?.trim() || state.loadInsight?.summary || state.brainDump.trim();
   }
   return state.loadInsight?.summary || state.brainDump.trim();
+}
+
+/**
+ * Mengambil tema LOAD yang telah dikonfirmasi pengguna.
+ * Jika pengguna menolak atau memberikan koreksi, koreksi pengguna menjadi tema utama.
+ */
+export function getConfirmedLoadThemes(
+  state: Pick<JournalState, "loadInsight" | "loadConfirmation">
+): string[] {
+  const correction = state.loadConfirmation?.correction?.trim();
+
+  if (state.loadConfirmation?.status === "rejected" || correction) {
+    return correction ? [correction] : [];
+  }
+
+  return state.loadInsight?.themes?.map((theme) => theme.name) || [];
 }
 
 /**

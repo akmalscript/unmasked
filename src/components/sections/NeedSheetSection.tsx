@@ -11,6 +11,7 @@ import {
   useJournalStore,
   useStoreHydrated,
   getConfirmedLoadSummary,
+  getConfirmedLoadThemes,
 } from "@/store/useJournalStore";
 import { CandidateNeed, NeedQuestion } from "@/types/session";
 
@@ -48,12 +49,16 @@ export function NeedSheetSection() {
     setTechnicalError(null);
 
     try {
-      const themes = loadInsight.themes.map((t) => t.name);
+      const themes = getConfirmedLoadThemes({ loadInsight, loadConfirmation });
       const summary = getConfirmedLoadSummary({ loadInsight, loadConfirmation, brainDump });
+      const sessionId = useJournalStore.getState().sessionId;
 
       const res = await fetch("/api/ai/need/prepare", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-session-id": sessionId,
+        },
         body: JSON.stringify({
           maskContext: {
             publicTags,

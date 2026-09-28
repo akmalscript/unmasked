@@ -46,15 +46,19 @@ export function StoryReflectionSection() {
     setTechnicalError(null);
 
     try {
+      const sessionId = useJournalStore.getState().sessionId;
       const res = await fetch("/api/ai/load", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-session-id": sessionId,
+        },
         body: JSON.stringify({
           brainDump: currentBrainDump,
           items: stickyNotes.map((n) => ({
             id: n.id,
             text: n.text,
-            category: n.category,
+            category: n.category || "act",
           })),
           maskContext: {
             publicTags,

@@ -12,11 +12,14 @@ function getGenAIClient(): GoogleGenAI {
 
 /**
  * Model deterministik sesuai Prioritas 11:
- * - Primary: Model cepat & ringan untuk refleksi terstruktur (gemini-2.5-flash)
- * - Fallback: Model cadangan stabil jika primary mengalami kendala sementara (gemini-2.0-flash)
+ * - Primary: Model cepat & stabil untuk refleksi terstruktur (gemini-3.8-flash)
+ * - Fallback: Model cadangan efisien jika primary mengalami kendala sementara (gemini-3.5-flash-lite)
  */
-const PRIMARY_MODEL = "gemini-2.5-flash";
-const FALLBACK_MODEL = "gemini-2.0-flash";
+const PRIMARY_MODEL =
+  process.env.GEMINI_PRIMARY_MODEL || "gemini-3.8-flash";
+
+const FALLBACK_MODEL =
+  process.env.GEMINI_FALLBACK_MODEL || "gemini-3.5-flash-lite";
 
 export interface SafeAIError {
   code: string;
@@ -122,13 +125,100 @@ function cleanJSONString(text: string): string {
 }
 
 /**
+ * Eksekusi model dengan validasi skema.
+ * - allowRepair=true (Primary): Maksimal 1x attempt repair jika skema atau syntax invalid.
+ * - allowRepair=false (Fallback): 1x initial call saja. Jika invalid, langsung fail ke safe error.
+ */
+async function runModel<T>(
+  ai: GoogleGenAI,
+  model: string,
+  allowRepair: boolean,
+  prompt: string,
+  schema: z.ZodSchema<T>,
+  systemInstruction?: string
+): Promise<{ data: T; modelUsed: string }> {
+  const response = await ai.models.generateContent({
+    model,
+    contents: prompt,
+    config: {
+      systemInstruction:
+        systemInstruction ||
+        "You are UNMASKED Reflective Assistant. Follow strict non-diagnostic, tentative, calm, and empathetic guidelines. Return only valid JSON.",
+      responseMimeType: "application/json",
+      temperature: 0.3,
+      maxOutputTokens: 1200,
+    },
+  });
+
+  const text = response.text;
+  if (!text) throw new Error("Empty response from AI model");
+
+  const cleaned = cleanJSONString(text);
+  let parsedJson: unknown;
+  let jsonParseFailed = false;
+
+  try {
+    parsedJson = JSON.parse(cleaned);
+  } catch {
+    jsonParseFailed = true;
+    if (!allowRepair) {
+      throw new Error(`VALIDATION_ERROR: Invalid JSON syntax from model ${model}`);
+    }
+  }
+
+  if (!jsonParseFailed) {
+    const parseResult = schema.safeParse(parsedJson);
+    if (parseResult.success) {
+      return {
+        data: parseResult.data,
+        modelUsed: model,
+      };
+    }
+    if (!allowRepair) {
+      throw new Error(`VALIDATION_ERROR: ${parseResult.error.message}`);
+    }
+  }
+
+  // Exactly 1 repair attempt (hanya diizinkan untuk model primer)
+  console.warn(`[AI Client] Model ${model} output invalid. Menjalankan 1x repair...`);
+  const repairPrompt = jsonParseFailed
+    ? `Perbaiki output berikut agar menjadi JSON valid tanpa teks penjelasan:\n${cleaned}`
+    : `JSON berikut tidak memenuhi skema validasi yang diminta:\n${JSON.stringify(parsedJson, null, 2)}\n\nHarap perbaiki dan kembalikan HANYA JSON valid sesuai skema asli:\n${prompt}`;
+
+  const repairResponse = await ai.models.generateContent({
+    model,
+    contents: repairPrompt,
+    config: {
+      systemInstruction,
+      responseMimeType: "application/json",
+      temperature: 0.1,
+      maxOutputTokens: 1200,
+    },
+  });
+
+  const repText = repairResponse.text;
+  if (!repText) throw new Error("Repair attempt returned empty text");
+
+  const repairedCleaned = cleanJSONString(repText);
+  const repairedJson = JSON.parse(repairedCleaned);
+  const secondValidation = schema.safeParse(repairedJson);
+
+  if (secondValidation.success) {
+    return {
+      data: secondValidation.data,
+      modelUsed: `${model}-repaired`,
+    };
+  }
+
+  throw new Error(`VALIDATION_ERROR: ${secondValidation.error.message}`);
+}
+
+/**
  * Generate structured content using Gemini with deterministic fallback and at most 1 repair attempt.
  * Prioritas 6, 11, 12:
- * 1. Panggil Primary Model
- * 2. Validasi skema Zod
- * 3. Jika format invalid: lakukan MAKSIMAL 1 repair attempt
- * 4. Jika gagal jaringan/sementara: coba Fallback Model
- * 5. Jika tetap gagal: return controlled error tanpa fake psychological data
+ * 1. Panggil Primary Model (maksimal 1 repair jika output invalid)
+ * 2. Jika gagal: coba Fallback Model (1x initial call saja, tanpa repair)
+ * 3. Jika tetap gagal: throw safe error tanpa membocorkan detail teknis
  */
 export async function generateStructuredAI<T>(
   prompt: string,
@@ -136,105 +226,39 @@ export async function generateStructuredAI<T>(
   systemInstruction?: string
 ): Promise<{ data: T; modelUsed: string }> {
   const ai = getGenAIClient();
-  const modelsToTry = [PRIMARY_MODEL, FALLBACK_MODEL];
-  let lastCapturedError: unknown = null;
 
-  for (let mIdx = 0; mIdx < modelsToTry.length; mIdx++) {
-    const currentModel = modelsToTry[mIdx];
+  try {
+    return await runModel(ai, PRIMARY_MODEL, true, prompt, schema, systemInstruction);
+  } catch (primaryError) {
+    const raw = primaryError instanceof Error ? primaryError.message : String(primaryError);
+
+    // Jika error non-retryable (401, 403, PERMISSION_DENIED), jangan buang request ke fallback
+    if (
+      raw.includes("401") ||
+      raw.includes("403") ||
+      raw.includes("PERMISSION_DENIED") ||
+      raw === "GEMINI_API_KEY_MISSING"
+    ) {
+      const safeErr = parseAIError(primaryError);
+      const errorObj = new Error(safeErr.message);
+      (errorObj as unknown as SafeAIError).code = safeErr.code;
+      (errorObj as unknown as SafeAIError).retryable = safeErr.retryable;
+      (errorObj as unknown as SafeAIError).statusCode = safeErr.statusCode;
+      throw errorObj;
+    }
+
+    console.warn(`[AI Client] Primary model (${PRIMARY_MODEL}) failed. Fallback ke ${FALLBACK_MODEL}...`, raw);
+
     try {
-      // 1. Initial Call
-      const response = await ai.models.generateContent({
-        model: currentModel,
-        contents: prompt,
-        config: {
-          systemInstruction:
-            systemInstruction ||
-            "You are UNMASKED Reflective Assistant. Follow strict non-diagnostic, tentative, calm, and empathetic guidelines. Return only valid JSON.",
-          responseMimeType: "application/json",
-          temperature: 0.3,
-          maxOutputTokens: 1200,
-        },
-      });
-
-      const text = response.text;
-      if (!text) throw new Error("Empty response from AI model");
-
-      const cleaned = cleanJSONString(text);
-      let parsedJson: unknown;
-      try {
-        parsedJson = JSON.parse(cleaned);
-      } catch (parseErr) {
-        console.warn(`[AI Client] Model ${currentModel} returned invalid JSON syntax:`, parseErr);
-        // Attempt at most 1 repair for JSON syntax
-        const repairResponse = await ai.models.generateContent({
-          model: currentModel,
-          contents: `Perbaiki JSON berikut agar menjadi valid JSON tanpa teks tambahan:\n${cleaned}`,
-          config: {
-            responseMimeType: "application/json",
-            temperature: 0.1,
-            maxOutputTokens: 1200,
-          },
-        });
-        const repText = repairResponse.text;
-        if (!repText) throw new Error("Repair attempt returned empty text");
-        parsedJson = JSON.parse(cleanJSONString(repText));
-      }
-
-      // 2. Validate against Zod schema
-      const parseResult = schema.safeParse(parsedJson);
-      if (parseResult.success) {
-        return {
-          data: parseResult.data,
-          modelUsed: currentModel,
-        };
-      }
-
-      // 3. Schema validation failed: Perform exactly 1 repair attempt with validation issues
-      console.warn(`[AI Client] Model ${currentModel} output failed schema validation. Attempting 1 repair...`, parseResult.error.issues);
-      const repairPrompt = `JSON berikut tidak memenuhi skema validasi yang diminta:\n${JSON.stringify(parsedJson, null, 2)}\n\nMasalah validasi:\n${JSON.stringify(parseResult.error.issues, null, 2)}\n\nHarap perbaiki dan kembalikan HANYA JSON valid sesuai skema asli:\n${prompt}`;
-
-      const repairResponse = await ai.models.generateContent({
-        model: currentModel,
-        contents: repairPrompt,
-        config: {
-          systemInstruction,
-          responseMimeType: "application/json",
-          temperature: 0.2,
-          maxOutputTokens: 1200,
-        },
-      });
-
-      const repairedCleaned = cleanJSONString(repairResponse.text || "");
-      const repairedJson = JSON.parse(repairedCleaned);
-      const secondValidation = schema.safeParse(repairedJson);
-
-      if (secondValidation.success) {
-        return {
-          data: secondValidation.data,
-          modelUsed: `${currentModel}-repaired`,
-        };
-      }
-
-      throw new Error(`VALIDATION_ERROR: ${secondValidation.error.message}`);
-    } catch (err: unknown) {
-      lastCapturedError = err;
-      const raw = err instanceof Error ? err.message : String(err);
-
-      // Jika error non-retryable (misal invalid auth), jangan buang kuota ke model berikutnya
-      if (raw.includes("401") || raw.includes("403") || raw.includes("PERMISSION_DENIED")) {
-        console.warn(`[AI Client] Non-retryable error on ${currentModel}. Halting fallback.`);
-        break;
-      }
-
-      console.warn(`[AI Client] Model ${currentModel} failed:`, raw);
+      return await runModel(ai, FALLBACK_MODEL, false, prompt, schema, systemInstruction);
+    } catch (fallbackError) {
+      console.error(`[AI Client] Fallback model (${FALLBACK_MODEL}) also failed:`, fallbackError);
+      const safeErr = parseAIError(fallbackError);
+      const errorObj = new Error(safeErr.message);
+      (errorObj as unknown as SafeAIError).code = safeErr.code;
+      (errorObj as unknown as SafeAIError).retryable = safeErr.retryable;
+      (errorObj as unknown as SafeAIError).statusCode = safeErr.statusCode;
+      throw errorObj;
     }
   }
-
-  // Jika semua percobaan model & 1 repair gagal, parse error dan throw safe error
-  const safeErr = parseAIError(lastCapturedError);
-  const errorObj = new Error(safeErr.message);
-  (errorObj as unknown as SafeAIError).code = safeErr.code;
-  (errorObj as unknown as SafeAIError).retryable = safeErr.retryable;
-  (errorObj as unknown as SafeAIError).statusCode = safeErr.statusCode;
-  throw errorObj;
 }

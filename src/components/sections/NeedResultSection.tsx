@@ -12,6 +12,7 @@ import {
   useJournalStore,
   useStoreHydrated,
   getConfirmedLoadSummary,
+  getConfirmedLoadThemes,
 } from "@/store/useJournalStore";
 import { NeedInsight } from "@/types/session";
 
@@ -51,10 +52,15 @@ export function NeedResultSection() {
 
     try {
       const summary = getConfirmedLoadSummary({ loadInsight, loadConfirmation, brainDump });
+      const themes = getConfirmedLoadThemes({ loadInsight, loadConfirmation });
+      const sessionId = useJournalStore.getState().sessionId;
 
       const res = await fetch("/api/ai/need/synthesize", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-session-id": sessionId,
+        },
         body: JSON.stringify({
           maskContext: {
             publicTags,
@@ -62,7 +68,7 @@ export function NeedResultSection() {
             userCorrection: maskConfirmation?.correction,
           },
           loadContext: {
-            themes: loadInsight?.themes?.map((t) => t.name) || [],
+            themes,
             summary,
             userCorrection: loadConfirmation?.correction,
           },

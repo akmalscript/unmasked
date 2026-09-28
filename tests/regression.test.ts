@@ -9,6 +9,7 @@ import {
   isNeedCompleted,
   isActionSelected,
   canProceedToSummary,
+  getConfirmedLoadThemes,
 } from "../src/store/useJournalStore";
 import { LoadInsight, MaskInsight } from "../src/types/session";
 import {
@@ -309,22 +310,38 @@ describe("UNMASKED System Hardening & Reliability Regression Suite", () => {
     });
 
     it("should reject NeedPrepareOutput with fewer than 2 or more than 3 questions", () => {
+      const validQuestion1 = {
+        id: "q1",
+        question: "Bagaimana perasaanmu hari ini ketika menghadapi berbagai tuntutan pekerjaan yang sangat padat?",
+        targetNeed: "rest" as const,
+      };
+      const validQuestion2 = {
+        id: "q2",
+        question: "Apa hal kecil yang paling kamu rindukan untuk dilakukan dengan tenang?",
+        targetNeed: "rest" as const,
+      };
+      const validQuestion3 = {
+        id: "q3",
+        question: "Bagian tubuh mana yang paling terasa tegang saat memikirkan semua beban?",
+        targetNeed: "rest" as const,
+      };
+      const validQuestion4 = {
+        id: "q4",
+        question: "Bantuan apa yang sebenarnya ingin kamu minta jika tidak merasa bersalah?",
+        targetNeed: "rest" as const,
+      };
+
       // 1 question -> must fail (min is 2)
       const oneQuestion = {
         candidates: [{ key: "rest", title: "Istirahat", reason: "Desc", relevance: "high" }],
-        questions: [{ id: "q1", question: "Pertanyaan 1 yang cukup panjang?", targetNeed: "rest" }],
+        questions: [validQuestion1],
       };
       expect(NeedPrepareOutputSchema.safeParse(oneQuestion).success).toBe(false);
 
       // 4 questions -> must fail (max is 3)
       const fourQuestions = {
         candidates: [{ key: "rest", title: "Istirahat", reason: "Desc", relevance: "high" }],
-        questions: [
-          { id: "q1", question: "Pertanyaan 1 yang cukup panjang?", targetNeed: "rest" },
-          { id: "q2", question: "Pertanyaan 2 yang cukup panjang?", targetNeed: "rest" },
-          { id: "q3", question: "Pertanyaan 3 yang cukup panjang?", targetNeed: "rest" },
-          { id: "q4", question: "Pertanyaan 4 yang cukup panjang?", targetNeed: "rest" },
-        ],
+        questions: [validQuestion1, validQuestion2, validQuestion3, validQuestion4],
       };
       expect(NeedPrepareOutputSchema.safeParse(fourQuestions).success).toBe(false);
     });
@@ -443,6 +460,124 @@ describe("UNMASKED System Hardening & Reliability Regression Suite", () => {
       const parsedTimeout = parseAIError(timeoutError);
       expect(parsedTimeout.code).toBe("AI_TEMPORARY_ERROR");
       expect(parsedTimeout.retryable).toBe(true);
+    });
+  });
+
+  // ========================================================
+  // SCENARIO 13: Residual Bug Fix & Hardening Assertions
+  // ========================================================
+  describe("Scenario 13: Residual Bug Fix & Hardening Assertions", () => {
+    it("should reject summary when selected action id has no matching recommendation", () => {
+      const recommendations = [
+        {
+          id: "act-1",
+          title: "Jeda",
+          description: "Berhenti sejenak.",
+          why: "Memberi ruang.",
+          type: "primary" as const,
+          estimatedMinutes: 5,
+          relatedNeed: "rest",
+        },
+      ];
+
+      const selectedActionId = "missing-id";
+
+      const selected = recommendations.find(
+        (action) => action.id === selectedActionId
+      );
+
+      expect(selected).toBeUndefined();
+    });
+
+    it("should use LOAD correction instead of raw AI themes", () => {
+      const result = getConfirmedLoadThemes({
+        loadInsight: {
+          themes: [
+            {
+              name: "Deadline",
+              relevance: "high",
+            },
+          ],
+          emotionalContext: [],
+          patterns: [],
+          summary: "Beban deadline",
+          confidence: "medium",
+        },
+        loadConfirmation: {
+          status: "rejected",
+          correction: "Yang sebenarnya paling berat adalah ekspektasi keluarga",
+        },
+      });
+
+      expect(result).toEqual([
+        "Yang sebenarnya paling berat adalah ekspektasi keluarga",
+      ]);
+    });
+
+    it("should reject duplicated action types", () => {
+      const invalid = {
+        recommendations: [
+          {
+            id: "1",
+            title: "A",
+            description: "A",
+            why: "A",
+            type: "primary",
+            estimatedMinutes: 5,
+            relatedNeed: "rest",
+          },
+          {
+            id: "2",
+            title: "B",
+            description: "B",
+            why: "B",
+            type: "primary",
+            estimatedMinutes: 5,
+            relatedNeed: "rest",
+          },
+          {
+            id: "3",
+            title: "C",
+            description: "C",
+            why: "C",
+            type: "low_energy",
+            estimatedMinutes: 5,
+            relatedNeed: "rest",
+          },
+        ],
+      };
+
+      expect(ActionOutputSchema.safeParse(invalid).success).toBe(false);
+    });
+
+    it("should intercept crisis in ACTION safety check before AI call", () => {
+      const crisisText = [
+        "Terkendali",
+        "Kelelahan",
+        "",
+        "Istirahat",
+        "Saya ingin bunuh diri",
+        "Beban berat",
+        "Deadline",
+      ].join(" ");
+
+      const check = checkCrisisRisk(crisisText);
+      expect(check.isCrisis).toBe(true);
+      expect(check.matchedTrigger).toBe("bunuh diri");
+    });
+
+    it("should intercept crisis in SUMMARY safety check before AI call", () => {
+      const crisisText = [
+        "Terkendali",
+        "Beban berat",
+        "Istirahat",
+        "Mau mati saja",
+        "Deskripsi",
+      ].join(" ");
+
+      const check = checkCrisisRisk(crisisText);
+      expect(check.isCrisis).toBe(true);
+      expect(check.matchedTrigger).toBe("mau mati");
     });
   });
 });

@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { generateStructuredAI, parseAIError } from "@/lib/ai/client";
 import { buildSummaryPrompt, SYSTEM_GUIDELINES } from "@/lib/ai/prompts";
 import { SummaryInputSchema, SummaryOutputSchema } from "@/schemas/reflection";
-import { checkRateLimit, getClientIdentifier, validateBodySize } from "@/lib/ai/rateLimit";
+import { checkRateLimit, getClientIdentifiers, validateBodySize } from "@/lib/ai/rateLimit";
+import { checkCrisisRisk } from "@/lib/safety/crisisKeywords";
 
 export async function POST(req: Request) {
   try {
@@ -19,15 +20,36 @@ export async function POST(req: Request) {
       );
     }
 
-    const clientId = getClientIdentifier(req);
-    const rateCheck = checkRateLimit(clientId, { maxRequestsPerMinute: 15, cooldownMs: 1200 });
-    if (!rateCheck.allowed) {
+    const { ipKey, sessionKey } = getClientIdentifiers(req);
+
+    const ipLimit = checkRateLimit(ipKey, {
+      maxRequestsPerMinute: 60,
+      cooldownMs: 1000,
+    });
+    if (!ipLimit.allowed) {
       return NextResponse.json(
         {
           success: false,
-          code: rateCheck.code || "RATE_LIMIT_EXCEEDED",
-          message: rateCheck.message,
-          retryAfterSeconds: rateCheck.retryAfterSeconds,
+          code: ipLimit.code || "RATE_LIMIT_EXCEEDED",
+          message: ipLimit.message,
+          retryAfterSeconds: ipLimit.retryAfterSeconds,
+          retryable: true,
+        },
+        { status: 429 }
+      );
+    }
+
+    const sessionLimit = checkRateLimit(sessionKey, {
+      maxRequestsPerMinute: 15,
+      cooldownMs: 1200,
+    });
+    if (!sessionLimit.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: sessionLimit.code || "RATE_LIMIT_EXCEEDED",
+          message: sessionLimit.message,
+          retryAfterSeconds: sessionLimit.retryAfterSeconds,
           retryable: true,
         },
         { status: 429 }
@@ -69,6 +91,31 @@ export async function POST(req: Request) {
       selectedActionTitle,
       selectedActionDesc,
     } = parseResult.data;
+
+    const safetyText = [
+      ...whatYouShow,
+      ...whatYouCarry,
+      ...whatYouMayNeed,
+      selectedActionTitle,
+      selectedActionDesc,
+    ].join(" ");
+
+    const safetyCheck = checkCrisisRisk(safetyText);
+
+    if (safetyCheck.isCrisis) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: "SAFETY_INTERVENTION",
+          message:
+            "Kami mendeteksi situasi yang membutuhkan pendampingan krisis. Keselamatanmu adalah hal paling utama.",
+          riskLevel: "high",
+          emergencyContacts: safetyCheck.emergencyContacts,
+          retryable: false,
+        },
+        { status: 400 }
+      );
+    }
 
     const prompt = buildSummaryPrompt({
       whatYouShow,

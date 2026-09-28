@@ -59,9 +59,26 @@ export const CandidateNeedSchema = z.object({
   relevance: z.enum(["low", "medium", "high"]).default("medium"),
 });
 
+function wordCount(value: string): number {
+  return value.trim().split(/\s+/).filter(Boolean).length;
+}
+
 export const NeedQuestionSchema = z.object({
   id: z.string().min(1),
-  question: z.string().min(5),
+  question: z
+    .string()
+    .trim()
+    .min(10, "Pertanyaan minimal 10 karakter")
+    .max(140, "Pertanyaan terlalu panjang")
+    .refine(
+      (value) => {
+        const count = wordCount(value);
+        return count >= 10 && count <= 18;
+      },
+      {
+        message: "Pertanyaan harus terdiri dari 10–18 kata",
+      }
+    ),
   targetNeed: NeedKeyEnum,
   type: z.enum(["open", "choice"]).default("open"),
   options: z.array(z.string()).optional(),
@@ -239,20 +256,29 @@ export const ActionInputSchema = z.object({
 
 export const SummaryInputSchema = z.object({
   whatYouShow: z
-    .array(z.string().trim().min(1))
-    .min(1, "Data MASK (whatYouShow) tidak boleh kosong"),
+    .array(z.string().trim().min(1).max(100))
+    .min(1, "Data MASK tidak boleh kosong")
+    .max(10),
+
   whatYouCarry: z
-    .array(z.string().trim().min(1))
-    .min(1, "Data LOAD (whatYouCarry) tidak boleh kosong"),
+    .array(z.string().trim().min(1).max(200))
+    .min(1, "Data LOAD tidak boleh kosong")
+    .max(10),
+
   whatYouMayNeed: z
-    .array(z.string().trim().min(1))
-    .min(1, "Data NEED (whatYouMayNeed) tidak boleh kosong"),
+    .array(z.string().trim().min(1).max(300))
+    .min(1, "Data NEED tidak boleh kosong")
+    .max(3),
+
   selectedActionTitle: z
     .string()
     .trim()
-    .min(1, "Judul aksi pilihan harus ada"),
+    .min(1)
+    .max(150),
+
   selectedActionDesc: z
     .string()
     .trim()
-    .min(1, "Deskripsi aksi pilihan harus ada"),
+    .min(1)
+    .max(500),
 });

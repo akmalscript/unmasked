@@ -45,9 +45,13 @@ export function MaskResultSection() {
     setTechnicalError(null);
 
     try {
+      const sessionId = useJournalStore.getState().sessionId;
       const res = await fetch("/api/ai/mask", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-session-id": sessionId,
+        },
         body: JSON.stringify({
           publicTags: currentPublicTags,
           actualFeelings: currentActualFeelings,
@@ -57,8 +61,8 @@ export function MaskResultSection() {
 
       const json = await res.json();
       if (!res.ok || !json.success) {
-        setTechnicalError(json.technicalError || null);
-        throw new Error(json.error || "Gagal menganalisis MASK");
+        setTechnicalError(json.code || null);
+        throw new Error(json.message || "Gagal menganalisis MASK");
       }
 
       setMaskInsight(json.data as MaskInsight);

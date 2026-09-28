@@ -16,6 +16,7 @@ import {
   isActionSelected,
   getConfirmedNeed,
   getConfirmedLoadSummary,
+  getConfirmedLoadThemes,
 } from "@/store/useJournalStore";
 import { SummaryStage } from "@/types/session";
 
@@ -36,7 +37,9 @@ export function SummarySection() {
     needAnswers,
     needInsight,
     needConfirmation,
+    actionRecommendations,
     selectedAction,
+    selectedActionId,
     summaryData,
     setSummaryData,
     resetSession,
@@ -47,21 +50,33 @@ export function SummarySection() {
   const [error, setError] = useState<string | null>(null);
   const [technicalError, setTechnicalError] = useState<string | null>(null);
 
-  // Prioritas 14: Assert prerequisites
+  const selectedRecommendation = actionRecommendations.find(
+    (action) => action.id === selectedActionId
+  );
+
+  // Prioritas 14 & 5B: Assert prerequisites strictly
   const maskOk = isMaskCompleted({ publicTags, actualFeelings, maskInsight });
   const loadOk = isLoadCompleted({ brainDump, stickyNotes, loadInsight });
   const needOk = isNeedCompleted({ needQuestions, needAnswers, needInsight });
-  const actionOk = isActionSelected({ selectedAction });
+  const actionOk =
+    isActionSelected({ selectedAction }) &&
+    Boolean(selectedActionId) &&
+    Boolean(selectedRecommendation);
   const allPrerequisitesMet = maskOk && loadOk && needOk && actionOk;
 
   const confirmedNeed = getConfirmedNeed({ needInsight, needConfirmation });
   const confirmedSummary = getConfirmedLoadSummary({ loadInsight, loadConfirmation, brainDump });
+  const confirmedThemes = getConfirmedLoadThemes({ loadInsight, loadConfirmation });
 
   const currentPublicTags = publicTags;
   const currentActualFeelings = actualFeelings;
-  const currentThemes = loadInsight?.themes?.map((t) => t.name) || [];
+  const currentThemes = confirmedThemes;
   const currentNeeds = confirmedNeed ? [confirmedNeed.title] : [];
-  const currentAction = selectedAction || "";
+  const currentActionTitle = selectedRecommendation?.title || "";
+  const currentActionDescription = selectedRecommendation?.description || "";
+  const currentAction = selectedRecommendation
+    ? `${selectedRecommendation.title} — ${selectedRecommendation.description}`
+    : selectedAction || "";
 
   const fetchSummary = async (force = false) => {
     if (summaryData && !force) return;
@@ -71,15 +86,19 @@ export function SummarySection() {
     setTechnicalError(null);
 
     try {
+      const sessionId = useJournalStore.getState().sessionId;
       const res = await fetch("/api/ai/summary", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-session-id": sessionId,
+        },
         body: JSON.stringify({
           whatYouShow: currentPublicTags,
           whatYouCarry: currentThemes,
           whatYouMayNeed: currentNeeds,
-          selectedActionTitle: "Langkah Kecil",
-          selectedActionDesc: currentAction,
+          selectedActionTitle: currentActionTitle,
+          selectedActionDesc: currentActionDescription,
         }),
       });
 

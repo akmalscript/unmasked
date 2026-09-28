@@ -37,13 +37,26 @@ export interface RateLimitResult {
   retryAfterSeconds?: number;
 }
 
-export function getClientIdentifier(req: Request, fallbackSessionId?: string): string {
+export function getClientIdentifiers(
+  req: Request,
+  fallbackSessionId?: string
+): {
+  ipKey: string;
+  sessionKey: string;
+} {
   const forwarded = req.headers.get("x-forwarded-for");
-  const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown-ip";
-  const userAgent = req.headers.get("user-agent")?.slice(0, 50) || "unknown-ua";
-  const session = fallbackSessionId || req.headers.get("x-session-id") || "";
+  const ip = forwarded?.split(",")[0].trim() || "unknown-ip";
+  const session = fallbackSessionId || req.headers.get("x-session-id") || "anonymous";
 
-  return `${ip}::${session}::${userAgent}`;
+  return {
+    ipKey: `ip:${ip}`,
+    sessionKey: `session:${ip}:${session}`,
+  };
+}
+
+export function getClientIdentifier(req: Request, fallbackSessionId?: string): string {
+  const { sessionKey } = getClientIdentifiers(req, fallbackSessionId);
+  return sessionKey;
 }
 
 export function checkRateLimit(

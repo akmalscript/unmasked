@@ -11,6 +11,7 @@ import {
   useStoreHydrated,
   getConfirmedNeed,
   getConfirmedLoadSummary,
+  getConfirmedLoadThemes,
 } from "@/store/useJournalStore";
 import { ActionRecommendation } from "@/types/session";
 
@@ -65,12 +66,16 @@ export function ActionStepSection() {
         reason: confirmedNeed.reason,
       };
 
-      const themes = loadInsight.themes.map((t) => t.name);
+      const themes = getConfirmedLoadThemes({ loadInsight, loadConfirmation });
       const summary = getConfirmedLoadSummary({ loadInsight, loadConfirmation, brainDump });
+      const sessionId = useJournalStore.getState().sessionId;
 
       const res = await fetch("/api/ai/action", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-session-id": sessionId,
+        },
         body: JSON.stringify({
           maskContext: {
             publicTags,
