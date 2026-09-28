@@ -253,36 +253,54 @@ export function MaskResultSection() {
                   </div>
                 )}
 
-                {/* Overall Reflection */}
-                {maskInsight.reflection && (
-                  <div className="bg-[#FFF8F2] border-[1.5px] border-ink-charcoal rounded-xl p-5 shadow-[3px_3px_0px_#171717]">
-                    <div className="flex items-center gap-2 text-burnt-orange font-script text-xl font-bold mb-2">
-                      <span className="material-symbols-outlined text-[18px]">auto_awesome</span>
-                      <span>“Refleksi Ruang Batin”</span>
-                    </div>
-                    <p className="text-sm sm:text-base text-ink-charcoal leading-relaxed font-medium">
-                      {maskInsight.reflection}
-                    </p>
-
-                    {maskInsight.question && (
-                      <div className="mt-4 pt-3 border-t border-ink-charcoal/20">
-                        <p className="font-mono-tag text-xs uppercase font-bold text-marker-orange mb-1">
-                          Pertanyaan Refleksi untuk Dirimu:
-                        </p>
-                        <p className="font-headline italic font-bold text-sm sm:text-base text-ink-charcoal">
-                          “{maskInsight.question}”
-                        </p>
-                      </div>
-                    )}
+                {/* Refleksi Ruang Batin Card */}
+                <div className="bg-paper-base border-[1.5px] border-ink-charcoal rounded-2xl p-5 sm:p-7 shadow-[4px_4px_0px_#171717]">
+                  <div className="flex items-center gap-2 mb-3">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="text-marker-orange shrink-0"
+                    >
+                      <path d="M7 2L8.5 6.5L13 8L8.5 9.5L7 14L5.5 9.5L1 8L5.5 6.5L7 2Z" fill="#FF6F1E" />
+                      <path d="M17 11L18 14L21 15L18 16L17 19L16 16L13 15L16 14L17 11Z" fill="#FF6F1E" />
+                    </svg>
+                    <span className="font-script text-marker-orange text-2xl sm:text-3xl font-bold italic tracking-wide">
+                      “Refleksi Ruang Batin”
+                    </span>
                   </div>
-                )}
+
+                  <p className="text-sm sm:text-base text-ink-charcoal/90 leading-relaxed font-sans">
+                    {maskInsight.reflection ||
+                      "Terlihat baik-baik saja di luar saat merasa berat di dalam adalah hal yang sangat menguras energi. Tidak apa-apa jika kamu merasa lelah karena harus menjaga topeng tersebut setiap hari. Kamu tidak harus selalu terlihat kuat untuk tetap berharga."}
+                  </p>
+
+                  <div className="border-t border-ink-charcoal/15 my-4 sm:my-5" />
+
+                  <div>
+                    <p className="font-mono-tag text-xs font-bold uppercase tracking-wider text-marker-orange mb-1.5">
+                      PERTANYAAN REFLEKSI UNTUK DIRIMU:
+                    </p>
+                    <p className="font-sans font-bold italic text-base sm:text-lg text-ink-charcoal leading-snug">
+                      {(() => {
+                        const raw =
+                          maskInsight.question?.trim() ||
+                          "Kapan terakhir kali kamu merasa boleh untuk tidak terlihat baik-baik saja?";
+                        return raw.startsWith("“") || raw.startsWith('"') ? raw : `“${raw}”`;
+                      })()}
+                    </p>
+                  </div>
+                </div>
 
                 {/* User Confirmation Card */}
                 <UserConfirmationCard
                   currentConfirmation={maskConfirmation}
                   onConfirm={(conf) => setMaskConfirmation(conf)}
+                  badgeLabel="VALIDASI & KENDALI PENGGUNA"
                   title="Apakah telaah kontras ini terasa akurat?"
-                  subtitle=""
+                  subtitle="Kamu bisa mengonfirmasi, atau meluruskan konteks ini sebelum lanjut ke tahap penguraian beban."
                 />
                 <div ref={bottomRef} className="h-1 w-full" />
               </div>

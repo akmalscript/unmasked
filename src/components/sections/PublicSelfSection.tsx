@@ -165,10 +165,21 @@ export function PublicSelfSection() {
           </div>
 
           <div className="mt-8 pt-5 border-t-[1.5px] border-dashed border-ink-charcoal/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div className="flex items-start gap-3 max-w-[620px]">
+            <div className="flex items-start gap-2.5 sm:gap-3 max-w-[720px]">
+              <span className="material-symbols-outlined text-[#FF6F1E] text-2xl select-none mt-0.5 shrink-0">
+                tips_and_updates
+              </span>
+              <div className="space-y-0.5">
+                <p className="font-mono-tag font-bold text-xs sm:text-[13px] text-ink-charcoal">
+                  Catatan Pensil:
+                </p>
+                <p className="text-xs sm:text-[13px] text-ink-charcoal/80 leading-relaxed">
+                  Topeng ini bukan tentang kebohongan, melainkan cara kita beradaptasi saat berhadapan dengan dunia luar.
+                </p>
+              </div>
             </div>
-            <div className="px-3 py-1 border-[1.5px] border-ink-charcoal rounded bg-paper-warm text-black font-mono-tag text-[10px] uppercase tracking-wider rotate-1 shadow-[1.5px_1.5px_0px_#171717]">
-              REFLEKSI
+            <div className="px-3.5 py-1.5 border-[1.5px] border-ink-charcoal rounded-md bg-[#DDE7DF] text-ink-charcoal font-mono-tag text-[11px] sm:text-xs font-semibold uppercase tracking-wider shadow-[2px_2px_0px_#171717] shrink-0 self-start md:self-center">
+              REFLEKSI AKTIF
             </div>
           </div>
         </div>

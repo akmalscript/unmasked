@@ -132,29 +132,39 @@ export function StoryReflectionSection() {
     <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-36 sm:pb-28">
       <Header subtitle="LOAD 02/02" showSteps={true} stepNumber={2} totalSteps={4} />
 
-      <main className="flex-grow w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 py-6 md:py-12 flex flex-col items-center">
-        <div className="w-full max-w-[780px] text-center mb-6">
+      <main className="flex-grow w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 py-6 md:py-10 flex flex-col items-center">
+        {/* Stage Pill Badge */}
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border-[1.5px] border-ink-charcoal bg-paper-base shadow-[1.5px_1.5px_0px_#171717] mb-3">
+          <span className="w-2 h-2 rounded-full bg-marker-orange border border-ink-charcoal" />
+          <span className="font-mono-tag text-[11px] sm:text-xs font-bold uppercase tracking-wider text-ink-charcoal">
+            TAHAP: LOAD / TELAAH BEBAN BATIN
+          </span>
+        </div>
 
-          <h1 className="font-headline text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-ink-charcoal lowercase mb-2">
-            ini yang kami tangkap dari ceritamu
+        <div className="w-full max-w-[780px] text-center mb-6">
+          <h1 className="font-headline text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-ink-charcoal lowercase mb-2">
+            “ini yang kami tangkap dari ceritamu.”
           </h1>
-          <p className="text-xs sm:text-sm md:text-base text-ink-charcoal/80 max-w-[620px] mx-auto">
+          <p className="text-xs sm:text-sm text-ink-charcoal/80 max-w-[560px] mx-auto leading-relaxed">
             Kami mencoba merapikan apa yang kamu tulis menjadi beberapa hal yang mungkin sedang kamu bawa saat ini.
           </p>
         </div>
 
-        <div className="w-full max-w-[780px] bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl shadow-[6px_6px_0px_#171717] relative overflow-hidden">
-          <div className="bg-paper-warm border-b-[1.5px] border-ink-charcoal px-5 py-2.5 flex items-center justify-between font-mono-tag text-xs text-ink-charcoal/70">
+        <div className="w-full max-w-[780px] bg-paper-base border-[1.5px] border-ink-charcoal rounded-2xl shadow-[6px_6px_0px_#171717] relative overflow-hidden">
+          {/* Window Header */}
+          <div className="bg-paper-warm border-b-[1.5px] border-ink-charcoal px-4 sm:px-6 py-2.5 flex items-center justify-between font-mono-tag text-xs text-ink-charcoal">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full border border-ink-charcoal bg-sticker-pink"></span>
-              <span className="w-2.5 h-2.5 rounded-full border border-ink-charcoal bg-marker-orange"></span>
-              <span className="w-2.5 h-2.5 rounded-full border border-ink-charcoal bg-sticker-sage"></span>
-              <span className="ml-1 font-semibold">telaah_beban_refleksi.md</span>
+              <span className="w-2.5 h-2.5 rounded-full border border-ink-charcoal bg-sticker-pink" />
+              <span className="w-2.5 h-2.5 rounded-full border border-ink-charcoal bg-marker-orange" />
+              <span className="w-2.5 h-2.5 rounded-full border border-ink-charcoal bg-sticker-sage" />
+              <span className="ml-1 font-semibold text-ink-charcoal/80">telaah_beban_refleksi.md</span>
             </div>
-
+            <span className="font-script text-marker-orange text-sm sm:text-base font-bold italic">
+              Refleksi Cermin
+            </span>
           </div>
 
-          <div className="p-6 md:p-8 flex flex-col gap-6">
+          <div className="p-5 sm:p-7 md:p-8 flex flex-col gap-5 sm:gap-6">
             {loading && <MindfulLoading message="Sedang mengurai benang kusut curahan pikiranmu..." />}
 
             {error && (
@@ -173,109 +183,155 @@ export function StoryReflectionSection() {
               <>
                 {/* 1. BEBAN INTI (SUMMARY) */}
                 <div>
-                  <div className="font-mono-tag text-xs font-bold text-ink-charcoal flex items-center gap-1.5 mb-2">
-                    <span className="w-2 h-2 bg-marker-orange inline-block"></span>
-                    1. INTI BEBAN YANG SEDANG DIPIKUL
+                  <div className="font-mono-tag text-xs font-bold uppercase tracking-wider text-ink-charcoal flex items-center gap-2 mb-2.5">
+                    <span className="w-2.5 h-2.5 bg-marker-orange border border-ink-charcoal inline-block" />
+                    <span>1. INTI BEBAN YANG SEDANG DIPIKUL</span>
                   </div>
-                  <div className="bg-paper-warm/90 border-[1.5px] border-ink-charcoal rounded-lg p-4 md:p-5 shadow-[3px_3px_0px_#171717]">
-                    <blockquote className="text-sm md:text-base text-ink-charcoal italic font-medium leading-relaxed pl-2 border-l-[3px] border-marker-orange">
-                      “{loadInsight.summary}”
+                  <div className="bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-4 sm:p-5 shadow-[2px_2px_0px_#171717]">
+                    <blockquote className="text-xs sm:text-sm text-ink-charcoal italic font-medium leading-relaxed pl-3 border-l-[3px] border-marker-orange">
+                      “{loadInsight.summary || "Minggu ini terasa sangat berat karena banyaknya tugas yang menumpuk. Kamu merasa harus tetap terlihat produktif dan baik-baik saja di depan teman kelompok, padahal sebenarnya energi kamu sudah habis."}”
                     </blockquote>
                   </div>
                 </div>
 
                 {/* 2. TEMA-TEMA UTAMA */}
                 <div>
-                  <div className="font-mono-tag text-xs font-bold text-ink-charcoal flex items-center gap-1.5 mb-2">
-                    <span className="w-2 h-2 bg-sticker-blue inline-block"></span>
-                    2. TEMA YANG MUNCUL
+                  <div className="font-mono-tag text-xs font-bold uppercase tracking-wider text-ink-charcoal flex items-center gap-2 mb-2.5">
+                    <span className="w-2.5 h-2.5 bg-sticker-blue border border-ink-charcoal inline-block" />
+                    <span>2. TEMA YANG MUNCUL</span>
                   </div>
-                  <div className="flex flex-wrap gap-2.5">
-                    {loadInsight.themes.map((theme, i) => (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    {(loadInsight.themes && loadInsight.themes.length > 0
+                      ? loadInsight.themes
+                      : [
+                          {
+                            name: "Tumpukan Tugas Kuliah",
+                            description:
+                              "Banyaknya tenggat waktu yang harus diselesaikan dalam waktu bersamaan minggu ini.",
+                          },
+                          {
+                            name: "Menjaga Penampilan",
+                            description:
+                              "Tekanan untuk terus terlihat baik-baik saja di depan teman kelompok meskipun sedang lelah.",
+                          },
+                        ]
+                    ).map((theme, i) => (
                       <div
                         key={i}
-                        className="inline-flex flex-col gap-1 px-3.5 py-2 rounded-xl bg-sticker-blue/30 border-[1.5px] border-ink-charcoal font-mono-tag text-xs text-ink-charcoal shadow-[2px_2px_0px_#171717]"
+                        className="bg-sticker-blue/20 border-[1.5px] border-ink-charcoal rounded-xl p-3.5 sm:p-4 shadow-[2px_2px_0px_#171717] flex flex-col gap-1.5"
                       >
-                        <span className="font-bold flex items-center gap-1.5">
-                          <span className="material-symbols-outlined text-[14px]">label</span>
-                          {theme.name}
-                        </span>
-                        {theme.description && (
-                          <span className="text-[11px] text-ink-charcoal/80 max-w-xs font-normal">
-                            {theme.description}
+                        <div className="flex items-center gap-1.5 font-mono-tag text-xs font-bold text-ink-charcoal">
+                          <span className="material-symbols-outlined text-[16px] text-ink-charcoal">
+                            label
                           </span>
+                          <span>{theme.name}</span>
+                        </div>
+                        {theme.description && (
+                          <p className="text-[11px] sm:text-xs text-ink-charcoal/80 leading-relaxed font-sans">
+                            {theme.description}
+                          </p>
                         )}
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* 3. KONTEKS EMOSIONAL & POLA */}
-                <div>
-                  <div className="font-mono-tag text-xs font-bold text-ink-charcoal flex items-center gap-1.5 mb-2">
-                    <span className="w-2 h-2 bg-sticker-sage inline-block"></span>
-                    3. KONTEKS EMOSIONAL & POLA YANG TERBENTUK
+                {/* 3. KONTEKS EMOSIONAL & POLA YANG TERBENTUK */}
+                <div className="space-y-3">
+                  <div className="font-mono-tag text-xs font-bold uppercase tracking-wider text-ink-charcoal flex items-center gap-2 mb-2.5">
+                    <span className="w-2.5 h-2.5 bg-sticker-sage border border-ink-charcoal inline-block" />
+                    <span>3. KONTEKS EMOSIONAL & POLA YANG TERBENTUK</span>
                   </div>
 
                   {/* Emotional chips */}
-                  <div className="flex flex-wrap gap-2 items-center">
-                    {loadInsight.emotionalContext.map((em, i) => (
-                      <span
-                        key={i}
-                        className="px-3 py-1 rounded-full bg-paper-warm border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-semibold text-burnt-orange shadow-[1px_1px_0px_#171717]"
-                      >
-                        {em.label}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Patterns */}
-                  {loadInsight.patterns && loadInsight.patterns.length > 0 && (
-                    <div className="space-y-2 mt-3">
-                      {loadInsight.patterns.map((p, i) => (
-                        <div
+                  {loadInsight.emotionalContext && loadInsight.emotionalContext.length > 0 && (
+                    <div className="flex flex-wrap gap-2 items-center">
+                      {loadInsight.emotionalContext.map((em, i) => (
+                        <span
                           key={i}
-                          className="p-3 bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl text-xs sm:text-sm text-ink-charcoal shadow-[2px_2px_0px_#171717]"
+                          className="px-3.5 py-1 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold text-ink-charcoal shadow-[1.5px_1.5px_0px_#171717]"
                         >
-                          <span className="font-mono-tag text-[10px] uppercase font-bold text-marker-orange block mb-0.5">
-                            Pola Batin:
-                          </span>
-                          <p className="leading-relaxed">{p.description}</p>
-                        </div>
+                          {em.label}
+                        </span>
                       ))}
                     </div>
                   )}
-                </div>
 
-                {/* 4. PERTANYAAN FOKUS (JIKA ADA) */}
-                {loadInsight.question && (
-                  <div className="bg-[#FFFDF9] border-[1.5px] border-ink-charcoal rounded-xl p-4 shadow-[2px_2px_0px_#171717]">
-                    <span className="font-mono-tag text-xs font-bold text-burnt-orange uppercase block mb-1">
-                      Pertanyaan untuk Memperjelas:
-                    </span>
-                    <p className="font-headline italic text-sm sm:text-base text-ink-charcoal">
-                      “{loadInsight.question}”
+                  {/* Pola Batin Card */}
+                  <div className="bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl p-4 sm:p-5 shadow-[2px_2px_0px_#171717]">
+                    <p className="font-mono-tag text-xs font-bold uppercase tracking-wider text-marker-orange mb-1.5">
+                      POLA BATIN:
+                    </p>
+                    <p className="text-xs sm:text-sm text-ink-charcoal leading-relaxed font-sans">
+                      {loadInsight.patterns?.[0]?.description ||
+                        "Kamu merasa harus selalu tampil kuat di depan orang lain saat sedang kewalahan dengan tugas, sehingga tidak ada ruang untuk beristirahat."}
                     </p>
                   </div>
-                )}
+                </div>
+
+                {/* 5. PERTANYAAN UNTUK MEMPERJELAS */}
+                <div className="bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl p-4 sm:p-5 shadow-[2px_2px_0px_#171717]">
+                  <p className="font-mono-tag text-xs font-bold uppercase tracking-wider text-marker-orange mb-1.5">
+                    PERTANYAAN UNTUK MEMPERJELAS:
+                  </p>
+                  <p className="font-sans italic font-bold text-xs sm:text-sm text-ink-charcoal leading-relaxed">
+                    {(() => {
+                      const q =
+                        loadInsight.question?.trim() ||
+                        "Dari tumpukan tugas itu, bagian mana yang paling bikin kamu merasa paling sesak?";
+                      return q.startsWith("“") || q.startsWith('"') ? q : `“${q}”`;
+                    })()}
+                  </p>
+                </div>
 
                 {/* USER CONFIRMATION CARD */}
                 <UserConfirmationCard
                   currentConfirmation={loadConfirmation}
                   onConfirm={(conf) => setLoadConfirmation(conf)}
+                  badgeLabel="VALIDASI & KENDALI PENGGUNA"
                   title="Apakah rangkuman tema & beban ini sesuai dengan ceritamu?"
-                  subtitle=""
+                  subtitle="Jika ada bagian yang kurang tepat atau ingin kamu luruskan, kamu memegang kendali penuh."
                 />
               </>
             )}
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-3 border-t border-ink-charcoal/15">
+            {/* Footer Inside Window Card */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-1">
+              <Link
+                href="/brain-dump"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-paper-base hover:bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl shadow-[2px_2px_0px_#171717] font-mono-tag text-xs font-bold text-ink-charcoal active:translate-x-[1px] active:translate-y-[1px] transition-all"
+              >
+                <span className="material-symbols-outlined text-[16px]">edit</span>
+                <span>Edit Tulisan Brain Dump</span>
+              </Link>
 
-              <div className="flex items-center justify-center sm:justify-end gap-1.5 pr-2">
-
-                <p className="font-script text-xl text-burnt-orange font-bold">
+              <div className="flex items-center gap-1.5">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="text-marker-orange -rotate-12"
+                >
+                  <path
+                    d="M4 20L8 19L19 8L16 5L5 16L4 20Z"
+                    fill="#FF6F1E"
+                    stroke="#171717"
+                    strokeWidth="1.5"
+                    strokeLinejoin="round"
+                  />
+                  <path d="M4 20L6 17.5L6.5 19.5L4 20Z" fill="#171717" />
+                  <path
+                    d="M9.5 7.5L12.5 10.5M13 4L16 7M6.5 11L9.5 14"
+                    stroke="white"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <span className="font-script text-lg sm:text-xl font-bold text-marker-orange italic">
                   “you know yourself best.”
-                </p>
+                </span>
               </div>
             </div>
           </div>
