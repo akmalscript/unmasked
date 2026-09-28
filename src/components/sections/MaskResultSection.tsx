@@ -253,6 +253,30 @@ export function MaskResultSection() {
                   </div>
                 )}
 
+                {/* Overall Reflection */}
+                {maskInsight.reflection && (
+                  <div className="bg-[#FFF8F2] border-[1.5px] border-ink-charcoal rounded-xl p-5 shadow-[3px_3px_0px_#171717]">
+                    <div className="flex items-center gap-2 text-burnt-orange font-script text-xl font-bold mb-2">
+                      <span className="material-symbols-outlined text-[18px]">auto_awesome</span>
+                      <span>“Refleksi Ruang Batin”</span>
+                    </div>
+                    <p className="text-sm sm:text-base text-ink-charcoal leading-relaxed font-medium">
+                      {maskInsight.reflection}
+                    </p>
+
+                    {maskInsight.question && (
+                      <div className="mt-4 pt-3 border-t border-ink-charcoal/20">
+                        <p className="font-mono-tag text-xs uppercase font-bold text-marker-orange mb-1">
+                          Pertanyaan Refleksi untuk Dirimu:
+                        </p>
+                        <p className="font-headline italic font-bold text-sm sm:text-base text-ink-charcoal">
+                          “{maskInsight.question}”
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* User Confirmation Card */}
                 <UserConfirmationCard
                   currentConfirmation={maskConfirmation}

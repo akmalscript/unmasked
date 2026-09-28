@@ -194,12 +194,17 @@ export function StoryReflectionSection() {
                     {loadInsight.themes.map((theme, i) => (
                       <div
                         key={i}
-                        className="inline-flex items-center px-3.5 py-2 rounded-xl bg-sticker-blue/30 border-[1.5px] border-ink-charcoal font-mono-tag text-xs text-ink-charcoal shadow-[2px_2px_0px_#171717]"
+                        className="inline-flex flex-col gap-1 px-3.5 py-2 rounded-xl bg-sticker-blue/30 border-[1.5px] border-ink-charcoal font-mono-tag text-xs text-ink-charcoal shadow-[2px_2px_0px_#171717]"
                       >
                         <span className="font-bold flex items-center gap-1.5">
                           <span className="material-symbols-outlined text-[14px]">label</span>
                           {theme.name}
                         </span>
+                        {theme.description && (
+                          <span className="text-[11px] text-ink-charcoal/80 max-w-xs font-normal">
+                            {theme.description}
+                          </span>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -209,7 +214,7 @@ export function StoryReflectionSection() {
                 <div>
                   <div className="font-mono-tag text-xs font-bold text-ink-charcoal flex items-center gap-1.5 mb-2">
                     <span className="w-2 h-2 bg-sticker-sage inline-block"></span>
-                    3. KONTEKS EMOSIONAL
+                    3. KONTEKS EMOSIONAL & POLA YANG TERBENTUK
                   </div>
 
                   {/* Emotional chips */}
@@ -224,10 +229,35 @@ export function StoryReflectionSection() {
                     ))}
                   </div>
 
-
+                  {/* Patterns */}
+                  {loadInsight.patterns && loadInsight.patterns.length > 0 && (
+                    <div className="space-y-2 mt-3">
+                      {loadInsight.patterns.map((p, i) => (
+                        <div
+                          key={i}
+                          className="p-3 bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl text-xs sm:text-sm text-ink-charcoal shadow-[2px_2px_0px_#171717]"
+                        >
+                          <span className="font-mono-tag text-[10px] uppercase font-bold text-marker-orange block mb-0.5">
+                            Pola Batin:
+                          </span>
+                          <p className="leading-relaxed">{p.description}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
-
+                {/* 4. PERTANYAAN FOKUS (JIKA ADA) */}
+                {loadInsight.question && (
+                  <div className="bg-[#FFFDF9] border-[1.5px] border-ink-charcoal rounded-xl p-4 shadow-[2px_2px_0px_#171717]">
+                    <span className="font-mono-tag text-xs font-bold text-burnt-orange uppercase block mb-1">
+                      Pertanyaan untuk Memperjelas:
+                    </span>
+                    <p className="font-headline italic text-sm sm:text-base text-ink-charcoal">
+                      “{loadInsight.question}”
+                    </p>
+                  </div>
+                )}
 
                 {/* USER CONFIRMATION CARD */}
                 <UserConfirmationCard

@@ -179,7 +179,7 @@ export function NeedResultSection() {
                 </span>
               </div>
 
-              {/* Main Badge - Removed internal taxonomy leak */}
+              {/* Main Badge */}
               <div className="p-5 bg-paper-warm rounded-xl border-[1.5px] border-ink-charcoal mb-5 shadow-[2px_2px_0px_#171717]">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="material-symbols-outlined text-burnt-orange text-2xl">
@@ -190,9 +190,21 @@ export function NeedResultSection() {
                   </h2>
                 </div>
                 <p className="text-xs sm:text-sm text-ink-charcoal/90 leading-relaxed font-medium">
-                  {needInsight.explanation}
+                  {needInsight.primaryNeed.reason}
                 </p>
               </div>
+
+              {/* Narrative Explanation */}
+              {needInsight.explanation && (
+                <div className="p-4 bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl shadow-[2px_2px_0px_#171717] mb-5">
+                  <span className="font-mono-tag text-xs font-bold text-ink-charcoal/70 uppercase block mb-1">
+                    Kenapa ini mungkin relevan:
+                  </span>
+                  <p className="text-xs sm:text-sm text-ink-charcoal leading-relaxed">
+                    {needInsight.explanation}
+                  </p>
+                </div>
+              )}
 
               {/* Secondary Needs - Label revised per Section 31 */}
               {needInsight.secondaryNeeds && needInsight.secondaryNeeds.length > 0 && (
