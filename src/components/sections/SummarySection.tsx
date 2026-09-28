@@ -174,7 +174,7 @@ export function SummarySection() {
               <span>Perjalanan Refleksi Utuh</span>
             </div>
             <h1 className="font-headline text-2xl sm:text-4xl md:text-5xl font-bold text-ink-charcoal tracking-tight lowercase">
-              “rangkuman perjalananmu.”
+              rangkuman perjalananmu
             </h1>
             <p className="text-sm sm:text-base text-ink-charcoal/80 mt-2">
               Inilah peta kejujuran batin yang berhasil kamu urai hari ini.
@@ -199,15 +199,15 @@ export function SummarySection() {
                   </div>
                   <div className="flex-1 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-3.5 sm:p-4 shadow-[2px_2px_0px_#171717]">
                     <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-2 mb-2 font-mono-tag text-xs font-bold uppercase">
-                      <span>Step 1: MASK (Topeng vs Rasa)</span>
+                      <span>Step 1: MASK (Topeng vs Asli)</span>
                       <span className="material-symbols-outlined text-[16px]">theater_comedy</span>
                     </div>
                     <div className="text-xs space-y-1">
                       <div>
-                        Tampilan luar: <strong>{currentPublicTags.join(" · ")}</strong>
+                        Yang Ditampilkan: <strong>{currentPublicTags.join(" · ")}</strong>
                       </div>
-                      <div className="text-burnt-orange font-semibold">
-                        Ruang batin: <strong>{currentActualFeelings.join(" · ")}</strong>
+                      <div className="">
+                        Yang Dirasakan: <strong>{currentActualFeelings.join(" · ")}</strong>
                       </div>
                     </div>
                   </div>
@@ -228,7 +228,7 @@ export function SummarySection() {
                       {currentThemes.map((theme, i) => (
                         <span
                           key={i}
-                          className="px-2.5 py-1 rounded-full bg-sticker-blue/40 border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold"
+                          className="px-2.5 py-1 rounded-full bg-white border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold"
                         >
                           {theme}
                         </span>
@@ -251,7 +251,7 @@ export function SummarySection() {
                       {currentNeeds.map((need, i) => (
                         <span
                           key={i}
-                          className="px-2.5 py-1 rounded-full bg-sticker-sage border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold"
+                          className="px-2.5 py-1 rounded-full bg-white border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold"
                         >
                           {need}
                         </span>
@@ -268,7 +268,7 @@ export function SummarySection() {
                   <div className="flex-1 bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl p-3.5 sm:p-4 shadow-[3px_3px_0px_#171717]">
                     <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-2 mb-2 font-mono-tag text-xs font-bold uppercase">
                       <span>Step 4: ACTION (Langkah Pilihanmu)</span>
-                      <span className="material-symbols-outlined text-marker-orange text-[16px]">
+                      <span className="material-symbols-outlined text-[16px]">
                         auto_awesome
                       </span>
                     </div>
@@ -298,8 +298,8 @@ export function SummarySection() {
               {/* Reflection synthesis note */}
               {summaryData?.reflection && (
                 <div className="max-w-xl mx-auto mt-6 sm:mt-8 p-4 bg-[#FFF8F2] border-[1.5px] border-ink-charcoal rounded-xl text-center shadow-[2px_2px_0px_#171717]">
-                  <span className="font-mono-tag text-[10px] text-burnt-orange font-bold uppercase block mb-1">
-                    Catatan Penutup untuk Hatimu:
+                  <span className="font-mono-tag text-[13px] text-burnt-orange font-bold uppercase block mb-1">
+                    Catatan Penutup
                   </span>
                   <p className="font-headline text-xs sm:text-sm text-ink-charcoal font-medium leading-relaxed">
                     “{summaryData.reflection}”

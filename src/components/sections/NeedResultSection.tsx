@@ -187,13 +187,13 @@ export function NeedResultSection() {
                     {needInsight.secondaryNeeds.map((sec, i) => (
                       <div
                         key={i}
-                        className="p-3 bg-paper-warm/80 rounded-lg border border-ink-charcoal flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 font-mono-tag text-xs"
+                        className="p-3 bg-paper-warm/80 rounded-lg border border-ink-charcoal flex flex-col gap-1.5 font-mono-tag text-xs"
                       >
                         <span className="font-bold flex items-center gap-1.5">
                           <span className="w-1.5 h-1.5 rounded-full bg-sticker-blue shrink-0"></span>
                           <span>{sec.title}</span>
                         </span>
-                        <span className="text-[11px] text-ink-charcoal/70 sm:text-right">
+                        <span className="text-[11px] text-ink-charcoal/70 pl-3">
                           {sec.reason}
                         </span>
                       </div>
