@@ -63,41 +63,54 @@ export function ActualFeelingSection() {
     <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-20">
       <Header subtitle="MASK 02/03" showSteps={true} stepNumber={1} totalSteps={4} />
 
-      <main className="flex-grow w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 pt-6 md:pt-12">
+      <main className="flex-grow w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-10 pt-4 sm:pt-6 pb-6">
 
-        <div className="relative bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl shadow-[4px_4px_0px_#171717] p-4 sm:p-6 md:p-8">
-          {/* Desktop Sticker Badge */}
-          <aside className="hidden md:flex absolute -top-8 right-8 z-10 rotate-6 hover:rotate-2 transition-transform duration-300">
-            <div className="bg-sticker-blue border-[1.5px] border-ink-charcoal rounded-xl p-3 md:p-4 shadow-[3px_3px_0px_#171717] flex flex-col items-center max-w-[130px]">
-              <div className="w-12 h-12 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal flex items-center justify-center mb-1 shadow-[1px_1px_0px_#171717]">
-                <span className="material-symbols-outlined text-2xl text-ink-charcoal">
-                  theater_comedy
-                </span>
+        <div className="relative bg-paper-base border-[1.5px] border-ink-charcoal rounded-2xl shadow-[4px_4px_0px_#171717] p-5 sm:p-7 md:p-8">
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* Left Column: Heading, Subtitle, Tagline, Tags, Catatan Bebas */}
+            <div className="lg:col-span-8 flex flex-col">
+              <div className="mb-2">
+                <h1 className="font-headline text-2xl sm:text-3xl md:text-4xl text-ink-charcoal lowercase tracking-tight leading-snug mb-2">
+                  “bagaimana kamu benar-benar merasa?”
+                </h1>
+                <p className="text-sm md:text-base text-ink-charcoal/80 leading-relaxed mb-3">
+                  Pilih beberapa kata yang paling menggambarkan perasaanmu saat ini. Tidak perlu disaring, tidak perlu ditutupi.
+                </p>
+
+                {/* Tagline: what's underneath? with striped pencil */}
+                <div className="flex items-center gap-1.5 mb-5">
+                  <span className="font-script text-marker-orange text-xl sm:text-2xl font-bold tracking-wide">
+                    “what&apos;s underneath?”
+                  </span>
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="inline-block shrink-0 -rotate-12"
+                  >
+                    <path
+                      d="M4 20L8 19L19 8L16 5L5 16L4 20Z"
+                      fill="#FF6F1E"
+                      stroke="#171717"
+                      strokeWidth="1.5"
+                      strokeLinejoin="round"
+                    />
+                    <path d="M4 20L6 17.5L6.5 19.5L4 20Z" fill="#171717" />
+                    <path
+                      d="M9.5 7.5L12.5 10.5M13 4L16 7M6.5 11L9.5 14"
+                      stroke="white"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </div>
               </div>
-            </div>
-          </aside>
 
-          {/* Mobile Badge - Clean inline position so it never overlaps the title */}
-          <div className="md:hidden flex items-center gap-2 mb-3 bg-sticker-blue/30 border border-ink-charcoal px-3 py-1 rounded-lg w-fit shadow-[1px_1px_0px_#171717]">
-            <span className="material-symbols-outlined text-[16px] text-ink-charcoal">
-              theater_comedy
-            </span>
-            <span className="font-mono-tag text-[10px] font-bold text-ink-charcoal uppercase tracking-wider">
-              ACTUAL FEELING · LAPISAN KEDUA
-            </span>
-          </div>
-          <div className="max-w-[800px] mb-4 sm:mb-6">
-            <h1 className="font-headline text-2xl sm:text-3xl md:text-4xl text-ink-charcoal lowercase tracking-tight leading-snug mb-2">
-              “bagaimana perasaanmu sebenarnya?”
-            </h1>
-            <p className="text-sm md:text-base text-ink-charcoal/90">
-              Pilih beberapa kata yang paling menggambarkan perasaanmu saat ini.
-            </p>
-          </div>
-
-          <div className="w-full">
-            <div className="w-full">
-              <div className="flex flex-wrap gap-2 sm:gap-3">
+              {/* Feelings tags */}
+              <div className="flex flex-wrap gap-2.5 sm:gap-3 mb-6">
                 {FEELING_OPTIONS.map((item) => {
                   const isSelected = selected.includes(item);
                   return (
@@ -105,18 +118,22 @@ export function ActualFeelingSection() {
                       key={item}
                       onClick={() => toggleActualFeeling(item)}
                       type="button"
-                      className={`flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] font-mono-tag text-xs sm:text-sm transition-all ${isSelected
-                        ? "bg-paper-warm text-ink-charcoal font-bold"
-                        : "bg-paper-base text-ink-charcoal hover:bg-paper-warm"
-                        }`}
+                      className={`select-none flex items-center gap-2 px-4 py-2 sm:py-2.5 rounded-full border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] font-mono-tag text-xs sm:text-sm transition-all active:translate-x-[1px] active:translate-y-[1px] ${
+                        isSelected
+                          ? "bg-paper-warm text-ink-charcoal font-bold"
+                          : "bg-paper-base text-ink-charcoal hover:bg-paper-warm"
+                      }`}
                     >
                       <span
-                        className={`w-2 h-2 rounded-full border border-ink-charcoal ${isSelected ? "bg-marker-orange" : "bg-transparent"
-                          }`}
-                      ></span>
+                        className={`w-2.5 h-2.5 rounded-full transition-colors ${
+                          isSelected
+                            ? "bg-marker-orange border border-ink-charcoal"
+                            : "border-[1.5px] border-ink-charcoal bg-transparent"
+                        }`}
+                      />
                       <span>{item}</span>
                       {isSelected && (
-                        <span className="material-symbols-outlined text-[16px] text-ink-charcoal font-bold">
+                        <span className="material-symbols-outlined text-[15px] font-bold text-ink-charcoal">
                           check
                         </span>
                       )}
@@ -132,46 +149,96 @@ export function ActualFeelingSection() {
                       key={t}
                       onClick={() => toggleActualFeeling(t)}
                       type="button"
-                      className="flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] font-mono-tag text-xs sm:text-sm transition-all bg-paper-warm text-ink-charcoal font-bold"
+                      className="select-none flex items-center gap-2 px-4 py-2 sm:py-2.5 rounded-full border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] font-mono-tag text-xs sm:text-sm transition-all bg-paper-warm text-ink-charcoal font-bold"
                     >
-                      <span className="w-2 h-2 rounded-full border border-ink-charcoal bg-marker-orange"></span>
+                      <span className="w-2.5 h-2.5 rounded-full border border-ink-charcoal bg-marker-orange" />
                       <span>{t}</span>
-                      <span className="material-symbols-outlined text-[16px] text-ink-charcoal font-bold">
+                      <span className="material-symbols-outlined text-[15px] font-bold text-ink-charcoal">
                         check
                       </span>
                     </button>
                   ))}
-
-                <button
-                  onClick={handleOpenModal}
-                  type="button"
-                  className="select-none flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full border-[1.5px] border-dashed border-ink-charcoal bg-paper-warm/60 text-ink-charcoal font-mono-tag text-xs sm:text-sm shadow-[1px_1px_0px_#171717] hover:bg-paper-warm transition-all"
-                >
-                  <span className="material-symbols-outlined text-[16px]">add</span>
-                  <span>Lainnya...</span>
-                </button>
               </div>
 
-              <div className="mt-4 p-4 bg-paper-warm rounded-lg border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717]">
+              {/* Catatan Bebas (Opsional) */}
+              <div className="bg-paper-warm rounded-xl border-[1.5px] border-ink-charcoal p-4 sm:p-5 shadow-[3px_3px_0px_#171717]">
                 <label
-                  className="font-mono-tag text-xs uppercase tracking-wider text-ink-charcoal font-bold flex items-center gap-1.5 mb-2"
+                  className="font-mono-tag text-xs uppercase tracking-wider text-ink-charcoal font-bold flex items-center gap-2 mb-2.5"
                   htmlFor="inner-note"
                 >
-                  <span className="material-symbols-outlined text-[16px]">edit_note</span>
-                  Catatan Bebas (Opsional)
+                  <span className="material-symbols-outlined text-[18px]">edit_note</span>
+                  CATATAN BEBAS (OPSIONAL)
                 </label>
                 <textarea
-                  className="w-full bg-paper-base border-[1.5px] border-ink-charcoal rounded-lg p-3 text-xs sm:text-sm text-ink-charcoal placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-marker-orange resize-none"
+                  className="w-full bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl p-3.5 text-xs sm:text-sm text-ink-charcoal placeholder:text-ink-charcoal/40 focus:outline-none focus:ring-2 focus:ring-marker-orange resize-none shadow-[inset_1px_1px_2px_rgba(0,0,0,0.04)]"
                   id="inner-note"
                   placeholder="Jika ada kata lain yang ingin kamu luapkan sekarang..."
                   rows={2}
                   maxLength={500}
                   value={feelingNote || ""}
                   onChange={(e) => setFeelingNote(e.target.value.slice(0, 500))}
-                ></textarea>
+                />
               </div>
             </div>
 
+            {/* Right Column: Pink Card & Sage Green Card */}
+            <div className="lg:col-span-4 flex flex-col gap-5 sm:gap-6 pt-1 lg:pt-3">
+              {/* Pink Card: Ruang Otentik */}
+              <div className="bg-sticker-pink border-[1.5px] border-ink-charcoal rounded-2xl p-6 shadow-[3px_3px_0px_#171717] rotate-1 hover:rotate-0 transition-transform duration-300 flex flex-col items-center text-center">
+                {/* Character Arch Illustration */}
+                <div className="relative mb-3">
+                  <svg
+                    width="76"
+                    height="88"
+                    viewBox="0 0 76 88"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="drop-shadow-[1.5px_1.5px_0px_#171717]"
+                  >
+                    {/* Arch body */}
+                    <path
+                      d="M2 38C2 18.1177 18.1177 2 38 2C57.8823 2 74 18.1177 74 38V84C74 85.1046 73.1046 86 72 86H4C2.89543 86 2 85.1046 2 84V38Z"
+                      fill="white"
+                      stroke="#171717"
+                      strokeWidth="2.5"
+                    />
+                    {/* Left Eye */}
+                    <rect x="23" y="40" width="8" height="4" rx="1" fill="#171717" />
+                    {/* Right Eye */}
+                    <rect x="45" y="40" width="8" height="4" rx="1" fill="#171717" />
+                    {/* Mouth */}
+                    <rect x="33" y="52" width="10" height="3" rx="1" fill="#171717" />
+                  </svg>
+                </div>
+
+                {/* Badge: RUANG OTENTIK */}
+                <div className="bg-white border-[1.5px] border-ink-charcoal rounded-md px-3.5 py-1 shadow-[1.5px_1.5px_0px_#171717] mb-3">
+                  <span className="font-mono-tag text-[10px] sm:text-[11px] font-bold text-ink-charcoal uppercase tracking-wider">
+                    RUANG OTENTIK
+                  </span>
+                </div>
+
+                {/* Quote */}
+                <p className="font-script text-xs sm:text-[13px] text-ink-charcoal/90 italic leading-relaxed max-w-[210px]">
+                  “Di balik kata &apos;baik-baik saja&apos;, ada jiwa yang hanya butuh diakui lelahnya.”
+                </p>
+              </div>
+
+              {/* Sage Green Card: Pengingat Kecil */}
+              <div className="bg-sticker-sage border-[1.5px] border-ink-charcoal rounded-2xl p-4 sm:p-5 shadow-[3px_3px_0px_#171717]">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="material-symbols-outlined text-[20px] text-ink-charcoal">
+                    lightbulb
+                  </span>
+                  <span className="font-mono-tag text-xs font-bold uppercase tracking-wider text-ink-charcoal">
+                    PENGINGAT KECIL
+                  </span>
+                </div>
+                <p className="text-xs sm:text-[13px] text-ink-charcoal/90 leading-relaxed font-sans">
+                  Semua emosi valid. Mengakui kewalahan adalah langkah awal kembali bernapas lega.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </main>

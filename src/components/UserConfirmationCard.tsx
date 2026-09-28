@@ -6,6 +6,7 @@ import { UserConfirmation, ConfirmationStatus } from "@/types/session";
 interface Props {
   currentConfirmation: UserConfirmation | null;
   onConfirm: (conf: UserConfirmation) => void;
+  badgeLabel?: string;
   title?: string;
   subtitle?: string;
 }
@@ -13,6 +14,7 @@ interface Props {
 export function UserConfirmationCard({
   currentConfirmation,
   onConfirm,
+  badgeLabel = "VALIDASI & KENDALI PENGGUNA",
   title = "Apakah interpretasi ini terasa sesuai denganmu?",
   subtitle = "AI kami hanya bertindak sebagai cermin pemantul. Kamu tetap yang paling memahami dirimu sendiri.",
 }: Props) {
@@ -46,54 +48,57 @@ export function UserConfirmationCard({
   };
 
   return (
-    <div className="w-full bg-paper-warm/80 border-[1.5px] border-ink-charcoal rounded-xl p-5 shadow-[3px_3px_0px_#171717]">
-      <div className="flex items-center gap-2 mb-1.5 font-mono-tag text-xs font-bold uppercase text-ink-charcoal">
-        <span className="material-symbols-outlined text-[16px] text-ink-charcoal">
+    <div className="w-full bg-paper-base border-[1.5px] border-ink-charcoal rounded-2xl p-5 sm:p-7 shadow-[4px_4px_0px_#171717]">
+      <div className="flex items-center gap-2 mb-2 font-mono-tag text-xs font-bold uppercase tracking-wider text-ink-charcoal">
+        <span className="material-symbols-outlined text-[18px] text-marker-orange">
           verified_user
         </span>
-        <span>Validasi</span>
+        <span>{badgeLabel}</span>
       </div>
 
-      <p className="font-headline font-semibold text-sm sm:text-base text-ink-charcoal mb-1">
+      <p className="font-headline font-bold text-base sm:text-lg text-ink-charcoal mb-1">
         {title}
       </p>
-      <p className="text-xs text-ink-charcoal/70 mb-4">{subtitle}</p>
+      {subtitle && <p className="text-xs sm:text-sm text-ink-charcoal/70 mb-4">{subtitle}</p>}
 
       {/* Buttons */}
       <div className="flex flex-wrap items-center gap-2.5 mb-3">
         <button
           type="button"
           onClick={() => handleSelectStatus("accepted")}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold transition-all shadow-[1.5px_1.5px_0px_#171717] ${status === "accepted"
-            ? "bg-sticker-sage text-ink-charcoal ring-1 ring-ink-charcoal"
-            : "bg-paper-base hover:bg-paper-warm text-ink-charcoal"
-            }`}
+          className={`flex items-center gap-2 px-4 py-2 rounded-full border-[1.5px] border-ink-charcoal font-mono-tag text-xs sm:text-sm font-bold transition-all shadow-[2px_2px_0px_#171717] active:translate-x-[1px] active:translate-y-[1px] ${
+            status === "accepted"
+              ? "bg-[#9CAF88] text-ink-charcoal"
+              : "bg-paper-base hover:bg-paper-warm text-ink-charcoal"
+          }`}
         >
-          <span className="material-symbols-outlined text-[15px]">check_circle</span>
+          <span className="material-symbols-outlined text-[17px] font-bold">check_circle</span>
           <span>Ya, sesuai</span>
         </button>
 
         <button
           type="button"
           onClick={() => handleSelectStatus("partially_accepted")}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold transition-all shadow-[1.5px_1.5px_0px_#171717] ${status === "partially_accepted"
-            ? "bg-marker-orange/80 text-ink-charcoal ring-1 ring-ink-charcoal"
-            : "bg-paper-base hover:bg-paper-warm text-ink-charcoal"
-            }`}
+          className={`flex items-center gap-2 px-4 py-2 rounded-full border-[1.5px] border-ink-charcoal font-mono-tag text-xs sm:text-sm font-bold transition-all shadow-[2px_2px_0px_#171717] active:translate-x-[1px] active:translate-y-[1px] ${
+            status === "partially_accepted"
+              ? "bg-marker-orange/80 text-ink-charcoal"
+              : "bg-paper-base hover:bg-paper-warm text-ink-charcoal"
+          }`}
         >
-          <span className="material-symbols-outlined text-[15px]">adjust</span>
+          <span className="material-symbols-outlined text-[17px]">radio_button_checked</span>
           <span>Sebagian sesuai</span>
         </button>
 
         <button
           type="button"
           onClick={() => handleSelectStatus("rejected")}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold transition-all shadow-[1.5px_1.5px_0px_#171717] ${status === "rejected"
-            ? "bg-sticker-pink text-ink-charcoal ring-1 ring-ink-charcoal"
-            : "bg-paper-base hover:bg-paper-warm text-ink-charcoal"
-            }`}
+          className={`flex items-center gap-2 px-4 py-2 rounded-full border-[1.5px] border-ink-charcoal font-mono-tag text-xs sm:text-sm font-bold transition-all shadow-[2px_2px_0px_#171717] active:translate-x-[1px] active:translate-y-[1px] ${
+            status === "rejected"
+              ? "bg-sticker-pink text-ink-charcoal"
+              : "bg-paper-base hover:bg-paper-warm text-ink-charcoal"
+          }`}
         >
-          <span className="material-symbols-outlined text-[15px]">cancel</span>
+          <span className="material-symbols-outlined text-[17px]">cancel</span>
           <span>Kurang tepat</span>
         </button>
       </div>
