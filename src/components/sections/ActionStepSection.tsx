@@ -168,18 +168,15 @@ export function ActionStepSection() {
 
       <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 md:px-12 py-6 md:py-12">
         <div className="mb-3">
-          <div className="bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal px-3.5 py-1 rounded-full font-mono-tag text-xs font-bold tracking-wider shadow-[2px_2px_0px_#171717] -rotate-1">
-            STAGE: ACTION (Satu Langkah Mikro)
+          <div className="bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal px-3.5 py-1 rounded-full font-mono-tag text-xs font-bold tracking-wider shadow-[2px_2px_0px_#171717] -rotate-1 mb-4">
+            TAHAP 04 - ACTION
           </div>
         </div>
 
         <div className="max-w-[700px] text-center mb-6 sm:mb-8">
-          <h1 className="font-headline text-2xl sm:text-4xl md:text-5xl font-bold text-ink-charcoal tracking-tight lowercase">
-            “satu langkah kecil untukmu.”
+          <h1 className="font-headline text-2xl sm:text-4xl md:text-5xl font-bold text-ink-charcoal tracking-tight">
+            Satu langkah kecil untukmu
           </h1>
-          <p className="mt-2 text-sm sm:text-base text-ink-charcoal/80">
-            Bukan semuanya. Cukup satu hal yang terasa mungkin kamu lakukan hari ini tanpa rasa bersalah.
-          </p>
         </div>
 
         {loading && <MindfulLoading message="Menyusun langkah kecil yang realistis untukmu..." />}
@@ -200,11 +197,6 @@ export function ActionStepSection() {
 
         {!loading && actionRecommendations.length > 0 && currentRec && (
           <div className="relative w-full max-w-[640px] mb-8">
-            <div className="hidden sm:block absolute -top-6 -right-2 md:-right-6 z-20 -rotate-3 select-none pointer-events-none">
-              <div className="font-script text-marker-orange text-2xl md:text-3xl font-bold">
-                “small is enough.”
-              </div>
-            </div>
 
             {/* Type selector tabs */}
             <div className="flex flex-wrap items-center gap-2 mb-3">
@@ -213,8 +205,8 @@ export function ActionStepSection() {
                   rec.type === "primary"
                     ? "Langkah Utama"
                     : rec.type === "low_energy"
-                    ? "Energi Rendah (5m)"
-                    : "Alternatif";
+                      ? "Energi Rendah (5m)"
+                      : "Alternatif";
                 const isTabActive = selectedIndex === idx;
                 const isThisRecChosen = selectedActionId === rec.id;
 
@@ -245,9 +237,9 @@ export function ActionStepSection() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-5 border-b-[1.5px] border-ink-charcoal/15 font-mono-tag text-xs">
                 <div className="bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl p-3 shadow-[1.5px_1.5px_0px_#171717]">
                   <span className="text-ink-charcoal/60 uppercase font-semibold block mb-0.5">
-                    1. Kebutuhan yang Disasar
+                    1. Kebutuhan
                   </span>
-                  <span className="font-headline font-bold text-sm text-ink-charcoal uppercase">
+                  <span className="font-headline font-bold text-sm text-ink-charcoal uppercase pl-5">
                     {confirmedNeed?.title || "Kebutuhan Diri"}
                   </span>
                 </div>
@@ -255,7 +247,7 @@ export function ActionStepSection() {
                   <span className="text-ink-charcoal/60 uppercase font-semibold block mb-0.5">
                     2. Estimasi Waktu
                   </span>
-                  <span className="font-headline font-bold text-sm text-ink-charcoal">
+                  <span className="font-headline font-bold text-sm text-ink-charcoal pl-5">
                     ~{currentRec.estimatedMinutes || 15} Menit Saja
                   </span>
                 </div>
@@ -263,7 +255,7 @@ export function ActionStepSection() {
 
               {/* Action Title & Description */}
               <div className="py-5">
-                <span className="font-mono-tag text-xs uppercase tracking-wider font-bold text-burnt-orange bg-secondary-fixed/50 px-2 py-0.5 rounded border border-burnt-orange/30">
+                <span className="font-mono-tag text-xs uppercase tracking-wider font-bold text-burnt-orange bg-white px-2 py-0.5 rounded border border-burnt-orange/30">
                   3. {currentRec.title}
                 </span>
                 <div className="mt-2.5 bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl p-4 shadow-[3px_3px_0px_#171717] relative overflow-hidden">
