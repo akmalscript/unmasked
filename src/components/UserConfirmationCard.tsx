@@ -51,7 +51,7 @@ export function UserConfirmationCard({
         <span className="material-symbols-outlined text-[16px] text-ink-charcoal">
           verified_user
         </span>
-        <span>Validasi & Kendali Pengguna</span>
+        <span>Validasi</span>
       </div>
 
       <p className="font-headline font-semibold text-sm sm:text-base text-ink-charcoal mb-1">
@@ -64,11 +64,10 @@ export function UserConfirmationCard({
         <button
           type="button"
           onClick={() => handleSelectStatus("accepted")}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold transition-all shadow-[1.5px_1.5px_0px_#171717] ${
-            status === "accepted"
+          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold transition-all shadow-[1.5px_1.5px_0px_#171717] ${status === "accepted"
               ? "bg-sticker-sage text-ink-charcoal ring-1 ring-ink-charcoal"
               : "bg-paper-base hover:bg-paper-warm text-ink-charcoal"
-          }`}
+            }`}
         >
           <span className="material-symbols-outlined text-[15px]">check_circle</span>
           <span>Ya, sesuai</span>
@@ -77,11 +76,10 @@ export function UserConfirmationCard({
         <button
           type="button"
           onClick={() => handleSelectStatus("partially_accepted")}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold transition-all shadow-[1.5px_1.5px_0px_#171717] ${
-            status === "partially_accepted"
+          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold transition-all shadow-[1.5px_1.5px_0px_#171717] ${status === "partially_accepted"
               ? "bg-marker-orange/80 text-ink-charcoal ring-1 ring-ink-charcoal"
               : "bg-paper-base hover:bg-paper-warm text-ink-charcoal"
-          }`}
+            }`}
         >
           <span className="material-symbols-outlined text-[15px]">adjust</span>
           <span>Sebagian sesuai</span>
@@ -90,11 +88,10 @@ export function UserConfirmationCard({
         <button
           type="button"
           onClick={() => handleSelectStatus("rejected")}
-          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold transition-all shadow-[1.5px_1.5px_0px_#171717] ${
-            status === "rejected"
+          className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold transition-all shadow-[1.5px_1.5px_0px_#171717] ${status === "rejected"
               ? "bg-sticker-pink text-ink-charcoal ring-1 ring-ink-charcoal"
               : "bg-paper-base hover:bg-paper-warm text-ink-charcoal"
-          }`}
+            }`}
         >
           <span className="material-symbols-outlined text-[15px]">cancel</span>
           <span>Kurang tepat</span>
