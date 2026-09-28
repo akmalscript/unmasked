@@ -148,7 +148,7 @@ export function StoryReflectionSection() {
           </div>
 
           <div className="p-6 md:p-8 flex flex-col gap-6">
-            {loading && <MindfulLoading message="Sedang mengurai benang kusut curahan pikiranmu..." />}
+            {loading && <MindfulLoading message="Sedang memahami isi pikiranmu..." />}
 
             {error && (
               <AIErrorCard

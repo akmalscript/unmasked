@@ -91,7 +91,7 @@ export function Header({
             onClick={() => setShowResetConfirm(true)}
             aria-label="Mulai Ulang Sesi & Hapus Jejak"
             className="cursor-pointer p-1.5 sm:p-2 border-[1.5px] border-ink-charcoal rounded-full bg-paper-warm shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] hover:bg-sticker-pink transition-all flex items-center justify-center text-ink-charcoal"
-            title="Hapus Jejak & Mulai Ulang (Reset ke 0)"
+            title="Hapus Data & Mulai Ulang"
           >
             <span className="material-symbols-outlined text-[17px] sm:text-[18px]">restart_alt</span>
           </button>
