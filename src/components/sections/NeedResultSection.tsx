@@ -126,12 +126,9 @@ export function NeedResultSection() {
 
       <main className="flex-grow w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 py-6 md:py-12">
         {/* Header - Revised per Section 26 */}
-        <div className="max-w-3xl mb-6 sm:mb-8">
-          <p className="font-mono-tag text-xs font-bold text-burnt-orange uppercase tracking-wider mb-1">
-            YANG MUNGKIN KAMU BUTUHKAN
-          </p>
-          <h1 className="font-headline text-2xl sm:text-4xl md:text-5xl font-bold text-ink-charcoal tracking-tight lowercase">
-            “hal yang mungkin paling kamu butuhkan sekarang”
+        <div className=" mb-6 sm:mb-8">
+          <h1 className="font-headline text-2xl sm:text-4xl md:text-5xl font-bold text-ink-charcoal tracking-tight">
+            Yang Mungkin Kamu Butuhkan
           </h1>
           <p className="text-sm md:text-base text-ink-charcoal/80 mt-2">
             Dari semua yang kamu ceritakan dan jawab, ini yang tampaknya paling relevan untuk diperhatikan sekarang.
@@ -161,9 +158,6 @@ export function NeedResultSection() {
               <div className="flex items-center justify-between pb-3 mb-5 border-b-[1.5px] border-ink-charcoal font-mono-tag text-xs">
                 <span className="uppercase font-bold text-ink-charcoal flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-marker-orange animate-pulse"></span>
-                  Yang Tampaknya Paling Relevan
-                </span>
-                <span className="bg-sticker-sage border border-ink-charcoal px-2.5 py-0.5 rounded font-bold uppercase text-[10px]">
                   Fokus Utama
                 </span>
               </div>
@@ -179,16 +173,6 @@ export function NeedResultSection() {
                   </h2>
                 </div>
                 <p className="text-xs sm:text-sm text-ink-charcoal/90 leading-relaxed font-medium">
-                  {needInsight.primaryNeed.reason}
-                </p>
-              </div>
-
-              {/* Narrative Explanation - Label revised per Section 30 */}
-              <div className="p-4 bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl shadow-[2px_2px_0px_#171717] mb-5">
-                <span className="font-mono-tag text-xs font-bold text-ink-charcoal/70 uppercase block mb-1">
-                  Kenapa ini mungkin relevan:
-                </span>
-                <p className="text-xs sm:text-sm text-ink-charcoal leading-relaxed">
                   {needInsight.explanation}
                 </p>
               </div>
@@ -222,8 +206,8 @@ export function NeedResultSection() {
             {/* Right Side: Quote & User Confirmation - Revised per Section 32 & 33 */}
             <div className="lg:col-span-5 flex flex-col gap-6">
               <div className="bg-[#FFF4DC] border-[1.5px] border-ink-charcoal rounded-xl p-5 shadow-[4px_4px_0px_#171717] -rotate-1">
-                <span className="font-mono-tag text-[10px] text-ink-charcoal/60 uppercase font-bold block mb-1">
-                  catatan pinggir ★
+                <span className="font-mono-tag text-[12px] text-center text-ink-charcoal/60 uppercase font-bold block mb-1">
+                  catatan
                 </span>
                 <p className="font-script text-2xl text-burnt-orange font-bold leading-snug">
                   “Menyadari apa yang kamu butuhkan bukan berarti kamu lemah. Itu hanya berarti kamu mulai mendengarkan dirimu sendiri.”
@@ -235,7 +219,7 @@ export function NeedResultSection() {
                 currentConfirmation={needConfirmation}
                 onConfirm={(conf) => setNeedConfirmation(conf)}
                 title="Apakah ini terasa cocok dengan keadaanmu sekarang?"
-                subtitle="Kalau belum pas, beri tahu bagian mana yang meleset. Kamu yang paling tahu apa yang kamu butuhkan."
+                subtitle=""
               />
             </div>
           </div>
