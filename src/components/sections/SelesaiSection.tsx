@@ -23,7 +23,7 @@ export function SelesaiSection() {
 
   useEffect(() => {
     const colors = ["#F4B393", "#9B8E7B", "#F6D9D5", "#171717"]; // theme colors
-    
+
     // Tembakan dari sisi kiri
     confetti({
       particleCount: 80,
@@ -65,7 +65,7 @@ export function SelesaiSection() {
   };
 
   return (
-    <div 
+    <div
       className="min-h-screen flex flex-col justify-between bg-paper-base tactile-dot-grid relative selection:bg-marker-orange"
       onClick={handlePageClick}
     >
@@ -85,12 +85,6 @@ export function SelesaiSection() {
               priority
             />
           </Link>
-          <div className="flex items-center gap-2 bg-paper-warm border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] px-3 py-1 rounded-full">
-            <span className="w-2 h-2 rounded-full bg-sticker-sage animate-pulse"></span>
-            <span className="font-mono-tag text-xs text-ink-charcoal tracking-wider uppercase font-semibold">
-              Ruang Selesai
-            </span>
-          </div>
         </div>
       </header>
 
@@ -103,7 +97,7 @@ export function SelesaiSection() {
                 <img
                   alt="Selesai refleksi"
                   className="w-full h-full object-cover"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYriWHN4VHrcP7eQo9YSatwWYmKLvhY4hRriGzHxGCap2OT-VXajNCrkP6O8R-07XSmbOw8WxE7Xho40Yltr5AW26VJwiSoeozjgqQ9N9DVp2S_4PRmK30ta8dEVP6JBah6lBYTB8nCtXobNwE8xClqw3yUKK7KWRAYrXJiOG_cTFdPdnRyWTS-AN4zNmfH06f-2ZjsmwbTET9SfErhJxMY5BpSo3jqiribNYB5RkB9nENJ6WvRI0b6g"
+                  src="/images/study-desk-2.png"
                 />
               </div>
               <div className="mt-2.5 pt-2 border-t-[1.5px] border-dashed border-ink-charcoal/30 flex justify-between items-center font-mono-tag text-xs text-ink-charcoal/80">
@@ -125,13 +119,13 @@ export function SelesaiSection() {
             <div className="inline-flex items-center gap-2 self-start bg-paper-warm border-[1.5px] border-ink-charcoal px-3 py-1 rounded-full shadow-[2px_2px_0px_#171717]">
               <span className="material-symbols-outlined text-[16px] text-burnt-orange">spa</span>
               <span className="font-mono-tag text-xs uppercase text-ink-charcoal font-bold tracking-wider">
-                Momen Hening Terpenuhi
+                Sesi Refleksi Selesai
               </span>
             </div>
 
             <div className="space-y-2">
               <h1 className="font-headline text-3xl sm:text-4xl md:text-5xl font-bold text-ink-charcoal tracking-tight lowercase">
-                “kamu sudah menyelesaikan sesi refleksi.”
+                "kamu sudah menyelesaikan sesi refleksi.”
               </h1>
               <p className="text-base text-ink-charcoal/80 leading-relaxed max-w-lg">
                 Terima kasih sudah meluangkan waktu untuk berhenti sejenak dan mendengarkan dirimu
@@ -139,13 +133,10 @@ export function SelesaiSection() {
               </p>
             </div>
 
-            <div className="inline-block bg-[#FFF4EB] border-[1.5px] border-ink-charcoal rounded-xl px-5 py-3 shadow-[3px_3px_0px_#171717] rotate-1">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-marker-orange text-[20px]">draw</span>
-                <span className="font-script text-2xl md:text-3xl text-burnt-orange font-bold">
-                  “one small step is still a step.”
-                </span>
-              </div>
+            <div className="inline-block bg-[#FFF4EB] border-[1.5px] border-ink-charcoal text-center rounded-xl px-5 py-3 shadow-[3px_3px_0px_#171717] rotate-1">
+              <span className="font-script text-2xl md:text-3xl text-burnt-orange font-bold text-center">
+                “one small step is still a step.”
+              </span>
             </div>
 
             <div className="grid grid-cols-3 gap-3 max-w-md pt-2">

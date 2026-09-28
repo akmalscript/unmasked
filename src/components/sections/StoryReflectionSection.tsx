@@ -148,7 +148,7 @@ export function StoryReflectionSection() {
           </div>
 
           <div className="p-6 md:p-8 flex flex-col gap-6">
-            {loading && <MindfulLoading message="Sedang mengurai benang kusut curahan pikiranmu..." />}
+            {loading && <MindfulLoading message="Sedang memahami isi pikiranmu..." />}
 
             {error && (
               <AIErrorCard
@@ -206,7 +206,7 @@ export function StoryReflectionSection() {
                   </div>
 
                   {/* Emotional chips */}
-                  <div className="flex flex-wrap gap-2 items-center mb-3">
+                  <div className="flex flex-wrap gap-2 items-center">
                     {loadInsight.emotionalContext.map((em, i) => (
                       <span
                         key={i}
@@ -220,17 +220,7 @@ export function StoryReflectionSection() {
 
                 </div>
 
-                {/* 4. PERTANYAAN FOKUS (JIKA ADA) */}
-                {loadInsight.question && (
-                  <div className="bg-[#FFFDF9] border-[1.5px] border-ink-charcoal rounded-xl p-4 shadow-[2px_2px_0px_#171717]">
-                    <span className="font-mono-tag text-xs font-bold text-burnt-orange uppercase block mb-1">
-                      Pertanyaan untuk Memperjelas:
-                    </span>
-                    <p className="font-headline italic text-sm sm:text-base text-ink-charcoal">
-                      “{loadInsight.question}”
-                    </p>
-                  </div>
-                )}
+
 
                 {/* USER CONFIRMATION CARD */}
                 <UserConfirmationCard

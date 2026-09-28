@@ -100,7 +100,7 @@ export function LandingSection() {
                   <img
                     alt="Reflektif dan tenang"
                     className="w-full h-full object-cover"
-                    src="/study-desk.png"
+                    src="/images/study-desk.png"
                   />
                 </div>
 

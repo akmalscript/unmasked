@@ -133,21 +133,16 @@ export function NeedSheetSection() {
       <Header subtitle="NEED 01/02" showSteps={true} stepNumber={3} totalSteps={4} />
 
       <main className="flex-grow w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 pt-6 pb-12 flex flex-col items-center">
-        <div className="w-full max-w-2xl flex items-center justify-between mb-4">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] font-mono-tag text-xs uppercase font-bold">
-            Tahap: NEED
-          </span>
-          <span className="font-mono-tag text-xs text-ink-charcoal/70">Langkah 1 dari 2</span>
-        </div>
-
         {/* Heading Section - Revised per Section 10 & 11 */}
         <section className="w-full max-w-2xl text-center mb-6 sm:mb-8">
+          <div className="inline-flex items-center gap-2 mb-3">
+            <span className="bg-marker-orange text-ink-charcoal font-mono-tag text-xs uppercase px-3 py-1 rounded-full border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] -rotate-2 font-bold">
+              TAHAP 03 - NEED
+            </span>
+          </div>
           <h1 className="font-headline text-2xl sm:text-4xl md:text-5xl font-bold text-ink-charcoal tracking-tight lowercase mb-2">
-            “apa yang paling kamu butuhkan sekarang?”
+            Apa yang paling kamu butuhkan sekarang?
           </h1>
-          <p className="text-sm md:text-base text-ink-charcoal/80 max-w-lg mx-auto">
-            Kami akan memberikan beberapa pertanyaan singkat berdasarkan ceritamu. Jawab saja apa adanya.
-          </p>
         </section>
 
         {/* Main Card */}
@@ -224,11 +219,6 @@ export function NeedSheetSection() {
                     </div>
                   </div>
                 ))}
-              </div>
-
-              {/* Helper text - Revised per Section 18 */}
-              <div className="pt-1 text-center font-mono-tag text-xs text-ink-charcoal/70 italic">
-                Tidak perlu mencari jawaban yang paling benar. Tulis saja yang paling sesuai dengan keadaanmu sekarang.
               </div>
             </div>
           )}
