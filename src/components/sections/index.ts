@@ -9,4 +9,5 @@ export { NeedSheetSection } from "./NeedSheetSection";
 export { NeedResultSection } from "./NeedResultSection";
 export { ActionStepSection } from "./ActionStepSection";
 export { SummarySection } from "./SummarySection";
-export { SelesaiSection } from "./SelesaiSection";
+export { CompletionSection } from "./CompletionSection";
+export { ArchiveSection } from "./ArchiveSection";

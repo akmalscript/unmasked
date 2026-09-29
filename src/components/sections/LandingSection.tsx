@@ -32,11 +32,11 @@ export function LandingSection() {
           <div className="flex items-center gap-2 sm:gap-3">
             <Link
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border-[1.5px] border-ink-charcoal bg-surface text-ink-cocoa font-mono-tag text-xs shadow-[2px_2px_0px_#171717] hover:bg-paper-warm active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_#171717] transition-all"
-              href="/summary"
-              title="Arsip Jurnal"
+              href="/archive"
+              title="Arsip Refleksi"
             >
               <span className="material-symbols-outlined text-[16px]">menu_book</span>
-              <span className="hidden sm:inline">Arsip Jurnal</span>
+              <span className="hidden sm:inline">Arsip Refleksi</span>
             </Link>
           </div>
         </div>
