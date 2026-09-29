@@ -24,6 +24,7 @@ export function CompletionSection() {
   const mainFocus = loadInsight?.themes?.[0]?.name || actualFeelings?.[0] || "Refleksi Diri";
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setNow(Date.now());
   }, []);
 
