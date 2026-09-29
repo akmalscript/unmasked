@@ -11,6 +11,7 @@ import { UserConfirmationCard } from "@/components/UserConfirmationCard";
 import { useJournalStore, useStoreHydrated } from "@/store/useJournalStore";
 import { useSafetyUIStore } from "@/store/useSafetyUIStore";
 import { MaskInsight } from "@/types/session";
+import { createGroundingMaskInsight } from "@/lib/safety/groundingFallbacks";
 
 export function MaskResultSection() {
   const isHydrated = useStoreHydrated();
@@ -76,6 +77,16 @@ export function MaskResultSection() {
           } else {
             useSafetyUIStore.getState().openManualSupport();
           }
+
+          // Pasang grounding insight agar alur tidak deadlock dan pengguna tetap dapat melanjutkan
+          const grounding = createGroundingMaskInsight(
+            currentPublicTags,
+            currentActualFeelings,
+            json.intervention?.supportiveResponse
+          );
+          setMaskInsight(grounding);
+          setHasScrolledToBottom(true);
+          return;
         }
         setTechnicalError(json.code || null);
         throw new Error(json.message || "Gagal menganalisis MASK");
@@ -89,6 +100,14 @@ export function MaskResultSection() {
       setLoading(false);
       isFetchingRef.current = false;
     }
+  };
+
+  const handleContinueManual = () => {
+    if (!maskInsight) {
+      const grounding = createGroundingMaskInsight(currentPublicTags, currentActualFeelings);
+      setMaskInsight(grounding);
+    }
+    router.push("/brain-dump");
   };
 
   useEffect(() => {
@@ -232,8 +251,8 @@ export function MaskResultSection() {
                 technicalError={technicalError}
                 onRetry={() => fetchMaskAnalysis(true)}
                 isRetrying={loading}
-                continueUrl="/brain-dump"
                 continueLabel="Tetap Lanjut ke LOAD (Curahan Pikiran)"
+                onContinueManual={handleContinueManual}
               />
             )}
 
@@ -300,9 +319,9 @@ export function MaskResultSection() {
                   title="Apakah telaah kontras ini terasa akurat?"
                   subtitle=""
                 />
-                <div ref={bottomRef} className="h-1 w-full" />
               </div>
             )}
+            <div ref={bottomRef} className="h-1 w-full" />
           </div>
         </div>
       </main>
@@ -313,7 +332,7 @@ export function MaskResultSection() {
         nextLabel="Lanjut ke LOAD"
         centerLabel=""
         stageBadge="MASK 03/03"
-        isNextDisabled={loading || !hasScrolledToBottom}
+        isNextDisabled={loading || (!maskInsight && !error) || (!hasScrolledToBottom && Boolean(maskInsight))}
       />
     </div>
   );

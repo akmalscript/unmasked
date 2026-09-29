@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
@@ -15,8 +16,10 @@ import {
 } from "@/store/useJournalStore";
 import { useSafetyUIStore } from "@/store/useSafetyUIStore";
 import { ActionRecommendation } from "@/types/session";
+import { createGroundingActionRecommendations } from "@/lib/safety/groundingFallbacks";
 
 export function ActionStepSection() {
+  const router = useRouter();
   const isHydrated = useStoreHydrated();
   const isFetchingRef = useRef(false);
 
@@ -106,6 +109,16 @@ export function ActionStepSection() {
           } else {
             useSafetyUIStore.getState().openManualSupport();
           }
+
+          // Pasang grounding action recommendations agar tidak deadlock
+          const safeRecs = createGroundingActionRecommendations(
+            json.intervention?.saferNextStep || json.intervention?.supportiveResponse
+          );
+          setActionRecommendations(safeRecs);
+          if (!selectedActionId) {
+            setSelectedAction(safeRecs[0].title + " — " + safeRecs[0].description, safeRecs[0].id);
+          }
+          return;
         }
         setTechnicalError(json.code || null);
         throw new Error(json.message || "Gagal menyusun langkah aksi.");
@@ -122,6 +135,17 @@ export function ActionStepSection() {
       setLoading(false);
       isFetchingRef.current = false;
     }
+  };
+
+  const handleContinueManual = () => {
+    if (actionRecommendations.length === 0) {
+      const safeRecs = createGroundingActionRecommendations();
+      setActionRecommendations(safeRecs);
+      if (!selectedActionId) {
+        setSelectedAction(safeRecs[0].title + " — " + safeRecs[0].description, safeRecs[0].id);
+      }
+    }
+    router.push("/summary");
   };
 
   useEffect(() => {
@@ -151,13 +175,29 @@ export function ActionStepSection() {
             <p className="font-sans text-xs sm:text-sm text-ink-charcoal/80 mb-6 leading-relaxed">
               Kamu belum menyelesaikan pemetaan kebutuhan di tahap NEED. Mari petakan kebutuhanmu terlebih dahulu agar langkah aksi mikro relevan dan mudah kamu capai.
             </p>
-            <Link
-              href="/need-result"
-              className="inline-flex items-center justify-center gap-2 bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[3px_3px_0px_#171717] rounded-full px-6 py-2.5 font-mono-tag text-xs font-bold uppercase hover:translate-x-[1px] hover:translate-y-[1px] transition-transform"
-            >
-              <span className="material-symbols-outlined text-[16px]">arrow_back</span>
-              <span>Buka Pemetaan Kebutuhan</span>
-            </Link>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link
+                href="/need-result"
+                className="inline-flex items-center justify-center gap-2 bg-paper-warm text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] rounded-full px-5 py-2.5 font-mono-tag text-xs font-bold uppercase hover:bg-paper-base transition-colors"
+              >
+                <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+                <span>Buka Pemetaan Kebutuhan</span>
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  const safeRecs = createGroundingActionRecommendations();
+                  setActionRecommendations(safeRecs);
+                  if (!selectedActionId) {
+                    setSelectedAction(safeRecs[0].title + " — " + safeRecs[0].description, safeRecs[0].id);
+                  }
+                }}
+                className="inline-flex items-center justify-center gap-2 bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] rounded-full px-5 py-2.5 font-mono-tag text-xs font-bold uppercase hover:translate-x-[1px] hover:translate-y-[1px] transition-transform cursor-pointer"
+              >
+                <span>Pilih Langkah Aman</span>
+                <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </button>
+            </div>
           </div>
         </main>
         <BottomDock backTo="/need-result" centerLabel="Kebutuhan Belum Ada" stageBadge="ACTION 01/01" />
@@ -205,8 +245,8 @@ export function ActionStepSection() {
               technicalError={technicalError}
               onRetry={() => fetchActionRecommendations(true)}
               isRetrying={loading}
-              continueUrl="/need-result"
-              continueLabel="Kembali ke Hasil Kebutuhan"
+              continueLabel="Tetap Lanjut ke Rangkuman"
+              onContinueManual={handleContinueManual}
             />
           </div>
         )}

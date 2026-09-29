@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
@@ -10,8 +11,10 @@ import { UserConfirmationCard } from "@/components/UserConfirmationCard";
 import { useJournalStore, useStoreHydrated } from "@/store/useJournalStore";
 import { useSafetyUIStore } from "@/store/useSafetyUIStore";
 import { LoadInsight } from "@/types/session";
+import { createGroundingLoadInsight } from "@/lib/safety/groundingFallbacks";
 
 export function StoryReflectionSection() {
+  const router = useRouter();
   const isHydrated = useStoreHydrated();
   const isFetchingRef = useRef(false);
 
@@ -84,6 +87,15 @@ export function StoryReflectionSection() {
           } else {
             useSafetyUIStore.getState().openManualSupport();
           }
+
+          // Pasang grounding insight agar alur tidak deadlock dan pengguna tetap dapat melanjutkan
+          const grounding = createGroundingLoadInsight(
+            currentBrainDump,
+            stickyNotes,
+            json.intervention?.supportiveResponse
+          );
+          setLoadInsight(grounding);
+          return;
         }
         setTechnicalError(json.code || null);
         throw new Error(json.message || "Gagal menganalisis curahan pikiran.");
@@ -97,6 +109,14 @@ export function StoryReflectionSection() {
       setLoading(false);
       isFetchingRef.current = false;
     }
+  };
+
+  const handleContinueManual = () => {
+    if (!loadInsight) {
+      const grounding = createGroundingLoadInsight(currentBrainDump, stickyNotes);
+      setLoadInsight(grounding);
+    }
+    router.push("/need-sheet");
   };
 
   useEffect(() => {
@@ -175,8 +195,8 @@ export function StoryReflectionSection() {
                 technicalError={technicalError}
                 onRetry={() => fetchLoadAnalysis(true)}
                 isRetrying={loading}
-                continueUrl="/need-sheet"
                 continueLabel="Tetap Lanjut ke NEED (Pemetaan Kebutuhan)"
+                onContinueManual={handleContinueManual}
               />
             )}
 
@@ -298,7 +318,7 @@ export function StoryReflectionSection() {
         nextTo="/need-sheet"
         nextLabel="Lanjut ke NEED"
         stageBadge="LOAD 02/02"
-        isNextDisabled={loading || !loadInsight}
+        isNextDisabled={loading || (!loadInsight && !error)}
       />
     </div>
   );

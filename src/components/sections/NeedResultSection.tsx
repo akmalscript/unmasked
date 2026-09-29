@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
@@ -15,8 +16,10 @@ import {
 } from "@/store/useJournalStore";
 import { useSafetyUIStore } from "@/store/useSafetyUIStore";
 import { NeedInsight } from "@/types/session";
+import { createGroundingNeedInsight } from "@/lib/safety/groundingFallbacks";
 
 export function NeedResultSection() {
+  const router = useRouter();
   const isHydrated = useStoreHydrated();
   const isFetchingRef = useRef(false);
 
@@ -93,6 +96,13 @@ export function NeedResultSection() {
           } else {
             useSafetyUIStore.getState().openManualSupport();
           }
+
+          // Pasang grounding need insight agar tidak deadlock di ACTION & SUMMARY
+          const grounding = createGroundingNeedInsight(
+            json.intervention?.supportiveResponse
+          );
+          setNeedInsight(grounding);
+          return;
         }
         setTechnicalError(json.code || null);
         throw new Error(json.message || "Gagal menyintesis kebutuhan.");
@@ -106,6 +116,14 @@ export function NeedResultSection() {
       setLoading(false);
       isFetchingRef.current = false;
     }
+  };
+
+  const handleContinueManual = () => {
+    if (!needInsight) {
+      const grounding = createGroundingNeedInsight();
+      setNeedInsight(grounding);
+    }
+    router.push("/action-step");
   };
 
   useEffect(() => {
@@ -134,13 +152,26 @@ export function NeedResultSection() {
             <p className="font-sans text-xs sm:text-sm text-ink-charcoal/80 mb-6 leading-relaxed">
               Kamu belum menjawab pertanyaan refleksi di tahap NEED. Jawab pertanyaan terlebih dahulu agar kebutuhan intimu dapat dipetakan secara akurat.
             </p>
-            <Link
-              href="/need-sheet"
-              className="inline-flex items-center justify-center gap-2 bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[3px_3px_0px_#171717] rounded-full px-6 py-2.5 font-mono-tag text-xs font-bold uppercase hover:translate-x-[1px] hover:translate-y-[1px] transition-transform"
-            >
-              <span className="material-symbols-outlined text-[16px]">arrow_back</span>
-              <span>Jawab Pertanyaan Refleksi</span>
-            </Link>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link
+                href="/need-sheet"
+                className="inline-flex items-center justify-center gap-2 bg-paper-warm text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] rounded-full px-5 py-2.5 font-mono-tag text-xs font-bold uppercase hover:bg-paper-base transition-colors"
+              >
+                <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+                <span>Jawab Pertanyaan Refleksi</span>
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  const grounding = createGroundingNeedInsight();
+                  setNeedInsight(grounding);
+                }}
+                className="inline-flex items-center justify-center gap-2 bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] rounded-full px-5 py-2.5 font-mono-tag text-xs font-bold uppercase hover:translate-x-[1px] hover:translate-y-[1px] transition-transform cursor-pointer"
+              >
+                <span>Petakan Kebutuhan Otomatis</span>
+                <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </button>
+            </div>
           </div>
         </main>
         <BottomDock backTo="/need-sheet" centerLabel="Jawaban Masih Kosong" stageBadge="NEED 02/02" />
@@ -173,8 +204,8 @@ export function NeedResultSection() {
               technicalError={technicalError}
               onRetry={() => fetchNeedSynthesis(true)}
               isRetrying={loading}
-              continueUrl="/action-step"
               continueLabel="Tetap Lanjut ke ACTION (Langkah Aksi)"
+              onContinueManual={handleContinueManual}
             />
           </div>
         )}

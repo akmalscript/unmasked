@@ -19,6 +19,13 @@ import {
 } from "@/store/useJournalStore";
 import { useSafetyUIStore } from "@/store/useSafetyUIStore";
 import { SummaryStage } from "@/types/session";
+import {
+  createGroundingMaskInsight,
+  createGroundingLoadInsight,
+  createGroundingNeedInsight,
+  createGroundingActionRecommendations,
+  createGroundingSummaryData,
+} from "@/lib/safety/groundingFallbacks";
 
 export function SummarySection() {
   const isHydrated = useStoreHydrated();
@@ -118,6 +125,17 @@ export function SummarySection() {
           } else {
             useSafetyUIStore.getState().openManualSupport();
           }
+
+          // Pasang grounding summary data agar pengguna tetap dapat melihat rangkuman akhir
+          const grounding = createGroundingSummaryData(
+            currentPublicTags,
+            currentThemes,
+            currentNeeds,
+            currentAction,
+            json.intervention?.supportiveResponse
+          );
+          setSummaryData(grounding);
+          return;
         }
         setTechnicalError(json.code || null);
         setError(json.message || "Gagal menyusun refleksi penutup.");
@@ -125,6 +143,15 @@ export function SummarySection() {
     } catch (err) {
       console.error("Failed to generate summary:", err);
       setError(err instanceof Error ? err.message : "Terjadi kesalahan koneksi.");
+      if (!summaryData) {
+        const grounding = createGroundingSummaryData(
+          currentPublicTags,
+          currentThemes,
+          currentNeeds,
+          currentAction
+        );
+        setSummaryData(grounding);
+      }
     } finally {
       setLoading(false);
       isFetchingRef.current = false;
@@ -202,13 +229,39 @@ export function SummarySection() {
             <p className="font-sans text-xs sm:text-sm text-ink-charcoal/80 mb-6 leading-relaxed">
               {missingInfo.message}
             </p>
-            <Link
-              href={missingInfo.targetUrl}
-              className="inline-flex items-center justify-center gap-2 bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[3px_3px_0px_#171717] rounded-full px-6 py-2.5 font-mono-tag text-xs font-bold uppercase hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_#171717] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-150"
-            >
-              <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-              <span>{missingInfo.targetLabel}</span>
-            </Link>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link
+                href={missingInfo.targetUrl}
+                className="inline-flex items-center justify-center gap-2 bg-paper-warm text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] rounded-full px-5 py-2.5 font-mono-tag text-xs font-bold uppercase hover:bg-paper-base transition-colors"
+              >
+                <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+                <span>{missingInfo.targetLabel}</span>
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  const state = useJournalStore.getState();
+                  if (!state.maskInsight) {
+                    state.setMaskInsight(createGroundingMaskInsight(state.publicTags, state.actualFeelings));
+                  }
+                  if (!state.loadInsight) {
+                    state.setLoadInsight(createGroundingLoadInsight(state.brainDump, state.stickyNotes));
+                  }
+                  if (!state.needInsight) {
+                    state.setNeedInsight(createGroundingNeedInsight());
+                  }
+                  if (!state.selectedAction || !state.selectedActionId) {
+                    const recs = createGroundingActionRecommendations();
+                    state.setActionRecommendations(recs);
+                    state.setSelectedAction(recs[0].title + " — " + recs[0].description, recs[0].id);
+                  }
+                }}
+                className="inline-flex items-center justify-center gap-2 bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] rounded-full px-5 py-2.5 font-mono-tag text-xs font-bold uppercase hover:translate-x-[1px] hover:translate-y-[1px] transition-transform cursor-pointer"
+              >
+                <span>Lengkapi & Lihat Rangkuman</span>
+                <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </button>
+            </div>
           </div>
         </main>
         <BottomDock backTo={missingInfo.targetUrl} centerLabel={missingInfo.title} stageBadge="RANGKUMAN" />
