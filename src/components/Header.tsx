@@ -104,10 +104,11 @@ export function Header({
             <span className="material-symbols-outlined text-[17px] sm:text-[18px]">help</span>
           </button>
           <Link
-            href="/summary"
-            className="hidden lg:inline-flex items-center gap-1.5 font-mono-tag text-xs font-semibold px-3 py-1.5 rounded-full border-[1.5px] border-ink-charcoal bg-paper-warm text-ink-charcoal hover:bg-surface-variant transition-transform active:translate-x-[1px] active:translate-y-[1px]"
+            href="/archive"
+            className="cursor-pointer p-1.5 sm:p-2 border-[1.5px] border-ink-charcoal rounded-full bg-paper-warm shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] hover:bg-sticker-pink transition-all flex items-center justify-center text-ink-charcoal"
+            title="Arsip Refleksi"
           >
-            <span>Rangkuman</span>
+            <span className="material-symbols-outlined text-[17px] sm:text-[18px]">menu_book</span>
           </Link>
         </div>
       </div>

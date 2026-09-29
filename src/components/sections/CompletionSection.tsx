@@ -2,24 +2,30 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useJournalStore, useStoreHydrated } from "@/store/useJournalStore";
 import confetti from "canvas-confetti";
 import { ConfirmModal } from "@/components/ConfirmModal";
+import { Header } from "@/components/Header";
 
-export function SelesaiSection() {
+export function CompletionSection() {
   const router = useRouter();
   const { resetSession, clearAllData, sessionId, actualFeelings, loadInsight } = useJournalStore();
   const isHydrated = useStoreHydrated();
   const [showConfirm, setShowConfirm] = useState(false);
 
-  // Kalkulasi statistik dinamis
   const sessionStartTime = parseInt(sessionId.split("-")[1] || "0");
-  const minutesSpent = isHydrated && sessionStartTime > 0
-    ? Math.max(1, Math.round((Date.now() - sessionStartTime) / 60000))
+  const [now, setNow] = useState<number | null>(null);
+  
+  const minutesSpent = isHydrated && sessionStartTime > 0 && now
+    ? Math.max(1, Math.round((now - sessionStartTime) / 60000))
     : 1;
+
   const mainFocus = loadInsight?.themes?.[0]?.name || actualFeelings?.[0] || "Refleksi Diri";
+
+  useEffect(() => {
+    setNow(Date.now());
+  }, []);
 
   useEffect(() => {
     const colors = ["#F4B393", "#9B8E7B", "#F6D9D5", "#171717"]; // theme colors
@@ -69,24 +75,7 @@ export function SelesaiSection() {
       className="min-h-screen flex flex-col justify-between bg-paper-base tactile-dot-grid relative selection:bg-marker-orange"
       onClick={handlePageClick}
     >
-      <header className="relative z-20 w-full bg-paper-base border-b-[1.5px] border-ink-charcoal shadow-[0px_2px_0px_#171717] sticky top-0">
-        <div className="flex justify-between items-center w-full px-4 sm:px-6 md:px-12 max-w-[1120px] mx-auto py-2.5 sm:py-3.5">
-          <Link
-            href="/"
-            className="flex items-center shrink-0 hover:opacity-85 transition-opacity"
-            aria-label="UNMASKED - Beranda"
-          >
-            <Image
-              src="/images/unmaskedlogo.png"
-              alt="UNMASKED"
-              width={140}
-              height={34}
-              className="h-7 sm:h-8 w-auto object-contain"
-              priority
-            />
-          </Link>
-        </div>
-      </header>
+      <Header subtitle="RANGKUMAN" />
 
       <main className="w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 py-6 sm:py-8 flex-1 flex items-center">
         <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
@@ -116,16 +105,16 @@ export function SelesaiSection() {
           </div>
 
           <div className="lg:col-span-6 flex flex-col justify-center space-y-6">
-            <div className="inline-flex items-center gap-2 self-start bg-paper-warm border-[1.5px] border-ink-charcoal px-3 py-1 rounded-full shadow-[2px_2px_0px_#171717]">
-              <span className="material-symbols-outlined text-[16px] text-burnt-orange">spa</span>
-              <span className="font-mono-tag text-xs uppercase text-ink-charcoal font-bold tracking-wider">
-                Sesi Refleksi Selesai
+            <div className="inline-flex items-center gap-2 self-start bg-sticker-sage text-ink-charcoal border-[2px] border-dashed border-ink-charcoal px-3 py-1.5 shadow-[3px_3px_0px_#171717] mb-2">
+              <span className="material-symbols-outlined text-[16px] font-bold">task_alt</span>
+              <span className="font-mono-tag text-[10px] uppercase font-extrabold tracking-widest">
+                Sesi Berakhir
               </span>
             </div>
 
             <div className="space-y-2">
               <h1 className="font-headline text-3xl sm:text-4xl md:text-5xl font-bold text-ink-charcoal tracking-tight lowercase">
-                "kamu sudah menyelesaikan sesi refleksi.”
+                ”kamu sudah menyelesaikan sesi refleksi.”
               </h1>
               <p className="text-base text-ink-charcoal/80 leading-relaxed max-w-lg">
                 Terima kasih sudah meluangkan waktu untuk berhenti sejenak dan mendengarkan dirimu
@@ -139,18 +128,14 @@ export function SelesaiSection() {
               </span>
             </div>
 
-            <div className="grid grid-cols-3 gap-3 max-w-md pt-2">
-              <div className="col-span-1 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-3 shadow-[2px_2px_0px_#171717]">
-                <span className="block font-mono-tag text-[10px] text-ink-charcoal/70 uppercase">
-                  Waktu
-                </span>
-                <span className="font-headline text-base sm:text-lg font-bold text-ink-charcoal">{minutesSpent} Menit</span>
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              <div className="flex items-center gap-2 bg-white border-[1.5px] border-ink-charcoal rounded-md px-3 py-2 shadow-[2px_2px_0px_#171717]">
+                <span className="material-symbols-outlined text-[16px] text-ink-charcoal/70">schedule</span>
+                <span className="font-mono-tag text-xs font-bold uppercase">{minutesSpent} Menit</span>
               </div>
-              <div className="col-span-2 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-3 shadow-[2px_2px_0px_#171717]">
-                <span className="block font-mono-tag text-[10px] text-ink-charcoal/70 uppercase">
-                  Fokus
-                </span>
-                <span className="font-headline text-base sm:text-lg font-bold text-ink-charcoal truncate block" title={mainFocus}>
+              <div className="flex items-center gap-2 bg-white border-[1.5px] border-ink-charcoal rounded-md px-3 py-2 shadow-[2px_2px_0px_#171717]">
+                <span className="material-symbols-outlined text-[16px] text-ink-charcoal/70">center_focus_strong</span>
+                <span className="font-mono-tag text-xs font-bold uppercase truncate max-w-[200px] sm:max-w-[250px]" title={mainFocus}>
                   {mainFocus}
                 </span>
               </div>
@@ -167,7 +152,6 @@ export function SelesaiSection() {
               </Link>
               <Link
                 href="/"
-                onClick={() => resetSession()}
                 className="inline-flex items-center justify-center gap-2 bg-paper-base text-ink-charcoal border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] rounded-full px-5 py-2.5 font-mono-tag text-xs font-semibold hover:bg-paper-warm hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#171717] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-150"
               >
                 <span className="material-symbols-outlined text-[16px]">home</span>

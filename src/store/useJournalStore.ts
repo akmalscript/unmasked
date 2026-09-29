@@ -351,13 +351,13 @@ export const useJournalStore = create<JournalState>()(
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
         // Shared device protection: if the last activity was > 2 hours ago, auto-reset session
-        if (state && state.lastActiveTimestamp) {
-          const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
-          if (Date.now() - state.lastActiveTimestamp > TWO_HOURS_MS) {
-            console.info("Session expired due to inactivity (>2 hours). Resetting for privacy.");
-            state.resetSession();
-          }
-        }
+        // if (state && state.lastActiveTimestamp) {
+        //   const TWO_HOURS_MS = 2 * 60 * 60 * 1000;
+        //   if (Date.now() - state.lastActiveTimestamp > TWO_HOURS_MS) {
+        //     console.info("Session expired due to inactivity (>2 hours). Resetting for privacy.");
+        //     state.resetSession();
+        //   }
+        // }
       },
       partialize: (state) => ({
         sessionId: state.sessionId,

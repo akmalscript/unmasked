@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
@@ -11,7 +10,6 @@ import { useJournalStore, useStoreHydrated } from "@/store/useJournalStore";
 import { SummaryStage } from "@/types/session";
 
 export function SummarySection() {
-  const router = useRouter();
   const isHydrated = useStoreHydrated();
   const isFetchingRef = useRef(false);
 
@@ -23,7 +21,6 @@ export function SummarySection() {
     selectedAction,
     summaryData,
     setSummaryData,
-    resetSession,
   } = useJournalStore();
 
   const [loading, setLoading] = useState(false);
@@ -163,25 +160,32 @@ export function SummarySection() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-paper-warm tactile-dot-grid pb-40 sm:pb-32">
-      <Header subtitle="RANGKUMAN" showSteps={true} stepNumber={4} totalSteps={4} />
+    <div className="min-h-screen flex flex-col bg-paper-base tactile-dot-grid pb-40 sm:pb-32">
+      <Header subtitle="RANGKUMAN" />
 
-      <main className="flex-1 w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 py-6 md:py-12">
-        <div className="relative bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl md:rounded-2xl p-5 sm:p-10 md:p-12 shadow-[5px_5px_0px_#171717]">
-          <div className="max-w-2xl mx-auto text-center mb-8 sm:mb-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-full mb-3 font-mono-tag text-xs font-bold">
-              <span className="w-2 h-2 rounded-full bg-marker-orange animate-pulse"></span>
-              <span>Perjalanan Refleksi Utuh</span>
-            </div>
-            <h1 className="font-headline text-2xl sm:text-4xl md:text-5xl font-bold text-ink-charcoal tracking-tight lowercase">
-              rangkuman perjalananmu
-            </h1>
-            <p className="text-sm sm:text-base text-ink-charcoal/80 mt-2">
-              Inilah peta kejujuran batin yang berhasil kamu urai hari ini.
-            </p>
-            <p className="font-script text-xl sm:text-2xl text-marker-orange font-bold mt-2">
-              “look how much you unpacked.”
-            </p>
+      <main className="flex-grow w-full max-w-[1120px] mx-auto px-4 sm:px-6 md:px-12 pt-6 pb-12 flex flex-col items-center">
+        {/* Heading Section */}
+        <section className="w-full max-w-2xl text-center mb-6 sm:mb-8">
+          <div className="inline-flex items-center gap-2 mb-3">
+            <span className="bg-marker-orange text-ink-charcoal font-mono-tag text-xs uppercase px-3 py-1 rounded-full border-[1.5px] border-ink-charcoal shadow-[2px_2px_0px_#171717] -rotate-2 font-bold">
+              SUMMARY
+            </span>
+          </div>
+          <h1 className="font-headline text-2xl sm:text-4xl md:text-5xl font-bold text-ink-charcoal tracking-tight lowercase mb-2">
+            rangkuman perjalananmu
+          </h1>
+          <p className="text-sm md:text-base text-ink-charcoal/80 mt-2">
+            Inilah peta kejujuran batin yang berhasil kamu urai hari ini.
+          </p>
+          <p className="font-script text-xl sm:text-2xl text-marker-orange font-bold mt-2">
+            “look how much you unpacked.”
+          </p>
+        </section>
+
+        {/* Main Card */}
+        <section className="w-full max-w-2xl bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl shadow-[5px_5px_0px_#171717] p-5 sm:p-9 relative mb-8">
+          <div className="absolute -top-3.5 left-4 sm:left-8 px-3 sm:px-4 py-1 bg-sticker-sage border-[1.5px] border-ink-charcoal rounded-sm font-mono-tag text-[10px] sm:text-xs text-ink-charcoal -rotate-2 shadow-[2px_2px_0px_#171717] pointer-events-none font-semibold">
+            refleksi utuh perjalananmu
           </div>
 
           {loading ? (
@@ -191,91 +195,100 @@ export function SummarySection() {
           ) : (
             <div className="animate-in fade-in duration-500 w-full">
               {/* Timeline Steps */}
-              <div className="relative max-w-xl mx-auto space-y-6">
+              <div className="relative w-full space-y-6">
                 {/* 1. MASK */}
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <div className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] flex items-center justify-center font-mono-tag text-xs sm:text-sm font-bold">
-                    01
-                  </div>
-                  <div className="flex-1 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-3.5 sm:p-4 shadow-[2px_2px_0px_#171717]">
-                    <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-2 mb-2 font-mono-tag text-xs font-bold uppercase">
-                      <span>Step 1: MASK (Topeng vs Asli)</span>
-                      <span className="material-symbols-outlined text-[16px]">theater_comedy</span>
+                <div className="relative bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-4 sm:p-5 shadow-[3px_3px_0px_#171717]">
+                  <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-3 mb-3 font-mono-tag text-xs font-bold uppercase">
+                    <div className="flex items-center gap-2">
+                      <span className="bg-ink-charcoal text-paper-warm px-2 py-0.5 rounded-sm">01</span>
+                      <span>TAMPILAN LUAR & RUANG BATIN (WHAT YOU SHOW & FEEL)</span>
                     </div>
-                    <div className="text-xs space-y-1">
-                      <div>
-                        Yang Ditampilkan: <strong>{currentPublicTags.join(" · ")}</strong>
-                      </div>
-                      <div className="">
-                        Yang Dirasakan: <strong>{currentActualFeelings.join(" · ")}</strong>
-                      </div>
+                  </div>
+                  <div className="text-sm space-y-2">
+                    <div>
+                      <span className="text-ink-charcoal/70 mr-1">Yang Ditampilkan:</span>
+                      <strong>{currentPublicTags.join(" · ")}</strong>
+                    </div>
+                    <div>
+                      <span className="text-ink-charcoal/70 mr-1">Yang Dirasakan:</span>
+                      <strong>{currentActualFeelings.join(" · ")}</strong>
                     </div>
                   </div>
                 </div>
 
                 {/* 2. LOAD */}
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <div className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] flex items-center justify-center font-mono-tag text-xs sm:text-sm font-bold">
-                    02
+                <div className="relative bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-4 sm:p-5 shadow-[3px_3px_0px_#171717]">
+                  <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-3 mb-3 font-mono-tag text-xs font-bold uppercase">
+                    <div className="flex items-center gap-2">
+                      <span className="bg-ink-charcoal text-paper-warm px-2 py-0.5 rounded-sm">02</span>
+                      <span>BEBAN PIKIRAN (WHAT YOU CARRY)</span>
+                    </div>
                   </div>
-                  <div className="flex-1 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-3.5 sm:p-4 shadow-[2px_2px_0px_#171717]">
-                    <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-2 mb-2 font-mono-tag text-xs font-bold uppercase">
-                      <span>Step 2: LOAD (Beban yang Diurai)</span>
-                      <span className="material-symbols-outlined text-[16px]">weight</span>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-xs text-ink-charcoal/80 mb-3 font-mono-tag uppercase font-bold tracking-wide">Tema utama yang sedang dipikul:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {currentThemes.map((theme, i) => (
+                          <span
+                            key={i}
+                            className="px-3 py-1.5 rounded-full bg-white border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold shadow-[2px_2px_0px_#171717]"
+                          >
+                            {theme}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                    <p className="text-xs text-ink-charcoal/80 mb-2">Tema utama yang sedang dipikul:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {currentThemes.map((theme, i) => (
-                        <span
-                          key={i}
-                          className="px-2.5 py-1 rounded-full bg-white border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold"
-                        >
-                          {theme}
-                        </span>
-                      ))}
-                    </div>
+                    {loadInsight?.summary && (
+                      <div className="pt-2 border-t border-ink-charcoal/10">
+                        <span className="block text-ink-charcoal/80 mb-1 font-mono-tag uppercase text-[10px] font-bold tracking-wide">Catatan:</span>
+                        <p className="text-ink-charcoal text-xs italic leading-relaxed">{loadInsight.summary}</p>
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 {/* 3. NEED */}
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <div className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] flex items-center justify-center font-mono-tag text-xs sm:text-sm font-bold">
-                    03
+                <div className="relative bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-4 sm:p-5 shadow-[3px_3px_0px_#171717]">
+                  <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-3 mb-3 font-mono-tag text-xs font-bold uppercase">
+                    <div className="flex items-center gap-2">
+                      <span className="bg-ink-charcoal text-paper-warm px-2 py-0.5 rounded-sm">03</span>
+                      <span>KEBUTUHAN DIRI (WHAT YOU MAY NEED)</span>
+                    </div>
                   </div>
-                  <div className="flex-1 bg-paper-warm border-[1.5px] border-ink-charcoal rounded-xl p-3.5 sm:p-4 shadow-[2px_2px_0px_#171717]">
-                    <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-2 mb-2 font-mono-tag text-xs font-bold uppercase">
-                      <span>Step 3: NEED (Kebutuhan Personal)</span>
-                      <span className="material-symbols-outlined text-[16px]">favorite</span>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-xs text-ink-charcoal/80 mb-3 font-mono-tag uppercase font-bold tracking-wide">Yang dibutuhkan saat ini:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {currentNeeds.map((need, i) => (
+                          <span
+                            key={i}
+                            className="px-3 py-1.5 rounded-full bg-white border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold shadow-[2px_2px_0px_#171717]"
+                          >
+                            {need}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      {currentNeeds.map((need, i) => (
-                        <span
-                          key={i}
-                          className="px-2.5 py-1 rounded-full bg-white border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold"
-                        >
-                          {need}
-                        </span>
-                      ))}
-                    </div>
+                    {needInsight?.explanation && (
+                      <div className="pt-2 border-t border-ink-charcoal/10">
+                        <span className="block text-ink-charcoal/80 mb-1 font-mono-tag uppercase text-[10px] font-bold tracking-wide">Penjelasan:</span>
+                        <p className="text-ink-charcoal text-xs italic leading-relaxed">{needInsight.explanation}</p>
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 {/* 4. ACTION */}
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <div className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-paper-base border-[1.5px] border-ink-charcoal shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] flex items-center justify-center font-mono-tag text-xs sm:text-sm font-bold">
-                    04
-                  </div>
-                  <div className="flex-1 bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl p-3.5 sm:p-4 shadow-[3px_3px_0px_#171717]">
-                    <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-2 mb-2 font-mono-tag text-xs font-bold uppercase">
-                      <span>Step 4: ACTION (Langkah Pilihanmu)</span>
-                      <span className="material-symbols-outlined text-[16px]">
-                        auto_awesome
-                      </span>
+                <div className="relative bg-paper-base border-[1.5px] border-ink-charcoal rounded-xl p-4 sm:p-5 shadow-[4px_4px_0px_#171717]">
+                  <div className="flex items-center justify-between border-b border-ink-charcoal/20 pb-3 mb-4 font-mono-tag text-xs font-bold uppercase">
+                    <div className="flex items-center gap-2">
+                      <span className="bg-marker-orange text-ink-charcoal px-2 py-0.5 rounded-sm border border-ink-charcoal">04</span>
+                      <span>LANGKAH KECIL (YOUR NEXT STEP)</span>
                     </div>
-                    <p className="text-xs sm:text-sm font-headline italic font-semibold text-ink-charcoal">
-                      “{currentAction}”
-                    </p>
                   </div>
+                  <p className="text-sm sm:text-base font-headline italic font-bold text-ink-charcoal px-2">
+                    “{currentAction}”
+                  </p>
                 </div>
               </div>
 
@@ -289,7 +302,7 @@ export function SummarySection() {
                     technicalError={technicalError}
                     onRetry={() => fetchSummary(true)}
                     isRetrying={loading}
-                    continueUrl="/selesai"
+                    continueUrl="/complete"
                     continueLabel="Tetap Selesaikan Perjalanan"
                   />
                 </div>
@@ -297,11 +310,11 @@ export function SummarySection() {
 
               {/* Reflection synthesis note */}
               {summaryData?.reflection && (
-                <div className="max-w-xl mx-auto mt-6 sm:mt-8 p-4 bg-[#FFF8F2] border-[1.5px] border-ink-charcoal rounded-xl text-center shadow-[2px_2px_0px_#171717]">
-                  <span className="font-mono-tag text-[13px] text-burnt-orange font-bold uppercase block mb-1">
+                <div className="bg-[#FFF4DC] border-[1.5px] border-ink-charcoal rounded-xl p-6 sm:p-8 shadow-[4px_4px_0px_#171717] -rotate-1 mt-10 w-full max-w-lg mx-auto text-center">
+                  <span className="font-mono-tag text-[12px] text-ink-charcoal/60 uppercase font-bold block mb-3">
                     Catatan Penutup
                   </span>
-                  <p className="font-headline text-xs sm:text-sm text-ink-charcoal font-medium leading-relaxed">
+                  <p className="font-script text-xl sm:text-2xl text-burnt-orange font-bold leading-snug">
                     “{summaryData.reflection}”
                   </p>
                 </div>
@@ -317,29 +330,10 @@ export function SummarySection() {
                   <span className="material-symbols-outlined text-[16px]">download</span>
                   <span>{downloaded ? "✓ Tersimpan di Perangkat" : "Unduh File Rangkuman"}</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    resetSession();
-                    router.push("/onboarding");
-                  }}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 sm:py-3 rounded-full bg-paper-warm text-ink-charcoal border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold uppercase shadow-[2px_2px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_#171717] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-150"
-                >
-                  <span className="material-symbols-outlined text-[16px]">refresh</span>
-                  <span>Mulai Sesi Baru</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => router.push("/selesai")}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-2.5 sm:py-3 rounded-full bg-marker-orange text-ink-charcoal border-[1.5px] border-ink-charcoal font-mono-tag text-xs font-bold uppercase shadow-[3px_3px_0px_#171717] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_#171717] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-150"
-                >
-                  <span>Selesai Sesi</span>
-                  <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-                </button>
               </div>
             </div>
           )}
-        </div>
+        </section>
       </main>
 
       {/* Hidden Receipt for PDF Export */}
@@ -355,36 +349,33 @@ export function SummarySection() {
           {/* Items */}
           <div className="space-y-4 text-[12px] leading-relaxed">
             <div>
-              <p className="font-bold border-b-[1.5px] border-ink-charcoal/30 pb-1 mb-1">1. TAMPILAN LUAR (WHAT YOU SHOW)</p>
-              <p>{currentPublicTags.join(" · ")}</p>
+              <p className="font-bold border-b-[1.5px] border-ink-charcoal/30 pb-1 mb-1 uppercase tracking-wide">01. TAMPILAN LUAR & RUANG BATIN</p>
+              <p><span className="text-ink-charcoal/70">Yang Ditampilkan:</span> {currentPublicTags.join(" · ")}</p>
+              <p><span className="text-ink-charcoal/70">Yang Dirasakan:</span> {currentActualFeelings.join(" · ")}</p>
             </div>
             <div>
-              <p className="font-bold border-b-[1.5px] border-ink-charcoal/30 pb-1 mb-1">2. RUANG BATIN (WHAT YOU FEEL)</p>
-              <p>{currentActualFeelings.join(" · ")}</p>
-            </div>
-            <div>
-              <p className="font-bold border-b-[1.5px] border-ink-charcoal/30 pb-1 mb-1">3. BEBAN PIKIRAN (WHAT YOU CARRY)</p>
+              <p className="font-bold border-b-[1.5px] border-ink-charcoal/30 pb-1 mb-1 uppercase tracking-wide">02. BEBAN PIKIRAN</p>
               <ul className="list-none space-y-1 mb-2">
                 {currentThemes.map((t, i) => <li key={i}>- {t}</li>)}
               </ul>
               <p className="text-ink-charcoal/80 italic">Catatan: {loadInsight?.summary || "-"}</p>
             </div>
             <div>
-              <p className="font-bold border-b-[1.5px] border-ink-charcoal/30 pb-1 mb-1">4. KEBUTUHAN DIRI (WHAT YOU MAY NEED)</p>
+              <p className="font-bold border-b-[1.5px] border-ink-charcoal/30 pb-1 mb-1 uppercase tracking-wide">03. KEBUTUHAN DIRI</p>
               <ul className="list-none space-y-1 mb-2">
                 {currentNeeds.map((n, i) => <li key={i}>- {n}</li>)}
               </ul>
               <p className="text-ink-charcoal/80 italic">Penjelasan: {needInsight?.explanation || "-"}</p>
             </div>
             <div>
-              <p className="font-bold border-b-[1.5px] border-ink-charcoal/30 pb-1 mb-1">5. LANGKAH KECIL (YOUR NEXT STEP)</p>
-              <p className="font-headline italic font-bold">"{currentAction}"</p>
+              <p className="font-bold border-b-[1.5px] border-ink-charcoal/30 pb-1 mb-1 uppercase tracking-wide">04. LANGKAH KECIL</p>
+              <p className="font-headline italic font-bold text-[14px]">&quot;{currentAction}&quot;</p>
             </div>
 
             {summaryData?.reflection && (
-              <div className="mt-4 pt-4 border-t-[1.5px] border-ink-charcoal/30">
-                <p className="font-bold pb-1 mb-1">6. CATATAN PENUTUP (A FINAL NOTE)</p>
-                <p>"{summaryData.reflection}"</p>
+              <div className="mt-4 pt-4 border-t-[1.5px] border-ink-charcoal/30 text-center bg-[#FFF4DC] border-[1.5px] border-ink-charcoal p-4 rounded-xl -rotate-1 mt-6">
+                <p className="font-mono-tag text-[10px] uppercase font-bold text-ink-charcoal/60 mb-2">CATATAN PENUTUP</p>
+                <p className="font-script text-xl text-burnt-orange font-bold leading-snug">&quot;{summaryData.reflection}&quot;</p>
               </div>
             )}
           </div>
@@ -394,15 +385,15 @@ export function SummarySection() {
             <div className="w-10 h-10 mx-auto border-[1.5px] border-ink-charcoal rounded-full flex items-center justify-center mb-3 -rotate-6">
               <span className="material-symbols-outlined text-[20px]">done_all</span>
             </div>
-            <p className="font-script text-xl text-burnt-orange mb-2">"look how much you unpacked"</p>
-            <p className="text-[10px] uppercase font-bold tracking-widest mt-2">Beyond "I'm Fine"</p>
+            <p className="font-script text-xl text-burnt-orange mb-2">&quot;look how much you unpacked&quot;</p>
+            <p className="text-[10px] uppercase font-bold tracking-widest mt-2">Beyond &quot;I&apos;m Fine&quot;</p>
           </div>
         </div>
       </div>
 
       <BottomDock
         backTo="/action-step"
-        nextTo="/selesai"
+        nextTo="/complete"
         nextLabel="Selesai"
         stageBadge="RANGKUMAN"
       />
