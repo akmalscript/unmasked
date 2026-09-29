@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { checkCrisisRisk } from "@/lib/safety/crisisKeywords";
-import { validateBodySize } from "@/lib/ai/rateLimit";
+import { assessSafety } from "@/lib/safety/assess";
+import { checkRateLimit, getClientIdentifiers, validateBodySize } from "@/lib/ai/rateLimit";
 
 const SafetyInputSchema = z.object({
   text: z.string().max(5000).optional(),
@@ -11,6 +11,10 @@ const SafetyInputSchema = z.object({
     .optional(),
 });
 
+/**
+ * Endpoint pemeriksaan keselamatan terpadu (Safety v2).
+ * Berbagi engine analisis dan kebijakan anti-false-positive yang sama dengan semua rute AI.
+ */
 export async function POST(req: Request) {
   try {
     const rawBody = await req.text();
@@ -24,6 +28,42 @@ export async function POST(req: Request) {
           retryable: false,
         },
         { status: 413 }
+      );
+    }
+
+    const { ipKey, sessionKey } = getClientIdentifiers(req);
+
+    const ipLimit = checkRateLimit(ipKey, {
+      maxRequestsPerMinute: 60,
+      cooldownMs: 500,
+    });
+    if (!ipLimit.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: ipLimit.code || "RATE_LIMIT_EXCEEDED",
+          message: ipLimit.message,
+          retryAfterSeconds: ipLimit.retryAfterSeconds,
+          retryable: true,
+        },
+        { status: 429 }
+      );
+    }
+
+    const sessionLimit = checkRateLimit(sessionKey, {
+      maxRequestsPerMinute: 30,
+      cooldownMs: 800,
+    });
+    if (!sessionLimit.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          code: sessionLimit.code || "RATE_LIMIT_EXCEEDED",
+          message: sessionLimit.message,
+          retryAfterSeconds: sessionLimit.retryAfterSeconds,
+          retryable: true,
+        },
+        { status: 429 }
       );
     }
 
@@ -63,13 +103,17 @@ export async function POST(req: Request) {
       .filter(Boolean)
       .join(" ");
 
-    const result = checkCrisisRisk(combinedText);
+    const safetyDecision = await assessSafety({
+      stage: "general",
+      userText: combinedText,
+    });
 
     return NextResponse.json({
       success: true,
-      safe: !result.isCrisis,
-      riskLevel: result.isCrisis ? "high" : "low",
-      data: result,
+      safe: safetyDecision.action === "allow",
+      action: safetyDecision.action,
+      riskLevel: safetyDecision.assessment.riskLevel,
+      assessment: safetyDecision.assessment,
     });
   } catch (error) {
     console.error("Error in /api/safety/check:", error);

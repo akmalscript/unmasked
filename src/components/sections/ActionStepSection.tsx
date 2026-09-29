@@ -13,6 +13,7 @@ import {
   getConfirmedLoadSummary,
   getConfirmedLoadThemes,
 } from "@/store/useJournalStore";
+import { useSafetyUIStore } from "@/store/useSafetyUIStore";
 import { ActionRecommendation } from "@/types/session";
 
 export function ActionStepSection() {
@@ -91,6 +92,21 @@ export function ActionStepSection() {
 
       const json = await res.json();
       if (!res.ok || !json.success) {
+        if (json.code === "SAFETY_INTERVENTION") {
+          if (json.intervention) {
+            useSafetyUIStore.getState().openIntervention(json.intervention);
+            useJournalStore.getState().setSafetyState({
+              status: "intervention",
+              riskLevel: json.intervention.riskLevel || "high",
+              category: json.intervention.category,
+              source: "ai",
+              triggeredAt: new Date().toISOString(),
+              handled: false,
+            });
+          } else {
+            useSafetyUIStore.getState().openManualSupport();
+          }
+        }
         setTechnicalError(json.code || null);
         throw new Error(json.message || "Gagal menyusun langkah aksi.");
       }

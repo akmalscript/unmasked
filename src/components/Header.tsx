@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useJournalStore } from "@/store/useJournalStore";
-import { CrisisModal } from "@/components/CrisisModal";
+import { useSafetyUIStore } from "@/store/useSafetyUIStore";
 import { ConfirmModal } from "@/components/ConfirmModal";
 
 interface HeaderProps {
@@ -23,7 +23,6 @@ export function Header({
   const router = useRouter();
   const { bookmarked, toggleBookmarked, clearAllData } = useJournalStore();
   const [showHelp, setShowHelp] = useState(false);
-  const [showCrisis, setShowCrisis] = useState(false);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   return (
@@ -70,7 +69,7 @@ export function Header({
 
         <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           <button
-            onClick={() => setShowCrisis(true)}
+            onClick={() => useSafetyUIStore.getState().openManualSupport()}
             aria-label="Bantuan Krisis"
             className="cursor-pointer p-1.5 sm:p-2 border-[1.5px] border-ink-charcoal rounded-full bg-sticker-pink/50 text-ink-charcoal shadow-[1.5px_1.5px_0px_#171717] sm:shadow-[2px_2px_0px_#171717] hover:bg-sticker-pink transition-all flex items-center justify-center"
             title="Layanan Dukungan & Bantuan Krisis"
@@ -126,8 +125,6 @@ export function Header({
           </button>
         </div>
       )}
-
-      <CrisisModal isOpen={showCrisis} onClose={() => setShowCrisis(false)} />
 
       <ConfirmModal
         isOpen={showResetConfirm}

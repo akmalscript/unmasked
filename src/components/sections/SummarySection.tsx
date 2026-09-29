@@ -17,6 +17,7 @@ import {
   getConfirmedLoadSummary,
   getConfirmedLoadThemes,
 } from "@/store/useJournalStore";
+import { useSafetyUIStore } from "@/store/useSafetyUIStore";
 import { SummaryStage } from "@/types/session";
 
 export function SummarySection() {
@@ -103,6 +104,21 @@ export function SummarySection() {
       if (res.ok && json.success) {
         setSummaryData(json.data as SummaryStage);
       } else {
+        if (json.code === "SAFETY_INTERVENTION") {
+          if (json.intervention) {
+            useSafetyUIStore.getState().openIntervention(json.intervention);
+            useJournalStore.getState().setSafetyState({
+              status: "intervention",
+              riskLevel: json.intervention.riskLevel || "high",
+              category: json.intervention.category,
+              source: "ai",
+              triggeredAt: new Date().toISOString(),
+              handled: false,
+            });
+          } else {
+            useSafetyUIStore.getState().openManualSupport();
+          }
+        }
         setTechnicalError(json.code || null);
         setError(json.message || "Gagal menyusun refleksi penutup.");
       }

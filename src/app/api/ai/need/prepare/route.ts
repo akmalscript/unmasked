@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { generateStructuredAI, parseAIError } from "@/lib/ai/client";
 import { buildNeedPreparePrompt, SYSTEM_GUIDELINES } from "@/lib/ai/prompts";
 import { NeedPrepareInputSchema, NeedPrepareOutputSchema } from "@/schemas/reflection";
-import { checkCrisisRisk } from "@/lib/safety/crisisKeywords";
+import { assessSafety } from "@/lib/safety/assess";
+import { createSafetyInterventionResponse } from "@/lib/safety/interventionResponse";
 import { checkRateLimit, getClientIdentifiers, validateBodySize } from "@/lib/ai/rateLimit";
 
 export async function POST(req: Request) {
@@ -86,20 +87,21 @@ export async function POST(req: Request) {
 
     const { maskContext, loadContext } = parseResult.data;
 
-    // Safety Pipeline Check
-    const safetyCheck = checkCrisisRisk(`${loadContext.summary} ${loadContext.userCorrection || ""}`);
-    if (safetyCheck.isCrisis) {
-      return NextResponse.json(
-        {
-          success: false,
-          code: "SAFETY_INTERVENTION",
-          message: "Kami mendeteksi situasi yang membutuhkan pendampingan krisis. Keselamatanmu adalah hal paling utama.",
-          riskLevel: "high",
-          emergencyContacts: safetyCheck.emergencyContacts,
-          retryable: false,
-        },
-        { status: 400 }
-      );
+    // Safety Pipeline Check (Safety v2 AI-First with Fallback)
+    const userText = [
+      loadContext.userCorrection || "",
+      maskContext?.userCorrection || "",
+      loadContext.summary,
+    ].filter(Boolean).join("\n");
+
+    const safetyDecision = await assessSafety({
+      stage: "need_prepare",
+      userText,
+      contextualData: loadContext.themes.join(", "),
+    });
+
+    if (safetyDecision.action === "intervene") {
+      return createSafetyInterventionResponse(safetyDecision.assessment);
     }
 
     const prompt = buildNeedPreparePrompt({
@@ -110,7 +112,10 @@ export async function POST(req: Request) {
     const { data, modelUsed } = await generateStructuredAI(
       prompt,
       NeedPrepareOutputSchema,
-      SYSTEM_GUIDELINES
+      {
+        task: "needPrepare",
+        systemInstruction: SYSTEM_GUIDELINES,
+      }
     );
 
     // Pastikan pertanyaan berakhiran tanda tanya dan tetap bersih

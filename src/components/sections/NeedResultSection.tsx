@@ -7,13 +7,13 @@ import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
 import { AIErrorCard } from "@/components/AIErrorCard";
 import { UserConfirmationCard } from "@/components/UserConfirmationCard";
-import { CrisisModal } from "@/components/CrisisModal";
 import {
   useJournalStore,
   useStoreHydrated,
   getConfirmedLoadSummary,
   getConfirmedLoadThemes,
 } from "@/store/useJournalStore";
+import { useSafetyUIStore } from "@/store/useSafetyUIStore";
 import { NeedInsight } from "@/types/session";
 
 export function NeedResultSection() {
@@ -39,7 +39,6 @@ export function NeedResultSection() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [technicalError, setTechnicalError] = useState<string | null>(null);
-  const [isCrisisOpen, setIsCrisisOpen] = useState(false);
 
   const hasNeedInput = needCandidates.length > 0 || needAnswers.length > 0;
 
@@ -81,7 +80,19 @@ export function NeedResultSection() {
       const json = await res.json();
       if (!res.ok || !json.success) {
         if (json.code === "SAFETY_INTERVENTION") {
-          setIsCrisisOpen(true);
+          if (json.intervention) {
+            useSafetyUIStore.getState().openIntervention(json.intervention);
+            useJournalStore.getState().setSafetyState({
+              status: "intervention",
+              riskLevel: json.intervention.riskLevel || "high",
+              category: json.intervention.category,
+              source: "ai",
+              triggeredAt: new Date().toISOString(),
+              handled: false,
+            });
+          } else {
+            useSafetyUIStore.getState().openManualSupport();
+          }
         }
         setTechnicalError(json.code || null);
         throw new Error(json.message || "Gagal menyintesis kebutuhan.");
@@ -254,8 +265,6 @@ export function NeedResultSection() {
           </div>
         )}
       </main>
-
-      <CrisisModal isOpen={isCrisisOpen} onClose={() => setIsCrisisOpen(false)} />
 
       <BottomDock
         backTo="/need-sheet"

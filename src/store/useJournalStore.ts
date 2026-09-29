@@ -39,6 +39,17 @@ export interface StickyNote {
   category?: "act" | "share" | "let_go";
 }
 
+export type SafetyStatus = "normal" | "review" | "intervention";
+
+export interface SafetyState {
+  status: SafetyStatus;
+  riskLevel: "safe" | "concern" | "high" | "critical";
+  source: "ai" | "deterministic" | "combined";
+  category?: string;
+  triggeredAt?: string;
+  handled: boolean;
+}
+
 export interface JournalState {
   // Session ID & Meta
   sessionId: string;
@@ -77,6 +88,10 @@ export interface JournalState {
   // Session activity & shared device protection (2 hours inactivity)
   lastActiveTimestamp: number;
   touchActivity: () => void;
+
+  // Session Safety State (Safety v2 Metadata)
+  safety: SafetyState;
+  setSafetyState: (safety: Partial<SafetyState>) => void;
 
   // Hydration status
   hasHydrated: boolean;
@@ -182,6 +197,13 @@ const initialValues = {
   summaryData: null as SummaryStage | null,
   bookmarked: false,
 
+  safety: {
+    status: "normal" as SafetyStatus,
+    riskLevel: "safe" as const,
+    source: "ai" as const,
+    handled: false,
+  },
+
   loadingState: {
     mask: false,
     load: false,
@@ -207,6 +229,12 @@ export const useJournalStore = create<JournalState>()(
       setHasHydrated: (val) => set({ hasHydrated: val }),
 
       touchActivity: () => set({ lastActiveTimestamp: Date.now() }),
+
+      setSafetyState: (newSafety) =>
+        set((state) => ({
+          safety: { ...state.safety, ...newSafety },
+          lastActiveTimestamp: Date.now(),
+        })),
 
       togglePublicTag: (tag) =>
         set((state) => ({
@@ -484,6 +512,7 @@ export const useJournalStore = create<JournalState>()(
         actionCompleted: state.actionCompleted,
         summaryData: state.summaryData,
         bookmarked: state.bookmarked,
+        safety: state.safety,
       }),
     }
   )

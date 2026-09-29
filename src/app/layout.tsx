@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Epilogue, JetBrains_Mono, Caveat } from "next/font/google";
 import { SessionExpiryGuard } from "@/components/SessionExpiryGuard";
+import { SafetyOverlay } from "@/components/SafetyOverlay";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -53,6 +54,7 @@ export default function RootLayout({
       </head>
       <body className="bg-paper-base text-ink-charcoal selection:bg-marker-orange selection:text-ink-charcoal min-h-screen">
         <SessionExpiryGuard />
+        <SafetyOverlay />
         {children}
       </body>
     </html>

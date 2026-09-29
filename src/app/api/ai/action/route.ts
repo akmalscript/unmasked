@@ -3,7 +3,9 @@ import { generateStructuredAI, parseAIError } from "@/lib/ai/client";
 import { buildActionPrompt, SYSTEM_GUIDELINES } from "@/lib/ai/prompts";
 import { ActionInputSchema, ActionOutputSchema } from "@/schemas/reflection";
 import { checkRateLimit, getClientIdentifiers, validateBodySize } from "@/lib/ai/rateLimit";
-import { checkCrisisRisk } from "@/lib/safety/crisisKeywords";
+import { assessSafety } from "@/lib/safety/assess";
+import { assessGeneratedActionSafety } from "@/lib/safety/actionSafety";
+import { createSafetyInterventionResponse } from "@/lib/safety/interventionResponse";
 
 export async function POST(req: Request) {
   try {
@@ -86,32 +88,28 @@ export async function POST(req: Request) {
 
     const { primaryNeed, loadSummary, loadThemes, maskContext, needCorrection } = parseResult.data;
 
-    const safetyText = [
-      ...(maskContext?.publicTags || []),
-      ...(maskContext?.actualFeelings || []),
+    // Safety Pipeline Check (Safety v2 Input Safety)
+    const userText = [
+      needCorrection || "",
       maskContext?.userCorrection || "",
       primaryNeed.title,
+    ].filter(Boolean).join("\n");
+
+    const contextualData = [
+      ...(maskContext?.actualFeelings || []),
       primaryNeed.reason,
       loadSummary,
       ...loadThemes,
-      needCorrection || "",
-    ].join(" ");
+    ].join(", ");
 
-    const safetyCheck = checkCrisisRisk(safetyText);
+    const safetyDecision = await assessSafety({
+      stage: "action",
+      userText,
+      contextualData,
+    });
 
-    if (safetyCheck.isCrisis) {
-      return NextResponse.json(
-        {
-          success: false,
-          code: "SAFETY_INTERVENTION",
-          message:
-            "Kami mendeteksi situasi yang membutuhkan pendampingan krisis. Keselamatanmu adalah hal paling utama.",
-          riskLevel: "high",
-          emergencyContacts: safetyCheck.emergencyContacts,
-          retryable: false,
-        },
-        { status: 400 }
-      );
+    if (safetyDecision.action === "intervene") {
+      return createSafetyInterventionResponse(safetyDecision.assessment);
     }
 
     const prompt = buildActionPrompt({
@@ -125,8 +123,21 @@ export async function POST(req: Request) {
     const { data, modelUsed } = await generateStructuredAI(
       prompt,
       ActionOutputSchema,
-      SYSTEM_GUIDELINES
+      {
+        task: "action",
+        systemInstruction: SYSTEM_GUIDELINES,
+      }
     );
+
+    // Safety Pipeline Check (Safety v2 Action Output Safety)
+    const actionSafety = await assessGeneratedActionSafety({
+      userContext: `${primaryNeed.title}: ${loadSummary}`,
+      recommendations: data.recommendations,
+    });
+
+    if (!actionSafety.isSafe && actionSafety.intervention) {
+      return createSafetyInterventionResponse(actionSafety.intervention);
+    }
 
     return NextResponse.json({
       success: true,

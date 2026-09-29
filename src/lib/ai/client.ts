@@ -1,25 +1,31 @@
 import { GoogleGenAI } from "@google/genai";
 import { z } from "zod";
-
-const API_KEY = process.env.GEMINI_API_KEY || "";
+import { getModelForTask, type AITask } from "./models";
 
 function getGenAIClient(): GoogleGenAI {
-  if (!API_KEY) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
     throw new Error("GEMINI_API_KEY_MISSING");
   }
-  return new GoogleGenAI({ apiKey: API_KEY });
+  return new GoogleGenAI({ apiKey });
 }
 
 /**
- * Model deterministik sesuai Prioritas 11:
- * - Primary: Model cepat & stabil untuk refleksi terstruktur (gemini-3.8-flash)
- * - Fallback: Model cadangan efisien jika primary mengalami kendala sementara (gemini-3.5-flash-lite)
+ * Model routing UNMASKED:
+ *
+ * Standard tasks:
+ * - gemini-3.5-flash-lite
+ *
+ * Complex reasoning tasks:
+ * - gemini-3.8-flash
+ *
+ * Safety V2:
+ * - gemini-3.5-flash-lite
+ *
+ * Fallback:
+ * - Standard → Complex
+ * - Complex → Standard
  */
-const PRIMARY_MODEL =
-  process.env.GEMINI_PRIMARY_MODEL || "gemini-3.8-flash";
-
-const FALLBACK_MODEL =
-  process.env.GEMINI_FALLBACK_MODEL || "gemini-3.5-flash-lite";
 
 export interface SafeAIError {
   code: string;
@@ -213,22 +219,30 @@ async function runModel<T>(
   throw new Error(`VALIDATION_ERROR: ${secondValidation.error.message}`);
 }
 
+export interface GenerateStructuredAIOptions {
+  task: AITask;
+  systemInstruction?: string;
+}
+
 /**
  * Generate structured content using Gemini with deterministic fallback and at most 1 repair attempt.
- * Prioritas 6, 11, 12:
- * 1. Panggil Primary Model (maksimal 1 repair jika output invalid)
- * 2. Jika gagal: coba Fallback Model (1x initial call saja, tanpa repair)
+ * Prioritas 6, 11, 12 & Model Routing Optimization:
+ * 1. Panggil Primary Model sesuai task (maksimal 1 repair jika output invalid)
+ * 2. Jika gagal: coba Fallback Model sesuai task (1x initial call saja, tanpa repair)
  * 3. Jika tetap gagal: throw safe error tanpa membocorkan detail teknis
  */
 export async function generateStructuredAI<T>(
   prompt: string,
   schema: z.ZodSchema<T>,
-  systemInstruction?: string
+  options: GenerateStructuredAIOptions
 ): Promise<{ data: T; modelUsed: string }> {
   const ai = getGenAIClient();
+  const { primary, fallback } = getModelForTask(options.task);
 
   try {
-    return await runModel(ai, PRIMARY_MODEL, true, prompt, schema, systemInstruction);
+    const result = await runModel(ai, primary, true, prompt, schema, options.systemInstruction);
+    console.info(`[AI] task=${options.task} model=${result.modelUsed}`);
+    return result;
   } catch (primaryError) {
     const raw = primaryError instanceof Error ? primaryError.message : String(primaryError);
 
@@ -247,12 +261,14 @@ export async function generateStructuredAI<T>(
       throw errorObj;
     }
 
-    console.warn(`[AI Client] Primary model (${PRIMARY_MODEL}) failed. Fallback ke ${FALLBACK_MODEL}...`, raw);
+    console.warn(`[AI Client] Primary model (${primary}) failed for task ${options.task}. Fallback ke ${fallback}...`, raw);
 
     try {
-      return await runModel(ai, FALLBACK_MODEL, false, prompt, schema, systemInstruction);
+      const result = await runModel(ai, fallback, false, prompt, schema, options.systemInstruction);
+      console.info(`[AI] task=${options.task} model=${result.modelUsed}`);
+      return result;
     } catch (fallbackError) {
-      console.error(`[AI Client] Fallback model (${FALLBACK_MODEL}) also failed:`, fallbackError);
+      console.error(`[AI Client] Fallback model (${fallback}) also failed for task ${options.task}:`, fallbackError);
       const safeErr = parseAIError(fallbackError);
       const errorObj = new Error(safeErr.message);
       (errorObj as unknown as SafeAIError).code = safeErr.code;

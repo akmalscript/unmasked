@@ -9,6 +9,7 @@ import { MindfulLoading } from "@/components/MindfulLoading";
 import { AIErrorCard } from "@/components/AIErrorCard";
 import { UserConfirmationCard } from "@/components/UserConfirmationCard";
 import { useJournalStore, useStoreHydrated } from "@/store/useJournalStore";
+import { useSafetyUIStore } from "@/store/useSafetyUIStore";
 import { MaskInsight } from "@/types/session";
 
 export function MaskResultSection() {
@@ -61,6 +62,21 @@ export function MaskResultSection() {
 
       const json = await res.json();
       if (!res.ok || !json.success) {
+        if (json.code === "SAFETY_INTERVENTION") {
+          if (json.intervention) {
+            useSafetyUIStore.getState().openIntervention(json.intervention);
+            useJournalStore.getState().setSafetyState({
+              status: "intervention",
+              riskLevel: json.intervention.riskLevel || "high",
+              category: json.intervention.category,
+              source: "ai",
+              triggeredAt: new Date().toISOString(),
+              handled: false,
+            });
+          } else {
+            useSafetyUIStore.getState().openManualSupport();
+          }
+        }
         setTechnicalError(json.code || null);
         throw new Error(json.message || "Gagal menganalisis MASK");
       }

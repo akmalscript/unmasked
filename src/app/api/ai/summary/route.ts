@@ -3,7 +3,8 @@ import { generateStructuredAI, parseAIError } from "@/lib/ai/client";
 import { buildSummaryPrompt, SYSTEM_GUIDELINES } from "@/lib/ai/prompts";
 import { SummaryInputSchema, SummaryOutputSchema } from "@/schemas/reflection";
 import { checkRateLimit, getClientIdentifiers, validateBodySize } from "@/lib/ai/rateLimit";
-import { checkCrisisRisk } from "@/lib/safety/crisisKeywords";
+import { assessSafety } from "@/lib/safety/assess";
+import { createSafetyInterventionResponse } from "@/lib/safety/interventionResponse";
 
 export async function POST(req: Request) {
   try {
@@ -92,29 +93,26 @@ export async function POST(req: Request) {
       selectedActionDesc,
     } = parseResult.data;
 
-    const safetyText = [
-      ...whatYouShow,
-      ...whatYouCarry,
-      ...whatYouMayNeed,
+    // Safety Pipeline Check (Safety v2 AI-First with Fallback)
+    const userText = [
       selectedActionTitle,
       selectedActionDesc,
-    ].join(" ");
+      ...whatYouMayNeed,
+    ].filter(Boolean).join("\n");
 
-    const safetyCheck = checkCrisisRisk(safetyText);
+    const contextualData = [
+      ...whatYouShow,
+      ...whatYouCarry,
+    ].join(", ");
 
-    if (safetyCheck.isCrisis) {
-      return NextResponse.json(
-        {
-          success: false,
-          code: "SAFETY_INTERVENTION",
-          message:
-            "Kami mendeteksi situasi yang membutuhkan pendampingan krisis. Keselamatanmu adalah hal paling utama.",
-          riskLevel: "high",
-          emergencyContacts: safetyCheck.emergencyContacts,
-          retryable: false,
-        },
-        { status: 400 }
-      );
+    const safetyDecision = await assessSafety({
+      stage: "summary",
+      userText,
+      contextualData,
+    });
+
+    if (safetyDecision.action === "intervene") {
+      return createSafetyInterventionResponse(safetyDecision.assessment);
     }
 
     const prompt = buildSummaryPrompt({
@@ -128,7 +126,10 @@ export async function POST(req: Request) {
     const { data, modelUsed } = await generateStructuredAI(
       prompt,
       SummaryOutputSchema,
-      SYSTEM_GUIDELINES
+      {
+        task: "summary",
+        systemInstruction: SYSTEM_GUIDELINES,
+      }
     );
 
     return NextResponse.json({

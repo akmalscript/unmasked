@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { generateStructuredAI, parseAIError } from "@/lib/ai/client";
 import { buildNeedSynthesizePrompt, SYSTEM_GUIDELINES } from "@/lib/ai/prompts";
 import { NeedSynthesizeInputSchema, NeedInsightSchema } from "@/schemas/reflection";
-import { checkCrisisRisk } from "@/lib/safety/crisisKeywords";
+import { assessSafety } from "@/lib/safety/assess";
+import { createSafetyInterventionResponse } from "@/lib/safety/interventionResponse";
 import { checkRateLimit, getClientIdentifiers, validateBodySize } from "@/lib/ai/rateLimit";
 
 export async function POST(req: Request) {
@@ -86,21 +87,20 @@ export async function POST(req: Request) {
 
     const { candidates, questions, answers, loadContext, maskContext } = parseResult.data;
 
-    // Safety Pipeline Check pada jawaban pengguna
-    const answersText = answers.map((a) => a.answer).join(" ");
-    const safetyCheck = checkCrisisRisk(answersText);
-    if (safetyCheck.isCrisis) {
-      return NextResponse.json(
-        {
-          success: false,
-          code: "SAFETY_INTERVENTION",
-          message: "Kami mendeteksi situasi yang membutuhkan pendampingan krisis. Keselamatanmu adalah hal paling utama.",
-          riskLevel: "high",
-          emergencyContacts: safetyCheck.emergencyContacts,
-          retryable: false,
-        },
-        { status: 400 }
-      );
+    // Safety Pipeline Check pada jawaban pengguna (Safety v2 AI-First with Fallback)
+    const userText = answers.map((a) => a.answer).filter(Boolean).join("\n");
+
+    const safetyDecision = await assessSafety({
+      stage: "need_synthesize",
+      userText,
+      contextualData: JSON.stringify({
+        loadContext,
+        maskContext,
+      }),
+    });
+
+    if (safetyDecision.action === "intervene") {
+      return createSafetyInterventionResponse(safetyDecision.assessment);
     }
 
     const prompt = buildNeedSynthesizePrompt({
@@ -118,7 +118,10 @@ export async function POST(req: Request) {
     const { data, modelUsed } = await generateStructuredAI(
       prompt,
       NeedInsightSchema,
-      SYSTEM_GUIDELINES
+      {
+        task: "needSynthesize",
+        systemInstruction: SYSTEM_GUIDELINES,
+      }
     );
 
     return NextResponse.json({

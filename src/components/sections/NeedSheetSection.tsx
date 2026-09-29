@@ -6,13 +6,13 @@ import { Header } from "@/components/Header";
 import { BottomDock } from "@/components/BottomDock";
 import { MindfulLoading } from "@/components/MindfulLoading";
 import { AIErrorCard } from "@/components/AIErrorCard";
-import { CrisisModal } from "@/components/CrisisModal";
 import {
   useJournalStore,
   useStoreHydrated,
   getConfirmedLoadSummary,
   getConfirmedLoadThemes,
 } from "@/store/useJournalStore";
+import { useSafetyUIStore } from "@/store/useSafetyUIStore";
 import { CandidateNeed, NeedQuestion } from "@/types/session";
 
 export function NeedSheetSection() {
@@ -37,7 +37,6 @@ export function NeedSheetSection() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [technicalError, setTechnicalError] = useState<string | null>(null);
-  const [isCrisisOpen, setIsCrisisOpen] = useState(false);
 
   const hasLoadContext = Boolean(loadInsight && loadInsight.themes && loadInsight.themes.length > 0);
 
@@ -77,7 +76,19 @@ export function NeedSheetSection() {
       const json = await res.json();
       if (!res.ok || !json.success) {
         if (json.code === "SAFETY_INTERVENTION") {
-          setIsCrisisOpen(true);
+          if (json.intervention) {
+            useSafetyUIStore.getState().openIntervention(json.intervention);
+            useJournalStore.getState().setSafetyState({
+              status: "intervention",
+              riskLevel: json.intervention.riskLevel || "high",
+              category: json.intervention.category,
+              source: "ai",
+              triggeredAt: new Date().toISOString(),
+              handled: false,
+            });
+          } else {
+            useSafetyUIStore.getState().openManualSupport();
+          }
         }
         setTechnicalError(json.code || null);
         throw new Error(json.message || "Gagal menyiapkan pertanyaan.");
@@ -238,8 +249,6 @@ export function NeedSheetSection() {
           )}
         </section>
       </main>
-
-      <CrisisModal isOpen={isCrisisOpen} onClose={() => setIsCrisisOpen(false)} />
 
       {/* Dock - Revised per Section 19 */}
       <BottomDock
